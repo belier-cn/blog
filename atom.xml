@@ -2,13 +2,112 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-09-08T09:59:39.312Z</updated>
+    <updated>2019-09-08T10:18:35.580Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2019, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[使用 VirtualBox Vagrant 快速搭建 centos7 系统]]></title>
+        <id>https://blog.belier.cn/post/i_KOzuNX8</id>
+        <link href="https://blog.belier.cn/post/i_KOzuNX8">
+        </link>
+        <updated>2019-09-08T10:16:18.000Z</updated>
+        <content type="html"><![CDATA[<h3 id="准备工具">准备工具</h3>
+<h4 id="virtualbox">VirtualBox</h4>
+<p>下载地址：<a href="https://www.virtualbox.org/wiki/Downloads">Downloads – Oracle VM VirtualBox</a></p>
+<h4 id="vagrant">Vagrant</h4>
+<p>下载地址：<a href="https://www.vagrantup.com/downloads.html">Download - Vagrant by HashiCorp</a></p>
+<h3 id="使用-vagrant-安装-centos7">使用 Vagrant 安装 Centos7</h3>
+<ol>
+<li>
+<p>创建一个目录，例如：D:/vagrant/centos7</p>
+</li>
+<li>
+<p>在该目录下创建 Vagrantfile 文件</p>
+</li>
+</ol>
+<pre><code class="language-ruby"># -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version &quot;&gt;= 1.6.0&quot;
+
+# 定义常量
+box = {
+        :name =&gt; &quot;docker-host&quot;,
+        :eth1 =&gt; &quot;192.168.56.10&quot;,
+        :mem =&gt; &quot;1024&quot;,
+        :cpu =&gt; &quot;1&quot;
+      }
+
+Vagrant.configure(2) do |config|
+
+  # 要使用的 box
+  config.vm.box = &quot;centos/7&quot;
+  config.vm.hostname = box[:name]
+  # 网络配置
+  config.vm.network :private_network, ip: box[:eth1]
+  # virtualbox 配置
+  config.vm.provider &quot;virtualbox&quot; do |v|
+    # virtualbox 显示的名称
+    v.name = box[:name]
+    # 配置内存
+    v.customize [&quot;modifyvm&quot;, :id, &quot;--memory&quot;, box[:mem]]
+    # 配置 CPU
+    v.customize [&quot;modifyvm&quot;, :id, &quot;--cpus&quot;, box[:cpu]]
+  end
+end
+</code></pre>
+<p>关于 Vagrantfile 的详细文档：<a href="https://www.vagrantup.com/docs/vagrantfile/">Vagrantfile - Vagrant by HashiCorp</a></p>
+<ol start="3">
+<li>创建虚拟机，执行如下命令</li>
+</ol>
+<pre><code>vagrant up
+</code></pre>
+<p>如果当前环境下没有 centos/7 这个box 会从网络下载，但是国内太慢，我们在执行 vagrant up 的时候会看见一个地址，我们可以用下载软件，如迅雷... 去下载，然后配置到 vagrant 的环境中</p>
+<ol start="4">
+<li>配置 box centos/7 (如果速度不慢，忽略这步)</li>
+</ol>
+<p>将下载好的 box 文件放到 D:/vagrant/box 目录下</p>
+<p>添加本地 box</p>
+<pre><code class="language-ruby">vagrant box add centos/7 file:///D:/vagrant/box/centos-7.box
+</code></pre>
+<p>检查是否添加成功</p>
+<pre><code class="language-ruby">vagrant box list
+</code></pre>
+<p>成功后先删除 VirtualBox 中生成的虚拟机和当前目录下的 .vagrant 文件夹，再次执行</p>
+<pre><code class="language-ruby">vagrant up
+</code></pre>
+<h3 id="使用三方-ssh-工具连接-centos-系统">使用三方 ssh 工具连接 centos 系统</h3>
+<p>ip : Vagrantfile 文件中配置的 ip<br>
+port : 22<br>
+username : vagrant<br>
+private key : .vagrant\machines\default\virtualbox\private_key</p>
+<blockquote>
+<p>root 用户密码：vagrant</p>
+</blockquote>
+<h3 id="vagrant-网络">Vagrant 网络</h3>
+<h4 id="官方文档">官方文档</h4>
+<p><a href="https://www.vagrantup.com/docs/networking/">Networking - Vagrant by HashiCorp</a></p>
+<h3 id="vagrant-常用命令">Vagrant 常用命令</h3>
+<pre><code>vagrant init        # 初始化
+vagrant up          # 启动虚拟机
+vagrant halt        # 关闭虚拟机
+vagrant reload      # 重启虚拟机
+vagrant ssh         # SSH 至虚拟机
+vagrant status      # 查看虚拟机运行状态
+vagrant destroy     # 销毁当前虚拟机
+vagrant ssh-config  # 输出ssh连接的一些信息
+vagrant version     # 获取vagrant的版本
+
+vagrant box list    # 列出所有box列表
+vagrant box remove {base name}  # 删除
+</code></pre>
+<p>更多命令：<a href="https://www.vagrantup.com/docs/cli/">Command-Line Interface - Vagrant by HashiCorp</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Centos7 安装 Docker ]]></title>
         <id>https://blog.belier.cn/post/centos7-install-docker</id>
