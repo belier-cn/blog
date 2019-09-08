@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-09-08T13:40:29.748Z</updated>
+    <updated>2019-09-08T13:45:56.859Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -58,16 +58,14 @@ neilpang/acme.sh daemon
 </li>
 <li>
 <p>获取 Api Token 和 Account ID</p>
-<pre><code> Account ID 
-</code></pre>
+<p>Account ID</p>
 </li>
 </ol>
 <p><img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
 <blockquote>
 <p>这个我找了好久</p>
 </blockquote>
-<pre><code>	 Api Token
-</code></pre>
+<p>Api Token</p>
 <p>创建<br>
 <img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
 <p>获取<br>
@@ -87,15 +85,17 @@ neilpang/acme.sh daemon
 <pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
 </code></pre>
 <h2 id="nginx-使用">Nginx 使用</h2>
-<pre><code>listen 443 ssl;
-server_name  v.belier.ml;
+<pre><code>server {
+  listen 443 ssl;
+  server_name  yourdomain.com;
+	ssl on;
 	
-ssl on;
-ssl_certificate /usr/local/ssl/acme.sh/yourdomain.com/fullchain.cer;
-ssl_certificate_key /usr/local/ssl/acme.sh/yourdomain.com/yourdomain.com.key;
-ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
-ssl_ciphers           HIGH:!aNULL:!MD5;
-ssl_session_timeout 5m;
+  ssl_certificate /usr/local/ssl/acme.sh/belier.ml/fullchain.cer;
+  ssl_certificate_key /usr/local/ssl/acme.sh/belier.ml/belier.ml.key;
+	ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
+	ssl_ciphers           HIGH:!aNULL:!MD5;
+  ssl_session_timeout 5m;
+}
 </code></pre>
 ]]></content>
     </entry>
