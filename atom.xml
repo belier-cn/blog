@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2019-09-08T09:24:55.217Z</updated>
+    <updated>2019-09-08T09:43:49.991Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -10,6 +10,15 @@
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2019, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[关于]]></title>
+        <id>https://blog.belier.cn/post/about</id>
+        <link href="https://blog.belier.cn/post/about">
+        </link>
+        <updated>2019-01-25T11:09:48.000Z</updated>
+        <content type="html"><![CDATA[<p>这是关于的页面，可以在这里向世界介绍你！</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Hello Gridea]]></title>
         <id>https://blog.belier.cn/post/hello-gridea</id>
