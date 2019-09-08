@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1567950337514">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1567951194884">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1567950337514" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1567951194884" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -46,6 +46,7 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
+<li><a href="#acmesh-%E7%AE%80%E4%BB%8B">acme.sh 简介</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
 <li><a href="#%E9%98%BF%E9%87%8C%E4%BA%91%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">阿里云自动验证 DNS 生成</a></li>
 <li><a href="#cloudflare-%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">Cloudflare 自动验证 DNS 生成</a></li>
@@ -94,11 +95,13 @@
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
         <h1 class="text-3xl font-bold lg:mt-16">使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-09-08 / 1 min read
+          2019-09-08 / 2 min read
         </div>
         
         <div class="post-content yue">
-          <h2 id="安装-docker">安装 Docker</h2>
+          <h2 id="acmesh-简介">acme.sh 简介</h2>
+<p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
+<h2 id="安装-docker">安装 Docker</h2>
 <p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
 <h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
 <ol>
@@ -141,7 +144,7 @@ neilpang/acme.sh daemon
 </li>
 <li>
 <p>获取 Api Token 和 Account ID</p>
-<p>Account ID</p>
+<p>Account ID ，在域名的主页（有折线图的页面），往下找</p>
 </li>
 </ol>
 <p><img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
@@ -151,7 +154,7 @@ neilpang/acme.sh daemon
 <p>Api Token</p>
 <p>创建<br>
 <img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
-<p>获取<br>
+<p>创建完成的页面获取<br>
 <img src="https://image.belier.cn/images/20190908213336.png" alt=""></p>
 <ol start="3">
 <li>创建 acme.sh 容器</li>

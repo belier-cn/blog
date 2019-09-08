@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-09-08T13:45:56.859Z</updated>
+    <updated>2019-09-08T14:00:15.233Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -15,7 +15,9 @@
         <link href="https://blog.belier.cn/post/jvcfkOdjf">
         </link>
         <updated>2019-09-08T12:30:18.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="安装-docker">安装 Docker</h2>
+        <content type="html"><![CDATA[<h2 id="acmesh-简介">acme.sh 简介</h2>
+<p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
+<h2 id="安装-docker">安装 Docker</h2>
 <p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
 <h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
 <ol>
@@ -58,7 +60,7 @@ neilpang/acme.sh daemon
 </li>
 <li>
 <p>获取 Api Token 和 Account ID</p>
-<p>Account ID</p>
+<p>Account ID ，在域名的主页（有折线图的页面），往下找</p>
 </li>
 </ol>
 <p><img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
@@ -68,7 +70,7 @@ neilpang/acme.sh daemon
 <p>Api Token</p>
 <p>创建<br>
 <img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
-<p>获取<br>
+<p>创建完成的页面获取<br>
 <img src="https://image.belier.cn/images/20190908213336.png" alt=""></p>
 <ol start="3">
 <li>创建 acme.sh 容器</li>
