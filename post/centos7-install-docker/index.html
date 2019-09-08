@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Centos7 安装 Docker  | Belier Blog</title>
+<meta name="description" content="温故而知新">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1567936377924">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+<link rel="stylesheet" href="https://blog.belier.cn/styles/main.css">
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.belier.cn">
+        <img src="https://blog.belier.cn/images/avatar.png?v=1567936377924" class="site-logo">
+        <h1 class="site-title">Belier Blog</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      温故而知新
+    </div>
+    <div class="site-footer">
+       | <a class="rss" href="https://blog.belier.cn/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Centos7 安装 Docker </h2>
+            <div class="post-date">2019-09-08</div>
+            
+            <div class="post-content">
+              <h2 id="一键安装脚本">一键安装脚本</h2>
+<pre><code class="language-sh">curl -sSL https://get.docker.com/ | sh
+</code></pre>
+<blockquote>
+<p>推荐国外服务器使用，国内使用手动安装</p>
+</blockquote>
+<h2 id="手动安装">手动安装</h2>
+<h3 id="安装准备">安装准备</h3>
+<ol>
+<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
+</ol>
+<pre><code class="language-sh">uname -r 
+</code></pre>
+<ol start="2">
+<li>移除旧的版本</li>
+</ol>
+<pre><code class="language-sh">sudo yum remove docker \
+                docker-client \
+                docker-client-latest \
+                docker-common \
+                docker-latest \
+                docker-latest-logrotate \
+                docker-logrotate \
+                docker-selinux \
+                docker-engine-selinux \
+                docker-engine
+</code></pre>
+<ol start="3">
+<li>安装所需的软件包</li>
+</ol>
+<pre><code class="language-sh">sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+</code></pre>
+<ol start="4">
+<li>添加源</li>
+</ol>
+<pre><code class="language-sh">sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</code></pre>
+<ol start="5">
+<li>更新 yum 缓存</li>
+</ol>
+<pre><code>sudo yum makecache fast
+</code></pre>
+<h3 id="安装-docker">安装 Docker</h3>
+<pre><code>sudo yum -y install docker-ce
+</code></pre>
+<p>安装成功后查看版本，检查是否安装成功</p>
+<pre><code>docker -v
+</code></pre>
+<h3 id="启动-docker-服务">启动 Docker 服务</h3>
+<pre><code>systemctl start docker
+</code></pre>
+<h3 id="docker-服务命令">Docker 服务命令</h3>
+<pre><code>systemctl start docker     # 启动服务
+systemctl stop docker      # 关闭服务
+systemctl restart docker   # 重启服务
+systemctl enable docker    # 开机自启动
+systemctl disable docker   # 关闭开机自启动
+</code></pre>
+<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
+<ol>
+<li>开通服务</li>
+</ol>
+<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">镜像加速器</a></p>
+<ol start="2">
+<li>配置加速器</li>
+</ol>
+<pre><code>sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+{
+  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
+}
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.belier.cn/tag/PBaowpkYK" class="tag">
+                    centos7
+                  </a>
+                
+                  <a href="https://blog.belier.cn/tag/U7RXcJBcXn" class="tag">
+                    docker
+                  </a>
+                
+                  <a href="https://blog.belier.cn/tag/nvfOp7-6oc" class="tag">
+                    linux
+                  </a>
+                
+              </div>
+            
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+<script type="application/javascript">
+
+AOS.init();
+
+hljs.initHighlightingOnLoad()
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+
+
+  </body>
+</html>
