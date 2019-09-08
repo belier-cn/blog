@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
-    <title>Belier Blog</title>
-    <updated>2019-09-08T09:53:13.150Z</updated>
+    <title>Blog</title>
+    <updated>2019-09-08T09:59:39.312Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
-    <subtitle>温故而知新</subtitle>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
-    <rights>All rights reserved 2019, Belier Blog</rights>
+    <rights>All rights reserved 2019, Blog</rights>
     <entry>
         <title type="html"><![CDATA[Centos7 安装 Docker ]]></title>
         <id>https://blog.belier.cn/post/centos7-install-docker</id>
