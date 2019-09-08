@@ -2,13 +2,103 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-09-08T11:56:48.075Z</updated>
+    <updated>2019-09-08T13:40:29.748Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2019, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书]]></title>
+        <id>https://blog.belier.cn/post/jvcfkOdjf</id>
+        <link href="https://blog.belier.cn/post/jvcfkOdjf">
+        </link>
+        <updated>2019-09-08T12:30:18.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="安装-docker">安装 Docker</h2>
+<p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
+<h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
+<ol>
+<li>
+<p>准备一个子账号，用于访问阿里云 DNS 服务<br>
+<a href="https://ram.console.aliyun.com/users/new">去添加</a><br>
+<img src="https://image.belier.cn/images/20190908204951.png" alt=""></p>
+</li>
+<li>
+<p>获取 AccessKey ID 和 AccessKeySecret<br>
+<img src="https://image.belier.cn/images/20190908205802.png" alt=""></p>
+</li>
+<li>
+<p>设置 DNS 管理权限<br>
+<a href="https://ram.console.aliyun.com/permissions">去授权</a><br>
+<img src="https://image.belier.cn/images/20190908205014.png" alt=""></p>
+</li>
+<li>
+<p>创建 acme.sh 容器</p>
+</li>
+</ol>
+<pre><code class="language-sh">docker run -itd --name acme.sh \
+-e Ali_Key=&quot;your key&quot;\
+-e Ali_Secret=&quot;your secret&quot; \
+-v /usr/local/ssl/acme.sh:/acme.sh \
+neilpang/acme.sh daemon
+</code></pre>
+<ol start="5">
+<li>生成 ssl 证书</li>
+</ol>
+<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_ali -d yourdomain.com -d *.yourdomain.com
+</code></pre>
+<blockquote>
+<p>证书文件在 /usr/local/ssl/acme.sh 中</p>
+</blockquote>
+<h2 id="cloudflare-自动验证-dns-生成">Cloudflare 自动验证 DNS 生成</h2>
+<ol>
+<li>
+<p>绑定域名</p>
+</li>
+<li>
+<p>获取 Api Token 和 Account ID</p>
+<pre><code> Account ID 
+</code></pre>
+</li>
+</ol>
+<p><img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
+<blockquote>
+<p>这个我找了好久</p>
+</blockquote>
+<pre><code>	 Api Token
+</code></pre>
+<p>创建<br>
+<img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
+<p>获取<br>
+<img src="https://image.belier.cn/images/20190908213336.png" alt=""></p>
+<ol start="3">
+<li>创建 acme.sh 容器</li>
+</ol>
+<pre><code class="language-sh">docker run -itd --name acme.sh \
+-e CF_Token=&quot;your token&quot;\
+-e CF_Account_ID=&quot;your account id&quot; \
+-v /usr/local/ssl/acme.sh:/acme.sh \
+neilpang/acme.sh daemon
+</code></pre>
+<ol start="4">
+<li>生成 ssl 证书</li>
+</ol>
+<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
+</code></pre>
+<h2 id="nginx-使用">Nginx 使用</h2>
+<pre><code>listen 443 ssl;
+server_name  v.belier.ml;
+	
+ssl on;
+ssl_certificate /usr/local/ssl/acme.sh/yourdomain.com/fullchain.cer;
+ssl_certificate_key /usr/local/ssl/acme.sh/yourdomain.com/yourdomain.com.key;
+ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
+ssl_ciphers           HIGH:!aNULL:!MD5;
+ssl_session_timeout 5m;
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Centos7 安装 Docker]]></title>
         <id>https://blog.belier.cn/post/-ZFHJzYym</id>
