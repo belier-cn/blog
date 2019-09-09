@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1567955110931">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1568042648501">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1567955110931" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1568042648501" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -114,7 +114,9 @@
         </div>
         
         <div class="post-content yue">
-          <h2 id="acmesh-简介">acme.sh 简介</h2>
+          <p>acme.sh 自动 60 天更新，简直不要太爽，赶快试试</p>
+<!-- more -->
+<h2 id="acmesh-简介">acme.sh 简介</h2>
 <p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
 <h2 id="安装-docker">安装 Docker</h2>
 <p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
@@ -157,19 +159,19 @@ neilpang/acme.sh daemon
 neilpang/acme.sh daemon
 </code></pre>
 <h3 id="生成-ssl-证书-2">生成 ssl 证书</h3>
-<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
+<pre><code class="language-sh">docker exec acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
 </code></pre>
 <h2 id="nginx-使用">Nginx 使用</h2>
-<pre><code>server {
-  listen 443 ssl;
-  server_name  yourdomain.com;
+<pre><code class="language-text">server {
+	listen 443 ssl;
+	server_name  yourdomain.com;
 	ssl on;
 	
-  ssl_certificate /usr/local/ssl/acme.sh/belier.ml/fullchain.cer;
-  ssl_certificate_key /usr/local/ssl/acme.sh/belier.ml/belier.ml.key;
+	ssl_certificate /usr/local/ssl/acme.sh/belier.ml/fullchain.cer;
+	ssl_certificate_key /usr/local/ssl/acme.sh/belier.ml/belier.ml.key;
 	ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
 	ssl_ciphers           HIGH:!aNULL:!MD5;
-  ssl_session_timeout 5m;
+	ssl_session_timeout 5m;
 }
 </code></pre>
 
@@ -193,15 +195,6 @@ neilpang/acme.sh daemon
         <div class="flex justify-between py-8">
           
 
-          
-            <div class="next-post">
-              <a href="https://blog.belier.cn/post/-ZFHJzYym">
-                <h3 class="post-title">
-                  Centos7 安装 Docker
-                  <i class="remixicon-arrow-right-line"></i>
-                </h3>
-              </a>
-            </div>
           
         </div>
 

@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1567955110931">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1568042648501">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1567955110931" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1568042648501" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -111,10 +111,10 @@
           2019-09-08 / 2 min read
         </div>
         
-          <img class="post-feature-image rounded-lg mx-auto my-4" src="https://picsum.photos/1920/1080" alt="">
-        
         <div class="post-content yue">
-          <h3 id="准备工具">准备工具</h3>
+          <p>快速创建虚拟机，方便开发以及测试，直接丢给测试一个 Vagrantfile 文件，看他还能说环境问题不</p>
+<!-- more -->
+<h3 id="准备工具">准备工具</h3>
 <h4 id="virtualbox">VirtualBox</h4>
 <p>下载地址：<a href="https://www.virtualbox.org/wiki/Downloads">Downloads – Oracle VM VirtualBox</a></p>
 <h4 id="vagrant">Vagrant</h4>
@@ -202,7 +202,7 @@ vagrant ssh-config  # 输出ssh连接的一些信息
 vagrant version     # 获取vagrant的版本
 
 vagrant box list    # 列出所有box列表
-vagrant box remove {base name}  # 删除
+vagrant box remove {name}  # 删除
 </code></pre>
 <p>更多命令：<a href="https://www.vagrantup.com/docs/cli/">Command-Line Interface - Vagrant by HashiCorp</a></p>
 

@@ -2,79 +2,13 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-09-08T15:05:16.893Z</updated>
+    <updated>2019-09-09T15:24:16.335Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2019, Blog</rights>
-    <entry>
-        <title type="html"><![CDATA[使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书]]></title>
-        <id>https://blog.belier.cn/post/jvcfkOdjf</id>
-        <link href="https://blog.belier.cn/post/jvcfkOdjf">
-        </link>
-        <updated>2019-09-08T12:30:18.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="acmesh-简介">acme.sh 简介</h2>
-<p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
-<h2 id="安装-docker">安装 Docker</h2>
-<p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
-<h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
-<h3 id="准备一个子账号用于访问阿里云-dns-服务">准备一个子账号，用于访问阿里云 DNS 服务</h3>
-<p><a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
-<img src="https://image.belier.cn/images/20190908204951.png" alt=""></p>
-<h3 id="获取-accesskey-id-和-accesskeysecret">获取 AccessKey ID 和 AccessKeySecret</h3>
-<p><img src="https://image.belier.cn/images/20190908205802.png" alt=""></p>
-<h3 id="设置-dns-管理权限">设置 DNS 管理权限</h3>
-<p><a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
-<img src="https://image.belier.cn/images/20190908205014.png" alt=""></p>
-<h3 id="创建-acmesh-容器">创建 acme.sh 容器</h3>
-<pre><code class="language-sh">docker run -itd --name acme.sh \
--e Ali_Key=&quot;your key&quot;\
--e Ali_Secret=&quot;your secret&quot; \
--v /usr/local/ssl/acme.sh:/acme.sh \
-neilpang/acme.sh daemon
-</code></pre>
-<h3 id="生成-ssl-证书">生成 ssl 证书</h3>
-<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_ali -d yourdomain.com -d *.yourdomain.com
-</code></pre>
-<blockquote>
-<p>证书文件在 /usr/local/ssl/acme.sh 中</p>
-</blockquote>
-<h2 id="cloudflare-自动验证-dns-生成">Cloudflare 自动验证 DNS 生成</h2>
-<h3 id="获取-account-id">获取  Account ID</h3>
-<p>在域名的主页（有折线图的页面），往下找<br>
-<img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
-<h3 id="创建-api-token">创建 Api Token</h3>
-<p>My Profile -&gt; Api Tokens<br>
-<img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
-<p>创建完成的页面获取，必须马上记录下来，后面不会再显示，否则只能重置<br>
-<img src="https://image.belier.cn/images/20190908213336.png" alt=""></p>
-<h3 id="创建-acmesh-容器-2">创建 acme.sh 容器</h3>
-<pre><code class="language-sh">docker run -itd --name acme.sh \
--e CF_Token=&quot;your token&quot;\
--e CF_Account_ID=&quot;your account id&quot; \
--v /usr/local/ssl/acme.sh:/acme.sh \
-neilpang/acme.sh daemon
-</code></pre>
-<h3 id="生成-ssl-证书-2">生成 ssl 证书</h3>
-<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
-</code></pre>
-<h2 id="nginx-使用">Nginx 使用</h2>
-<pre><code>server {
-  listen 443 ssl;
-  server_name  yourdomain.com;
-	ssl on;
-	
-  ssl_certificate /usr/local/ssl/acme.sh/belier.ml/fullchain.cer;
-  ssl_certificate_key /usr/local/ssl/acme.sh/belier.ml/belier.ml.key;
-	ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
-	ssl_ciphers           HIGH:!aNULL:!MD5;
-  ssl_session_timeout 5m;
-}
-</code></pre>
-]]></content>
-    </entry>
     <entry>
         <title type="html"><![CDATA[Centos7 安装 Docker]]></title>
         <id>https://blog.belier.cn/post/-ZFHJzYym</id>
@@ -164,7 +98,11 @@ sudo systemctl restart docker
         <link href="https://blog.belier.cn/post/i_KOzuNX8">
         </link>
         <updated>2019-09-08T10:16:18.000Z</updated>
-        <content type="html"><![CDATA[<h3 id="准备工具">准备工具</h3>
+        <summary type="html"><![CDATA[<p>快速创建虚拟机，方便开发以及测试，直接丢给测试一个 Vagrantfile 文件，看他还能说环境问题不</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>快速创建虚拟机，方便开发以及测试，直接丢给测试一个 Vagrantfile 文件，看他还能说环境问题不</p>
+<!-- more -->
+<h3 id="准备工具">准备工具</h3>
 <h4 id="virtualbox">VirtualBox</h4>
 <p>下载地址：<a href="https://www.virtualbox.org/wiki/Downloads">Downloads – Oracle VM VirtualBox</a></p>
 <h4 id="vagrant">Vagrant</h4>
@@ -252,7 +190,7 @@ vagrant ssh-config  # 输出ssh连接的一些信息
 vagrant version     # 获取vagrant的版本
 
 vagrant box list    # 列出所有box列表
-vagrant box remove {base name}  # 删除
+vagrant box remove {name}  # 删除
 </code></pre>
 <p>更多命令：<a href="https://www.vagrantup.com/docs/cli/">Command-Line Interface - Vagrant by HashiCorp</a></p>
 ]]></content>
