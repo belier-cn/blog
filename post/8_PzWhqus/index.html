@@ -40,33 +40,9 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-                <a href="https://github.com/belier-cn" target="_blank" class="mr-4 text-xl text-gray-400 font-light hover:text-gray-900">
-                  <i class="remixicon-github-line"></i>
-                </a>
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
+          <div class="toc-container hidden lg:block">
             
           </div>
         </div>
@@ -105,55 +81,96 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="text-lg text-gray-700 mb-8">
-          <i class="remixicon-bookmark-line"></i> linux
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Vagrant 创建 root 账号免密登录的 Centos7</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-12-26 / 2 min read
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/QEOCgjJCH" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.31244262585839344">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/QEOCgjJCH">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">firewall 防火墙常用命令</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-12-26 / 1 min read</div>
-    </div>
-  </section>
+        <div class="post-content yue">
+          <ol>
+<li>
+<p>创建 Cenetos7 创建成功后执行的脚本，与 Vagrantfile 同级<br>
+vagrant 默认是使用 vagrant 用户免密登录的，所以需要将 vagrant 用户免密登录的公钥拷贝到 root用户下就可以了</p>
+<pre><code class="language-bash">#!/bin/bash
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/-ZFHJzYym" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.5192149870999083">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/-ZFHJzYym">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
+#安装 expect 用于切换 root 用户
+sudo yum install -y expect
 
-        <div class="pagination-container animated fadeIn">
-  
-  
-</div>
+#创建拷贝 authorized_keys 脚本
+sh_str=&quot;#!/bin/sh\ndata=\$(cat /home/vagrant/.ssh/authorized_keys)\nmkdir -p /root/.ssh\necho \${data} &gt; /root/.ssh/authorized_keys&quot;
+sudo echo -e ${sh_str} &gt; /home/vagrant/root.sh
+sudo chmod 777 /home/vagrant/root.sh
+
+#切换到 root 用户执行拷贝 authorized_keys
+expect -c &quot;
+spawn su root
+expect \&quot;Password:\&quot;
+send \&quot;vagrant\n\&quot;
+expect &quot;#&quot;
+send \&quot;sh /home/vagrant/root.sh\n\&quot;
+expect &quot;#&quot;
+send \&quot;rm -f /home/vagrant/root.sh\n\&quot;
+&quot;
+</code></pre>
+</li>
+<li>
+<p>配置Vagrantfile</p>
+<pre><code class="language-ruby"># -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version &quot;&gt;= 1.6.0&quot;
+
+Vagrant.configure(2) do |config|
+# 配置创建成功后执行的脚本（只在第一次创建成功后执行），以上省略
+config.vm.provision &quot;shell&quot;, path: &quot;./setup.sh&quot;
+end
+</code></pre>
+</li>
+<li>
+<p>root 用户免密登录</p>
+<p>使用 .vagrant\machines\default\virtualbox\private_key 私钥登录即可</p>
+</li>
+</ol>
+
+          <p>写的不好，仅供参考</p>
+        </div>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/nYOfiJpNl">
+            <span class="flex-auto">vagrant</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/PBaowpkYK">
+            <span class="flex-auto">centos7</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/e5hc2h3EA">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  Jenkins 使用镜像加速插件下载速度
+                </h3>
+              </a>
+            </div>
+          
+
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/W9ICrn2gc">
+                <h3 class="post-title">
+                  使用 Dokcer 运行 Nginx
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
 
       </div>
     </div>

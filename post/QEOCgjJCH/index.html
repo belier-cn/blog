@@ -40,33 +40,9 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-                <a href="https://github.com/belier-cn" target="_blank" class="mr-4 text-xl text-gray-400 font-light hover:text-gray-900">
-                  <i class="remixicon-github-line"></i>
-                </a>
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
+          <div class="toc-container hidden lg:block">
             
           </div>
         </div>
@@ -105,55 +81,107 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="text-lg text-gray-700 mb-8">
-          <i class="remixicon-bookmark-line"></i> linux
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">firewall 防火墙常用命令</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-12-26 / 1 min read
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/QEOCgjJCH" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.31244262585839344">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/QEOCgjJCH">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">firewall 防火墙常用命令</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-12-26 / 1 min read</div>
-    </div>
-  </section>
+        <div class="post-content yue">
+          <ul>
+<li>开启防火墙</li>
+</ul>
+<pre><code class="language-bash">systemctl start firewalld.service
+</code></pre>
+<ul>
+<li>关闭防火墙</li>
+</ul>
+<pre><code class="language-bash">systemctl stop firewalld.service
+</code></pre>
+<ul>
+<li>开机自动启动</li>
+</ul>
+<pre><code class="language-bash">systemctl enable firewalld.service
+</code></pre>
+<ul>
+<li>关闭开机自动启动</li>
+</ul>
+<pre><code class="language-bash">systemctl disable firewalld.service
+</code></pre>
+<ul>
+<li>查看状态</li>
+</ul>
+<pre><code class="language-bash">systemctl status firewalld
+</code></pre>
+<ul>
+<li>重新加载配置</li>
+</ul>
+<pre><code class="language-bash">firewall-cmd --reload
+</code></pre>
+<ul>
+<li>临时启用某个服务</li>
+</ul>
+<pre><code class="language-bash">firewall-cmd --zone=public --add-service=https
+</code></pre>
+<ul>
+<li>永久启用某个服务</li>
+</ul>
+<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-service=https
+</code></pre>
+<ul>
+<li>临时开启某个端口</li>
+</ul>
+<pre><code class="language-bash">firewall-cmd  --zone=public --add-port=8080/tcp 
+</code></pre>
+<ul>
+<li>永久开启某个端口</li>
+</ul>
+<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=8080/tcp 
+</code></pre>
+<ul>
+<li>手动修改服务和端口配置</li>
+</ul>
+<pre><code class="language-bash">vi  /etc/firewalld/zones/public.xml
+</code></pre>
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/-ZFHJzYym" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.5192149870999083">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/-ZFHJzYym">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+          <p>写的不好，仅供参考</p>
+        </div>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/sD5GAMKNo">
+            <span class="flex-auto">firewall</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/nvfOp7-6oc">
+            <span class="flex-auto">linux</span>
+          </a>
+        
 
-        <div class="pagination-container animated fadeIn">
-  
-  
-</div>
+
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/ip3oNK0we">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  Centos7 安装 netstat
+                </h3>
+              </a>
+            </div>
+          
+
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/OtovyDLsE">
+                <h3 class="post-title">
+                  Centos7 开启密码登录和 root 用户远程登录
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
 
       </div>
     </div>

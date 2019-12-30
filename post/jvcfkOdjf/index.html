@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1568042648501">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1568042648501" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -48,24 +48,11 @@
 <ul>
 <li><a href="#acmesh-%E7%AE%80%E4%BB%8B">acme.sh 简介</a></li>
 <li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
-<li><a href="#%E9%98%BF%E9%87%8C%E4%BA%91%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">阿里云自动验证 DNS 生成</a>
-<ul>
-<li><a href="#%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%AA%E5%AD%90%E8%B4%A6%E5%8F%B7%E7%94%A8%E4%BA%8E%E8%AE%BF%E9%97%AE%E9%98%BF%E9%87%8C%E4%BA%91-dns-%E6%9C%8D%E5%8A%A1">准备一个子账号，用于访问阿里云 DNS 服务</a></li>
-<li><a href="#%E8%8E%B7%E5%8F%96-accesskey-id-%E5%92%8C-accesskeysecret">获取 AccessKey ID 和 AccessKeySecret</a></li>
-<li><a href="#%E8%AE%BE%E7%BD%AE-dns-%E7%AE%A1%E7%90%86%E6%9D%83%E9%99%90">设置 DNS 管理权限</a></li>
 <li><a href="#%E5%88%9B%E5%BB%BA-acmesh-%E5%AE%B9%E5%99%A8">创建 acme.sh 容器</a></li>
-<li><a href="#%E7%94%9F%E6%88%90-ssl-%E8%AF%81%E4%B9%A6">生成 ssl 证书</a></li>
-</ul>
-</li>
-<li><a href="#cloudflare-%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">Cloudflare 自动验证 DNS 生成</a>
-<ul>
-<li><a href="#%E8%8E%B7%E5%8F%96-account-id">获取  Account ID</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BA-api-token">创建 Api Token</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BA-acmesh-%E5%AE%B9%E5%99%A8-2">创建 acme.sh 容器</a></li>
-<li><a href="#%E7%94%9F%E6%88%90-ssl-%E8%AF%81%E4%B9%A6-2">生成 ssl 证书</a></li>
-</ul>
-</li>
-<li><a href="#nginx-%E4%BD%BF%E7%94%A8">Nginx 使用</a></li>
+<li><a href="#%E9%98%BF%E9%87%8C%E4%BA%91%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">阿里云自动验证 DNS 生成</a></li>
+<li><a href="#cloudflare-%E8%87%AA%E5%8A%A8%E9%AA%8C%E8%AF%81-dns-%E7%94%9F%E6%88%90">Cloudflare 自动验证 DNS 生成</a></li>
+<li><a href="#%E5%B0%86%E8%AF%81%E4%B9%A6%E5%8F%91%E5%B8%83%E5%88%B0-nginx-docker-%E5%AE%B9%E5%99%A8%E4%B8%AD">将证书发布到 Nginx Docker 容器中</a></li>
+<li><a href="#%E6%B3%A8%E6%84%8F">注意</a></li>
 </ul>
 </li>
 </ul>
@@ -110,73 +97,121 @@
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
         <h1 class="text-3xl font-bold lg:mt-16">使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-09-08 / 1 min read
+          2019-09-08 / 4 min read
         </div>
         
         <div class="post-content yue">
-          <p>acme.sh 自动 60 天更新，简直不要太爽，赶快试试</p>
+          <p>acme.sh 自动 60 天更新，完美适配 Docker 简直不要太爽，赶快试试</p>
 <!-- more -->
 <h2 id="acmesh-简介">acme.sh 简介</h2>
 <p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
 <h2 id="安装-docker">安装 Docker</h2>
 <p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
-<h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
-<h3 id="准备一个子账号用于访问阿里云-dns-服务">准备一个子账号，用于访问阿里云 DNS 服务</h3>
-<p><a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
-<img src="https://image.belier.cn/images/20190908204951.png" alt=""></p>
-<h3 id="获取-accesskey-id-和-accesskeysecret">获取 AccessKey ID 和 AccessKeySecret</h3>
-<p><img src="https://image.belier.cn/images/20190908205802.png" alt=""></p>
-<h3 id="设置-dns-管理权限">设置 DNS 管理权限</h3>
-<p><a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
-<img src="https://image.belier.cn/images/20190908205014.png" alt=""></p>
-<h3 id="创建-acmesh-容器">创建 acme.sh 容器</h3>
-<pre><code class="language-sh">docker run -itd --name acme.sh \
--e Ali_Key=&quot;your key&quot;\
--e Ali_Secret=&quot;your secret&quot; \
--v /usr/local/ssl/acme.sh:/acme.sh \
+<h2 id="创建-acmesh-容器">创建 acme.sh 容器</h2>
+<pre><code class="language-sh">docker run -itd  \
+--net=host \
+-v /usr/local/ssl/acme.sh:/acme.sh  \
+--name=acme.sh \
+-v /var/run/docker.sock:/var/run/docker.sock \
 neilpang/acme.sh daemon
-</code></pre>
-<h3 id="生成-ssl-证书">生成 ssl 证书</h3>
-<pre><code class="language-sh">docker exec -it acme.sh --issue --dns dns_ali -d yourdomain.com -d *.yourdomain.com
 </code></pre>
 <blockquote>
-<p>证书文件在 /usr/local/ssl/acme.sh 中</p>
+<p>证书文件会生成到 /usr/local/ssl/acme.sh 中，避免配置信息以及证书的丢失<br>
+将 docker.sock 文件映射到 acme.sh 容器中，是为了acme.sh 能够操作 Docker  以便将证书发布到其它容器中，如 Nginx</p>
 </blockquote>
+<h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
+<ol>
+<li>
+<p>准备一个子账号，用于访问阿里云 DNS 服务<br>
+<a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
+<img src="https://image.belier.cn/images/20190908204951.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>获取 AccessKey ID 和 AccessKeySecret<br>
+<img src="https://image.belier.cn/images/20190908205802.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>设置 DNS 管理权限<br>
+<a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
+<img src="https://image.belier.cn/images/20190908205014.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>生成 ssl 证书</p>
+</li>
+</ol>
+<pre><code class="language-sh">docker exec -it \
+-e Ali_Key=&quot;your key&quot;\
+-e Ali_Secret=&quot;your secret&quot; \
+acme.sh --issue --dns dns_ali -d yourdomain.com \
+-d *.yourdomain.com
+</code></pre>
 <h2 id="cloudflare-自动验证-dns-生成">Cloudflare 自动验证 DNS 生成</h2>
-<h3 id="获取-account-id">获取  Account ID</h3>
-<p>在域名的主页（有折线图的页面），往下找<br>
-<img src="https://image.belier.cn/images/20190908212220.png" alt=""></p>
-<h3 id="创建-api-token">创建 Api Token</h3>
-<p>My Profile -&gt; Api Tokens<br>
-<img src="https://image.belier.cn/images/20190908213353.png" alt=""></p>
+<ol>
+<li>
+<p>获取  Account ID<br>
+在域名的主页（有折线图的页面），往下找<br>
+<img src="https://image.belier.cn/images/20190908212220.png" alt="" loading="lazy"></p>
+</li>
+<li>
+<p>创建 Api Token<br>
+My Profile -&gt; Api Tokens<br>
+<img src="https://image.belier.cn/images/20190908213353.png" alt="" loading="lazy"></p>
+</li>
+</ol>
 <p>创建完成的页面获取，必须马上记录下来，后面不会再显示，否则只能重置<br>
-<img src="https://image.belier.cn/images/20190908213336.png" alt=""></p>
-<h3 id="创建-acmesh-容器-2">创建 acme.sh 容器</h3>
-<pre><code class="language-sh">docker run -itd --name acme.sh \
+<img src="https://image.belier.cn/images/20190908213336.png" alt="" loading="lazy"></p>
+<ol start="3">
+<li>生成 ssl 证书</li>
+</ol>
+<pre><code class="language-sh">docker exec -it \
 -e CF_Token=&quot;your token&quot;\
 -e CF_Account_ID=&quot;your account id&quot; \
--v /usr/local/ssl/acme.sh:/acme.sh \
-neilpang/acme.sh daemon
+acme.sh --issue --dns dns_cf -d yourdomain.com \
+-d *.yourdomain.com
 </code></pre>
-<h3 id="生成-ssl-证书-2">生成 ssl 证书</h3>
-<pre><code class="language-sh">docker exec acme.sh --issue --dns dns_cf  -d yourdomain.com -d *.yourdomain.com
+<h2 id="将证书发布到-nginx-docker-容器中">将证书发布到 Nginx Docker 容器中</h2>
+<ol>
+<li>创建 Nginx 的容器的时候需要设置一个标签<br>
+例如：</li>
+</ol>
+<pre><code class="language-sh">docker run  -it -d -p 80:80  --label=yourdomian.com   nginx
 </code></pre>
-<h2 id="nginx-使用">Nginx 使用</h2>
-<pre><code class="language-text">server {
-	listen 443 ssl;
-	server_name  yourdomain.com;
-	ssl on;
-	
-	ssl_certificate /usr/local/ssl/acme.sh/belier.ml/fullchain.cer;
-	ssl_certificate_key /usr/local/ssl/acme.sh/belier.ml/belier.ml.key;
-	ssl_protocols         TLSv1 TLSv1.1 TLSv1.2;
-	ssl_ciphers           HIGH:!aNULL:!MD5;
-	ssl_session_timeout 5m;
-}
+<ol start="2">
+<li>将证书发布到容器中</li>
+</ol>
+<pre><code class="language-sh">docker  exec \
+-e DEPLOY_DOCKER_CONTAINER_LABEL=yourdomian.com \
+-e DEPLOY_DOCKER_CONTAINER_KEY_FILE=/etc/nginx/ssl/yourdomian.com/key.pem \
+-e DEPLOY_DOCKER_CONTAINER_CERT_FILE=&quot;/etc/nginx/ssl/yourdomian.com/cert.pem&quot; \
+-e DEPLOY_DOCKER_CONTAINER_CA_FILE=&quot;/etc/nginx/ssl/yourdomian.com/ca.pem&quot; \ 
+-e DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE=&quot;/etc/nginx/ssl/yourdomian.com/full.pem&quot; \
+-e DEPLOY_DOCKER_CONTAINER_RELOAD_CMD=&quot;service nginx force-reload&quot; \
+acme.sh --deploy -d example.com  --deploy-hook docker
 </code></pre>
+<h2 id="注意">注意</h2>
+<p>如果你有域名 yourdomain1.com yourdomain2.com 在两个不同的阿里云账号中，你又需要在一台服务器中生成两个域名的证书，只有最后一个生成的域名会自动续签成功，原因在于 acme.sh 目录下只有一个账号信息配置文件</p>
+<pre><code>AUTO_UPGRADE='1'
+SAVED_Ali_Key='your key'
+SAVED_Ali_Secret='your secret'
+USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+</code></pre>
+<p>后生成证书的账号就会覆盖之前的账号，如果两个域名在不同的服务商下，一个在阿里云，一个在 Cloudflare 就不会有问题，</p>
+<p>解决方案：</p>
+<ol>
+<li>自己手动创建 account.conf 文件，让账号配置到两个文件中，但是默认的定时任务不知道新的 account.conf 文件的存在，必须再添加一个定时任务，并指定 account.conf 文件</li>
+</ol>
+<pre><code class="language-sh">24 0 * * * &quot;/root/.acme.sh&quot;/acme.sh --cron --home &quot;/root/.acme.sh&quot; --config-home &quot;/acme.sh&quot; --accountconf &quot;/acme.sh/account-new.conf&quot;
+</code></pre>
+<p>虽然最终都能续签成功，每次定时任务都有失败的情况</p>
+<ol start="2">
+<li>也可以创建多个容器来实现，会避免有失败的情况，但是会多消耗资源</li>
+</ol>
+<blockquote>
+<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055">issues</a>本人未使用或测试</p>
+</blockquote>
 
+          <p>写的不好，仅供参考</p>
         </div>
-
         
           <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/-e7iZxhXYo">
             <span class="flex-auto">acme.sh</span>
@@ -194,7 +229,25 @@ neilpang/acme.sh daemon
 
         <div class="flex justify-between py-8">
           
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/RtxLs1CO1">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  Linux 学习之 SSH
+                </h3>
+              </a>
+            </div>
+          
 
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/-ZFHJzYym">
+                <h3 class="post-title">
+                  Centos7 安装 Docker
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
 

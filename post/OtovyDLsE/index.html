@@ -40,34 +40,18 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-                <a href="https://github.com/belier-cn" target="_blank" class="mr-4 text-xl text-gray-400 font-light hover:text-gray-900">
-                  <i class="remixicon-github-line"></i>
-                </a>
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%BC%80%E5%90%AF%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95">开启密码登录</a></li>
+<li><a href="#%E5%BC%80%E5%90%AF-root-%E7%94%A8%E6%88%B7%E8%BF%9C%E7%A8%8B%E7%99%BB%E5%BD%95">开启 root 用户远程登录</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -105,55 +89,68 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="text-lg text-gray-700 mb-8">
-          <i class="remixicon-bookmark-line"></i> linux
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Centos7 开启密码登录和 root 用户远程登录</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-12-26 / 1 min read
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/QEOCgjJCH" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.31244262585839344">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/QEOCgjJCH">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">firewall 防火墙常用命令</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-12-26 / 1 min read</div>
-    </div>
-  </section>
+        <div class="post-content yue">
+          <h2 id="开启密码登录">开启密码登录</h2>
+<ol>
+<li>编辑配置文件<br>
+vi /etc/ssh/sshd_config<pre><code class="language-bash">PasswordAuthentication yes
+</code></pre>
+</li>
+<li>重启 SSH 服务<pre><code class="language-bash">systemctl restart sshd
+</code></pre>
+</li>
+</ol>
+<h2 id="开启-root-用户远程登录">开启 root 用户远程登录</h2>
+<ol>
+<li>编辑配置文件<br>
+vi /etc/ssh/sshd_config<pre><code class="language-bash">PermitRootLogin yes
+</code></pre>
+</li>
+<li>重启 SSH 服务<pre><code class="language-bash">systemctl restart sshd
+</code></pre>
+</li>
+</ol>
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/-ZFHJzYym" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?0.5192149870999083">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/-ZFHJzYym">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+          <p>写的不好，仅供参考</p>
+        </div>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/PBaowpkYK">
+            <span class="flex-auto">centos7</span>
+          </a>
+        
 
-        <div class="pagination-container animated fadeIn">
-  
-  
-</div>
+
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/QEOCgjJCH">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  firewall 防火墙常用命令
+                </h3>
+              </a>
+            </div>
+          
+
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/RtxLs1CO1">
+                <h3 class="post-title">
+                  Linux 学习之 SSH
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
 
       </div>
     </div>
