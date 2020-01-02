@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -101,12 +101,10 @@
         </div>
         
         <div class="post-content yue">
-          <p>acme.sh 自动 60 天更新，完美适配 Docker 简直不要太爽，赶快试试</p>
-<!-- more -->
-<h2 id="acmesh-简介">acme.sh 简介</h2>
+          <h2 id="acmesh-简介">acme.sh 简介</h2>
 <p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
 <h2 id="安装-docker">安装 Docker</h2>
-<p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
+<p>参考我的文章：<a href="/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
 <h2 id="创建-acmesh-容器">创建 acme.sh 容器</h2>
 <pre><code class="language-sh">docker run -itd  \
 --net=host \
@@ -124,16 +122,16 @@ neilpang/acme.sh daemon
 <li>
 <p>准备一个子账号，用于访问阿里云 DNS 服务<br>
 <a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
-<img src="https://image.belier.cn/images/20190908204951.png" alt="" loading="lazy"></p>
+<img src="https://blog.belier.cn/post-images/1577944289921.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>获取 AccessKey ID 和 AccessKeySecret<br>
-<img src="https://image.belier.cn/images/20190908205802.png" alt="" loading="lazy"></p>
+<img src="https://blog.belier.cn/post-images/1577944312065.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>设置 DNS 管理权限<br>
 <a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
-<img src="https://image.belier.cn/images/20190908205014.png" alt="" loading="lazy"></p>
+<img src="https://blog.belier.cn/post-images/1577944328078.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>生成 ssl 证书</p>
@@ -150,17 +148,17 @@ acme.sh --issue --dns dns_ali -d yourdomain.com \
 <li>
 <p>获取  Account ID<br>
 在域名的主页（有折线图的页面），往下找<br>
-<img src="https://image.belier.cn/images/20190908212220.png" alt="" loading="lazy"></p>
+<img src="https://blog.belier.cn/post-images/1577944340485.png" alt="" loading="lazy"></p>
 </li>
 <li>
 <p>创建 Api Token<br>
 My Profile -&gt; Api Tokens<br>
-<img src="https://image.belier.cn/images/20190908213353.png" alt="" loading="lazy"></p>
+<img src="https://blog.belier.cn/post-images/1577944364531.png" alt="" loading="lazy"></p>
 </li>
 </ol>
 <p>创建完成的页面获取，必须马上记录下来，后面不会再显示，否则只能重置<br>
-<img src="https://image.belier.cn/images/20190908213336.png" alt="" loading="lazy"></p>
-<ol start="3">
+<img src="https://blog.belier.cn/post-images/1577944377315.png" alt="" loading="lazy"></p>
+<ol>
 <li>生成 ssl 证书</li>
 </ol>
 <pre><code class="language-sh">docker exec -it \
@@ -207,7 +205,7 @@ USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 <li>也可以创建多个容器来实现，会避免有失败的情况，但是会多消耗资源</li>
 </ol>
 <blockquote>
-<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055">issues</a>本人未使用或测试</p>
+<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055">acme.sh issues</a> 本人未使用或测试</p>
 </blockquote>
 
           <p>写的不好，仅供参考</p>

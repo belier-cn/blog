@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -56,11 +56,7 @@
 </li>
 <li><a href="#%E4%BD%BF%E7%94%A8-vagrant-%E5%AE%89%E8%A3%85-centos7">使用 Vagrant 安装 Centos7</a></li>
 <li><a href="#%E4%BD%BF%E7%94%A8%E4%B8%89%E6%96%B9-ssh-%E5%B7%A5%E5%85%B7%E8%BF%9E%E6%8E%A5-centos-%E7%B3%BB%E7%BB%9F">使用三方 ssh 工具连接 centos 系统</a></li>
-<li><a href="#vagrant-%E7%BD%91%E7%BB%9C">Vagrant 网络</a>
-<ul>
-<li><a href="#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3">官方文档</a></li>
-</ul>
-</li>
+<li><a href="#vagrant-%E7%BD%91%E7%BB%9C">Vagrant 网络</a></li>
 <li><a href="#vagrant-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4">Vagrant 常用命令</a></li>
 </ul>
 </li>
@@ -112,7 +108,7 @@
         </div>
         
         <div class="post-content yue">
-          <p>快速创建虚拟机，方便开发以及测试，直接丢给测试一个 Vagrantfile 文件，看他还能说环境问题不</p>
+          <p>快速创建虚拟机，方便开发以及测试</p>
 <!-- more -->
 <h3 id="准备工具">准备工具</h3>
 <h4 id="virtualbox">VirtualBox</h4>
@@ -188,8 +184,7 @@ private key : .vagrant\machines\default\virtualbox\private_key</p>
 <p>root 用户密码：vagrant</p>
 </blockquote>
 <h3 id="vagrant-网络">Vagrant 网络</h3>
-<h4 id="官方文档">官方文档</h4>
-<p><a href="https://www.vagrantup.com/docs/networking/">Networking - Vagrant by HashiCorp</a></p>
+<p>官方文档：<a href="https://www.vagrantup.com/docs/networking/">Networking - Vagrant by HashiCorp</a></p>
 <h3 id="vagrant-常用命令">Vagrant 常用命令</h3>
 <pre><code>vagrant init        # 初始化
 vagrant up          # 启动虚拟机

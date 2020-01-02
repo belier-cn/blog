@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -43,7 +43,15 @@
             文章目录
           </p>
           <div class="toc-container hidden lg:block">
-            
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85-localization-zh-cn-plugin-%E6%8F%92%E4%BB%B6">安装 localization-zh-cn-plugin 插件</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E6%9B%B4%E6%96%B0%E4%B8%AD%E5%BF%83%E5%9C%B0%E5%9D%80">配置更新中心地址</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -88,7 +96,10 @@
         </div>
         
         <div class="post-content yue">
-          <p>安装 localization-zh-cn-plugin 插件，然后按下图操作即可</p>
+          <h2 id="安装-localization-zh-cn-plugin-插件">安装 localization-zh-cn-plugin 插件</h2>
+<p>安装地址：<code>http://{your_jenkins_host}/pluginManager/available</code><br>
+安装完后重启 jenkins</p>
+<h2 id="配置更新中心地址">配置更新中心地址</h2>
 <figure data-type="image" tabindex="1"><img src="https://blog.belier.cn/post-images/1577436279003.jpg" alt="" loading="lazy"></figure>
 <p>参考：<a href="https://community.jenkins-zh.cn/t/jenkins/26">Jenkins 中文社区</a></p>
 

@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -43,7 +43,19 @@
             文章目录
           </p>
           <div class="toc-container hidden lg:block">
-            
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E4%BA%8E%E6%94%BE-nginx-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95">创建用于放 nginx 配置文件的目录</a></li>
+<li><a href="#%E6%8B%B7%E8%B4%9D%E5%87%BA%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">拷贝出默认配置文件</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-nginx-%E5%AE%B9%E5%99%A8">运行 nginx 容器</a></li>
+<li><a href="#%E9%98%B2%E7%81%AB%E5%A2%99%E6%94%BE%E8%A1%8C-80-443-%E7%AB%AF%E5%8F%A3">防火墙放行 80 443 端口</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-docker-compose">使用 Docker Compose</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -84,48 +96,59 @@
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
         <h1 class="text-3xl font-bold lg:mt-16">使用 Dokcer 运行 Nginx</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-12-26 / 1 min read
+          2019-12-26 / 2 min read
         </div>
         
         <div class="post-content yue">
-          <ol>
-<li>创建用于放 nginx 配置文件的目录</li>
-</ol>
-<pre><code># 顺带创建一个存放证书的目录
+          <h2 id="创建用于放-nginx-配置文件的目录">创建用于放 nginx 配置文件的目录</h2>
+<pre><code class="language-bash"># 顺带创建一个存放证书的目录
 mkdir -p /usr/local/nginx/ssl
 </code></pre>
-<ol start="2">
-<li>先运行一个 nginx 容器，拷贝出默认的配置文件</li>
+<h2 id="拷贝出默认配置文件">拷贝出默认配置文件</h2>
+<ol>
+<li>简单运行一个 nginx 容器，拷贝配置文件</li>
 </ol>
-<pre><code>docker run -d  --name nginx nginx
+<pre><code class="language-bash">docker run -d  --name nginx nginx
 docker cp nginx:/etc/nginx/nginx.conf /usr/local/nginx/nginx.conf
 docker cp nginx:/etc/nginx/conf.d /usr/local/nginx/conf.d
 </code></pre>
-<ol start="3">
+<ol start="2">
 <li>销毁 nginx 容器</li>
 </ol>
-<pre><code>docker rm -f nginx
+<pre><code class="language-bash">docker rm -f nginx
 </code></pre>
-<ol start="4">
-<li>正式运行 nginx 容器</li>
-</ol>
-<pre><code>docker run -d -p 80:80 -p 443:443 --name nginx \
+<h2 id="运行-nginx-容器">运行 nginx 容器</h2>
+<pre><code class="language-bash">docker run -d -p 80:80 -p 443:443 --name nginx \
 -v /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf \
 -v /usr/local/nginx/conf.d:/etc/nginx/conf.d \
 -v /usr/local/nginx/ssl/:/etc/nginx/ssl nginx
 </code></pre>
-<ol start="5">
-<li>防火墙放行 80 443 端口</li>
-</ol>
-<pre><code>firewall-cmd --permanent --zone=public --add-port=80/tcp 
+<h2 id="防火墙放行-80-443-端口">防火墙放行 80 443 端口</h2>
+<p>这里只列出 firewall 的使用方式</p>
+<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=80/tcp 
 firewall-cmd --permanent --zone=public --add-port=443/tcp 
 # 重新加载防护墙配置
 firewall-cmd --reload
 </code></pre>
-<ol start="6">
-<li>测试<br>
-访问主机的ip，查看是否有 nginx 的欢迎页面</li>
-</ol>
+<h2 id="测试">测试</h2>
+<p>访问主机的ip，查看是否有 nginx 的欢迎页面</p>
+<h2 id="使用-docker-compose">使用 Docker Compose</h2>
+<p>在 <code>/usr/local/nginx</code> 目录下创建 docker-compose.yml</p>
+<pre><code class="language-yml">version: '3'
+services:
+  nginx:
+    restart: always
+    image: nginx
+    container_name: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /usr/local/nginx/conf.d:/etc/nginx/conf.d
+      - /usr/local/nginx/ssl/:/etc/nginx/ssl
+</code></pre>
+<p>启动：<code>docker-compose up -d</code></p>
 
           <p>写的不好，仅供参考</p>
         </div>

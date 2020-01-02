@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -43,7 +43,18 @@
             文章目录
           </p>
           <div class="toc-container hidden lg:block">
-            
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%AD%98%E6%94%BE%E7%9B%AE%E5%BD%95">创建存放目录</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li>
+<li><a href="#%E8%8E%B7%E5%8F%96%E9%A6%96%E6%AC%A1%E7%99%BB%E9%99%86%E5%AF%86%E7%A0%81">获取首次登陆密码</a></li>
+<li><a href="#%E5%8A%A0%E9%80%9F%E6%8F%92%E4%BB%B6%E4%B8%8B%E8%BD%BD">加速插件下载</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -88,41 +99,35 @@
         </div>
         
         <div class="post-content yue">
-          <ol>
-<li>
-<p>创建 docker-compose.yml 文件</p>
-<pre><code class="language-yml"> version: '3'
- services:
- jenkins:
-     user: root
-     restart: always
-     image: jenkins/jenkins:lts
-     container_name: jenkins
-     ports:
-         - '3000:8080'
-     volumes:
-         - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
-         - /var/run/docker.sock:/var/run/docker.sock
-         - /usr/bin/docker:/usr/bin/docker
-         - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+          <h2 id="创建存放目录">创建存放目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/jenkins/jenkins_home
 </code></pre>
-<p>使用 Docker Compose 主要是因为直观</p>
-</li>
-<li>
-<p>启动</p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<p>在 <code>/usr/local/jenkins</code> 目录下创建</p>
+<pre><code class="language-yml">version: '3'
+services:
+jenkins:
+  user: root
+  restart: always
+  image: jenkins/jenkins:lts
+  container_name: jenkins
+  ports:
+    - '3000:8080'
+  volumes:
+    - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/usr/bin/docker
+    - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+</code></pre>
+<h2 id="启动">启动</h2>
 <pre><code class="language-bash">docker-compose up -d
 </code></pre>
-</li>
-<li>
-<p>获取首次登陆密码</p>
+<h2 id="获取首次登陆密码">获取首次登陆密码</h2>
 <pre><code class="language-bash">docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 </code></pre>
-</li>
-<li>
-<p>加速插件下载<br>
+<h2 id="加速插件下载">加速插件下载</h2>
+<p>默认速度感人，还容易失败<br>
 参考：<a href="/post/e5hc2h3EA">Jenkins 使用镜像加速插件下载速度</a></p>
-</li>
-</ol>
 
           <p>写的不好，仅供参考</p>
         </div>

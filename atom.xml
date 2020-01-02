@@ -2,37 +2,55 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2019-12-30T09:40:11.430Z</updated>
+    <updated>2020-01-02T06:01:57.493Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
-    <rights>All rights reserved 2019, Blog</rights>
+    <rights>All rights reserved 2020, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[不同 Docker Compose 下通信]]></title>
+        <id>https://blog.belier.cn/post/5nti-wRW8</id>
+        <link href="https://blog.belier.cn/post/5nti-wRW8">
+        </link>
+        <updated>2019-12-31T01:32:42.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="分析">分析</h2>
+<p>因为不同的 Docker Compose 会创建不同的网络，所以不同的 Docker Compose 之间默认是不能通信的，<strong>方案：加入同一个网络</strong></p>
+<h2 id="创建自定义网络">创建自定义网络</h2>
+<pre><code class="language-bash">docker network create app_net
+</code></pre>
+<h2 id="加入自定义网络">加入自定义网络</h2>
+<pre><code class="language-yml">version: &quot;3&quot;
+services:
+  db:
+    image: postgres
+
+# 配置默认网络，不创建网络，加入 app_net
+networks:
+  default:
+    external:
+      name: app_net
+</code></pre>
+<p>参考：<a href="https://docs.docker.com/compose/networking/">Docker Compose Netowrking</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Centos7 安装 Docker Compose]]></title>
         <id>https://blog.belier.cn/post/5s9MHRIqC</id>
         <link href="https://blog.belier.cn/post/5s9MHRIqC">
         </link>
         <updated>2019-12-27T11:50:12.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>
-<p>下载 Docker Compose 二进制文件</p>
+        <content type="html"><![CDATA[<h2 id="下载-docker-compose-二进制文件">下载 Docker Compose 二进制文件</h2>
 <pre><code class="language-bash">curl -L &quot;https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
 </code></pre>
-</li>
-<li>
-<p>给与文件可执行权限</p>
+<h2 id="给与文件可执行权限">给与文件可执行权限</h2>
 <pre><code class="language-bash">chmod +x /usr/local/bin/docker-compose
 </code></pre>
-</li>
-<li>
-<p>检测是否可用</p>
+<h2 id="检测是否可用">检测是否可用</h2>
 <pre><code class="language-bash">docker-compose --version
 </code></pre>
-</li>
-</ol>
-<p>参考：<a href="https://docs.docker.com/compose/install/#install-compose">Docker compose 官方文档</a></p>
+<p>参考：<a href="https://docs.docker.com/compose/install/#install-compose">Docker Compose Install</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -41,41 +59,35 @@
         <link href="https://blog.belier.cn/post/KTJDkKiKZ">
         </link>
         <updated>2019-12-27T11:13:12.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>
-<p>创建 docker-compose.yml 文件</p>
-<pre><code class="language-yml"> version: '3'
- services:
- jenkins:
-     user: root
-     restart: always
-     image: jenkins/jenkins:lts
-     container_name: jenkins
-     ports:
-         - '3000:8080'
-     volumes:
-         - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
-         - /var/run/docker.sock:/var/run/docker.sock
-         - /usr/bin/docker:/usr/bin/docker
-         - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+        <content type="html"><![CDATA[<h2 id="创建存放目录">创建存放目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/jenkins/jenkins_home
 </code></pre>
-<p>使用 Docker Compose 主要是因为直观</p>
-</li>
-<li>
-<p>启动</p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<p>在 <code>/usr/local/jenkins</code> 目录下创建</p>
+<pre><code class="language-yml">version: '3'
+services:
+jenkins:
+  user: root
+  restart: always
+  image: jenkins/jenkins:lts
+  container_name: jenkins
+  ports:
+    - '3000:8080'
+  volumes:
+    - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/usr/bin/docker
+    - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+</code></pre>
+<h2 id="启动">启动</h2>
 <pre><code class="language-bash">docker-compose up -d
 </code></pre>
-</li>
-<li>
-<p>获取首次登陆密码</p>
+<h2 id="获取首次登陆密码">获取首次登陆密码</h2>
 <pre><code class="language-bash">docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 </code></pre>
-</li>
-<li>
-<p>加速插件下载<br>
+<h2 id="加速插件下载">加速插件下载</h2>
+<p>默认速度感人，还容易失败<br>
 参考：<a href="/post/e5hc2h3EA">Jenkins 使用镜像加速插件下载速度</a></p>
-</li>
-</ol>
 ]]></content>
     </entry>
     <entry>
@@ -84,7 +96,10 @@
         <link href="https://blog.belier.cn/post/e5hc2h3EA">
         </link>
         <updated>2019-12-27T08:40:14.000Z</updated>
-        <content type="html"><![CDATA[<p>安装 localization-zh-cn-plugin 插件，然后按下图操作即可</p>
+        <content type="html"><![CDATA[<h2 id="安装-localization-zh-cn-plugin-插件">安装 localization-zh-cn-plugin 插件</h2>
+<p>安装地址：<code>http://{your_jenkins_host}/pluginManager/available</code><br>
+安装完后重启 jenkins</p>
+<h2 id="配置更新中心地址">配置更新中心地址</h2>
 <figure data-type="image" tabindex="1"><img src="https://blog.belier.cn/post-images/1577436279003.jpg" alt="" loading="lazy"></figure>
 <p>参考：<a href="https://community.jenkins-zh.cn/t/jenkins/26">Jenkins 中文社区</a></p>
 ]]></content>
@@ -95,10 +110,10 @@
         <link href="https://blog.belier.cn/post/8_PzWhqus">
         </link>
         <updated>2019-12-26T11:37:04.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>
-<p>创建 Cenetos7 创建成功后执行的脚本，与 Vagrantfile 同级<br>
-vagrant 默认是使用 vagrant 用户免密登录的，所以需要将 vagrant 用户免密登录的公钥拷贝到 root用户下就可以了</p>
+        <content type="html"><![CDATA[<h2 id="分析">分析</h2>
+<p>vagrant 默认是使用 vagrant 用户免密登录的，所以只要把 vagrant 用户免密登录的公钥拷贝到 root 用户下就可以了</p>
+<h2 id="创建虚拟机创建成功后执行的脚本">创建虚拟机创建成功后执行的脚本</h2>
+<p>在 Vagrantfile 目录下创建 setup.sh</p>
 <pre><code class="language-bash">#!/bin/bash
 
 #安装 expect 用于切换 root 用户
@@ -107,7 +122,7 @@ sudo yum install -y expect
 #创建拷贝 authorized_keys 脚本
 sh_str=&quot;#!/bin/sh\ndata=\$(cat /home/vagrant/.ssh/authorized_keys)\nmkdir -p /root/.ssh\necho \${data} &gt; /root/.ssh/authorized_keys&quot;
 sudo echo -e ${sh_str} &gt; /home/vagrant/root.sh
-sudo chmod 777 /home/vagrant/root.sh
+sudo chmod +x /home/vagrant/root.sh
 
 #切换到 root 用户执行拷贝 authorized_keys
 expect -c &quot;
@@ -120,9 +135,7 @@ expect &quot;#&quot;
 send \&quot;rm -f /home/vagrant/root.sh\n\&quot;
 &quot;
 </code></pre>
-</li>
-<li>
-<p>配置Vagrantfile</p>
+<h2 id="配置-vagrantfile">配置 Vagrantfile</h2>
 <pre><code class="language-ruby"># -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -133,12 +146,8 @@ Vagrant.configure(2) do |config|
 config.vm.provision &quot;shell&quot;, path: &quot;./setup.sh&quot;
 end
 </code></pre>
-</li>
-<li>
-<p>root 用户免密登录</p>
-<p>使用 .vagrant\machines\default\virtualbox\private_key 私钥登录即可</p>
-</li>
-</ol>
+<h2 id="root-用户免密登录">root 用户免密登录</h2>
+<p>使用 <code>.vagrant\machines\default\virtualbox\private_key</code> 私钥登录即可</p>
 ]]></content>
     </entry>
     <entry>
@@ -147,44 +156,55 @@ end
         <link href="https://blog.belier.cn/post/W9ICrn2gc">
         </link>
         <updated>2019-12-26T02:36:19.000Z</updated>
-        <content type="html"><![CDATA[<ol>
-<li>创建用于放 nginx 配置文件的目录</li>
-</ol>
-<pre><code># 顺带创建一个存放证书的目录
+        <content type="html"><![CDATA[<h2 id="创建用于放-nginx-配置文件的目录">创建用于放 nginx 配置文件的目录</h2>
+<pre><code class="language-bash"># 顺带创建一个存放证书的目录
 mkdir -p /usr/local/nginx/ssl
 </code></pre>
-<ol start="2">
-<li>先运行一个 nginx 容器，拷贝出默认的配置文件</li>
+<h2 id="拷贝出默认配置文件">拷贝出默认配置文件</h2>
+<ol>
+<li>简单运行一个 nginx 容器，拷贝配置文件</li>
 </ol>
-<pre><code>docker run -d  --name nginx nginx
+<pre><code class="language-bash">docker run -d  --name nginx nginx
 docker cp nginx:/etc/nginx/nginx.conf /usr/local/nginx/nginx.conf
 docker cp nginx:/etc/nginx/conf.d /usr/local/nginx/conf.d
 </code></pre>
-<ol start="3">
+<ol start="2">
 <li>销毁 nginx 容器</li>
 </ol>
-<pre><code>docker rm -f nginx
+<pre><code class="language-bash">docker rm -f nginx
 </code></pre>
-<ol start="4">
-<li>正式运行 nginx 容器</li>
-</ol>
-<pre><code>docker run -d -p 80:80 -p 443:443 --name nginx \
+<h2 id="运行-nginx-容器">运行 nginx 容器</h2>
+<pre><code class="language-bash">docker run -d -p 80:80 -p 443:443 --name nginx \
 -v /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf \
 -v /usr/local/nginx/conf.d:/etc/nginx/conf.d \
 -v /usr/local/nginx/ssl/:/etc/nginx/ssl nginx
 </code></pre>
-<ol start="5">
-<li>防火墙放行 80 443 端口</li>
-</ol>
-<pre><code>firewall-cmd --permanent --zone=public --add-port=80/tcp 
+<h2 id="防火墙放行-80-443-端口">防火墙放行 80 443 端口</h2>
+<p>这里只列出 firewall 的使用方式</p>
+<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=80/tcp 
 firewall-cmd --permanent --zone=public --add-port=443/tcp 
 # 重新加载防护墙配置
 firewall-cmd --reload
 </code></pre>
-<ol start="6">
-<li>测试<br>
-访问主机的ip，查看是否有 nginx 的欢迎页面</li>
-</ol>
+<h2 id="测试">测试</h2>
+<p>访问主机的ip，查看是否有 nginx 的欢迎页面</p>
+<h2 id="使用-docker-compose">使用 Docker Compose</h2>
+<p>在 <code>/usr/local/nginx</code> 目录下创建 docker-compose.yml</p>
+<pre><code class="language-yml">version: '3'
+services:
+  nginx:
+    restart: always
+    image: nginx
+    container_name: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /usr/local/nginx/conf.d:/etc/nginx/conf.d
+      - /usr/local/nginx/ssl/:/etc/nginx/ssl
+</code></pre>
+<p>启动：<code>docker-compose up -d</code></p>
 ]]></content>
     </entry>
     <entry>
@@ -437,124 +457,6 @@ firewall-cmd --permanent --zone=public --add-port=2233/tcp
 # 重启加载防火墙配置
 firewall-cmd --reload
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书]]></title>
-        <id>https://blog.belier.cn/post/jvcfkOdjf</id>
-        <link href="https://blog.belier.cn/post/jvcfkOdjf">
-        </link>
-        <updated>2019-09-08T12:30:18.000Z</updated>
-        <summary type="html"><![CDATA[<p>acme.sh 自动 60 天更新，完美适配 Docker 简直不要太爽，赶快试试</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>acme.sh 自动 60 天更新，完美适配 Docker 简直不要太爽，赶快试试</p>
-<!-- more -->
-<h2 id="acmesh-简介">acme.sh 简介</h2>
-<p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
-<h2 id="安装-docker">安装 Docker</h2>
-<p>参考我的文章：<a href="https://blog.belier.cn/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
-<h2 id="创建-acmesh-容器">创建 acme.sh 容器</h2>
-<pre><code class="language-sh">docker run -itd  \
---net=host \
--v /usr/local/ssl/acme.sh:/acme.sh  \
---name=acme.sh \
--v /var/run/docker.sock:/var/run/docker.sock \
-neilpang/acme.sh daemon
-</code></pre>
-<blockquote>
-<p>证书文件会生成到 /usr/local/ssl/acme.sh 中，避免配置信息以及证书的丢失<br>
-将 docker.sock 文件映射到 acme.sh 容器中，是为了acme.sh 能够操作 Docker  以便将证书发布到其它容器中，如 Nginx</p>
-</blockquote>
-<h2 id="阿里云自动验证-dns-生成">阿里云自动验证 DNS 生成</h2>
-<ol>
-<li>
-<p>准备一个子账号，用于访问阿里云 DNS 服务<br>
-<a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
-<img src="https://image.belier.cn/images/20190908204951.png" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>获取 AccessKey ID 和 AccessKeySecret<br>
-<img src="https://image.belier.cn/images/20190908205802.png" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>设置 DNS 管理权限<br>
-<a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
-<img src="https://image.belier.cn/images/20190908205014.png" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>生成 ssl 证书</p>
-</li>
-</ol>
-<pre><code class="language-sh">docker exec -it \
--e Ali_Key=&quot;your key&quot;\
--e Ali_Secret=&quot;your secret&quot; \
-acme.sh --issue --dns dns_ali -d yourdomain.com \
--d *.yourdomain.com
-</code></pre>
-<h2 id="cloudflare-自动验证-dns-生成">Cloudflare 自动验证 DNS 生成</h2>
-<ol>
-<li>
-<p>获取  Account ID<br>
-在域名的主页（有折线图的页面），往下找<br>
-<img src="https://image.belier.cn/images/20190908212220.png" alt="" loading="lazy"></p>
-</li>
-<li>
-<p>创建 Api Token<br>
-My Profile -&gt; Api Tokens<br>
-<img src="https://image.belier.cn/images/20190908213353.png" alt="" loading="lazy"></p>
-</li>
-</ol>
-<p>创建完成的页面获取，必须马上记录下来，后面不会再显示，否则只能重置<br>
-<img src="https://image.belier.cn/images/20190908213336.png" alt="" loading="lazy"></p>
-<ol start="3">
-<li>生成 ssl 证书</li>
-</ol>
-<pre><code class="language-sh">docker exec -it \
--e CF_Token=&quot;your token&quot;\
--e CF_Account_ID=&quot;your account id&quot; \
-acme.sh --issue --dns dns_cf -d yourdomain.com \
--d *.yourdomain.com
-</code></pre>
-<h2 id="将证书发布到-nginx-docker-容器中">将证书发布到 Nginx Docker 容器中</h2>
-<ol>
-<li>创建 Nginx 的容器的时候需要设置一个标签<br>
-例如：</li>
-</ol>
-<pre><code class="language-sh">docker run  -it -d -p 80:80  --label=yourdomian.com   nginx
-</code></pre>
-<ol start="2">
-<li>将证书发布到容器中</li>
-</ol>
-<pre><code class="language-sh">docker  exec \
--e DEPLOY_DOCKER_CONTAINER_LABEL=yourdomian.com \
--e DEPLOY_DOCKER_CONTAINER_KEY_FILE=/etc/nginx/ssl/yourdomian.com/key.pem \
--e DEPLOY_DOCKER_CONTAINER_CERT_FILE=&quot;/etc/nginx/ssl/yourdomian.com/cert.pem&quot; \
--e DEPLOY_DOCKER_CONTAINER_CA_FILE=&quot;/etc/nginx/ssl/yourdomian.com/ca.pem&quot; \ 
--e DEPLOY_DOCKER_CONTAINER_FULLCHAIN_FILE=&quot;/etc/nginx/ssl/yourdomian.com/full.pem&quot; \
--e DEPLOY_DOCKER_CONTAINER_RELOAD_CMD=&quot;service nginx force-reload&quot; \
-acme.sh --deploy -d example.com  --deploy-hook docker
-</code></pre>
-<h2 id="注意">注意</h2>
-<p>如果你有域名 yourdomain1.com yourdomain2.com 在两个不同的阿里云账号中，你又需要在一台服务器中生成两个域名的证书，只有最后一个生成的域名会自动续签成功，原因在于 acme.sh 目录下只有一个账号信息配置文件</p>
-<pre><code>AUTO_UPGRADE='1'
-SAVED_Ali_Key='your key'
-SAVED_Ali_Secret='your secret'
-USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
-</code></pre>
-<p>后生成证书的账号就会覆盖之前的账号，如果两个域名在不同的服务商下，一个在阿里云，一个在 Cloudflare 就不会有问题，</p>
-<p>解决方案：</p>
-<ol>
-<li>自己手动创建 account.conf 文件，让账号配置到两个文件中，但是默认的定时任务不知道新的 account.conf 文件的存在，必须再添加一个定时任务，并指定 account.conf 文件</li>
-</ol>
-<pre><code class="language-sh">24 0 * * * &quot;/root/.acme.sh&quot;/acme.sh --cron --home &quot;/root/.acme.sh&quot; --config-home &quot;/acme.sh&quot; --accountconf &quot;/acme.sh/account-new.conf&quot;
-</code></pre>
-<p>虽然最终都能续签成功，每次定时任务都有失败的情况</p>
-<ol start="2">
-<li>也可以创建多个容器来实现，会避免有失败的情况，但是会多消耗资源</li>
-</ol>
-<blockquote>
-<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055">issues</a>本人未使用或测试</p>
-</blockquote>
 ]]></content>
     </entry>
 </feed>

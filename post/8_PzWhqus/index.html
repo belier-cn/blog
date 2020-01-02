@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577698747008">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577944863293">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577698747008" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577944863293" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -43,7 +43,17 @@
             文章目录
           </p>
           <div class="toc-container hidden lg:block">
-            
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%88%9B%E5%BB%BA%E6%88%90%E5%8A%9F%E5%90%8E%E6%89%A7%E8%A1%8C%E7%9A%84%E8%84%9A%E6%9C%AC">创建虚拟机创建成功后执行的脚本</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE-vagrantfile">配置 Vagrantfile</a></li>
+<li><a href="#root-%E7%94%A8%E6%88%B7%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95">root 用户免密登录</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -88,10 +98,10 @@
         </div>
         
         <div class="post-content yue">
-          <ol>
-<li>
-<p>创建 Cenetos7 创建成功后执行的脚本，与 Vagrantfile 同级<br>
-vagrant 默认是使用 vagrant 用户免密登录的，所以需要将 vagrant 用户免密登录的公钥拷贝到 root用户下就可以了</p>
+          <h2 id="分析">分析</h2>
+<p>vagrant 默认是使用 vagrant 用户免密登录的，所以只要把 vagrant 用户免密登录的公钥拷贝到 root 用户下就可以了</p>
+<h2 id="创建虚拟机创建成功后执行的脚本">创建虚拟机创建成功后执行的脚本</h2>
+<p>在 Vagrantfile 目录下创建 setup.sh</p>
 <pre><code class="language-bash">#!/bin/bash
 
 #安装 expect 用于切换 root 用户
@@ -100,7 +110,7 @@ sudo yum install -y expect
 #创建拷贝 authorized_keys 脚本
 sh_str=&quot;#!/bin/sh\ndata=\$(cat /home/vagrant/.ssh/authorized_keys)\nmkdir -p /root/.ssh\necho \${data} &gt; /root/.ssh/authorized_keys&quot;
 sudo echo -e ${sh_str} &gt; /home/vagrant/root.sh
-sudo chmod 777 /home/vagrant/root.sh
+sudo chmod +x /home/vagrant/root.sh
 
 #切换到 root 用户执行拷贝 authorized_keys
 expect -c &quot;
@@ -113,9 +123,7 @@ expect &quot;#&quot;
 send \&quot;rm -f /home/vagrant/root.sh\n\&quot;
 &quot;
 </code></pre>
-</li>
-<li>
-<p>配置Vagrantfile</p>
+<h2 id="配置-vagrantfile">配置 Vagrantfile</h2>
 <pre><code class="language-ruby"># -*- mode: ruby -*-
 # vi: set ft=ruby :
 
@@ -126,12 +134,8 @@ Vagrant.configure(2) do |config|
 config.vm.provision &quot;shell&quot;, path: &quot;./setup.sh&quot;
 end
 </code></pre>
-</li>
-<li>
-<p>root 用户免密登录</p>
-<p>使用 .vagrant\machines\default\virtualbox\private_key 私钥登录即可</p>
-</li>
-</ol>
+<h2 id="root-用户免密登录">root 用户免密登录</h2>
+<p>使用 <code>.vagrant\machines\default\virtualbox\private_key</code> 私钥登录即可</p>
 
           <p>写的不好，仅供参考</p>
         </div>
