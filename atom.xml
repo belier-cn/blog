@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2020-01-02T06:01:57.493Z</updated>
+    <updated>2020-01-02T06:11:48.308Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -180,7 +180,7 @@ docker cp nginx:/etc/nginx/conf.d /usr/local/nginx/conf.d
 -v /usr/local/nginx/ssl/:/etc/nginx/ssl nginx
 </code></pre>
 <h2 id="防火墙放行-80-443-端口">防火墙放行 80 443 端口</h2>
-<p>这里只列出 firewall 的使用方式</p>
+<p>这里以 firewall 防火墙为例</p>
 <pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=80/tcp 
 firewall-cmd --permanent --zone=public --add-port=443/tcp 
 # 重新加载防护墙配置
@@ -445,13 +445,13 @@ ssh server-b
 Port 2233
 </code></pre>
 <blockquote>
-<p>最好先吧默认端口保留，避免新的端口没有配置好，导致后面连不上，等尝试能正常连接了，在将默认的端口删除</p>
+<p>最好先把默认端口保留，避免新的端口没有配置好，导致后面连不上，等尝试能正常连接了，再将默认的端口删除</p>
 </blockquote>
 <p>重启服务：</p>
 <pre><code>systemctl restart sshd
 </code></pre>
-<p>放行端口：<br>
-这里使用的 firewall 防火墙</p>
+<p>端口放行：<br>
+这里以 firewall 防火墙为例</p>
 <pre><code># 开放端口
 firewall-cmd --permanent --zone=public --add-port=2233/tcp 
 # 重启加载防火墙配置
