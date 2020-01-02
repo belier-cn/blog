@@ -26,7 +26,7 @@
 
   </head>
   <body>
-    <div class="main px-4 flex flex-col lg:flex-row">
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
       <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
   <div class="lg:sticky top-0">
     <div class="sidebar-content">
@@ -40,30 +40,19 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%8B%E8%BD%BD-docker-compose-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6">下载 Docker Compose 二进制文件</a></li>
+<li><a href="#%E7%BB%99%E4%B8%8E%E6%96%87%E4%BB%B6%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90">给与文件可执行权限</a></li>
+<li><a href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%8F%AF%E7%94%A8">检测是否可用</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -101,85 +90,85 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="latest-article text-lg text-gray-700 mb-8">
-          <i class="remixicon-article-line"></i>
-          最新文章
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker Compose</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-12-27 / 65 words
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/38562561" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?38562561">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/38562561">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+        <div class="post-content yue">
+          <h2 id="下载-docker-compose-二进制文件">下载 Docker Compose 二进制文件</h2>
+<pre><code class="language-bash">curl -L &quot;https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+</code></pre>
+<h2 id="给与文件可执行权限">给与文件可执行权限</h2>
+<pre><code class="language-bash">chmod +x /usr/local/bin/docker-compose
+</code></pre>
+<h2 id="检测是否可用">检测是否可用</h2>
+<pre><code class="language-bash">docker-compose --version
+</code></pre>
+<p>参考：<a href="https://docs.docker.com/compose/install/#install-compose">Docker Compose Install</a></p>
+
+          <p>写的不好，仅供参考</p>
+        </div>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 4 min read</div>
-    </div>
-  </section>
-
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/92660266" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?92660266">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/92660266">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/882589">
+            <span class="flex-auto">docker</span>
+          </a>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${2 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/56853309" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?56853309">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/56853309">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 VirtualBox Vagrant 快速搭建 Centos7 系统</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        <p>快速创建虚拟机，方便开发以及测试</p>
 
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 3 min read</div>
-    </div>
-  </section>
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/59969103">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  不同 Docker Compose 下通信
+                </h3>
+              </a>
+            </div>
+          
 
-        <div class="read-more">
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/55817706">
+                <h3 class="post-title">
+                  使用 Docker Compose 运行 Jenkins
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
-        <div class="index-page">
-          <div class="pagination-container animated fadeIn">
-  
-    <a href="https://blog.belier.cn/" class="page-btn"><i class="remixicon-arrow-left-line"></i> 上一页</a>
-  
-  
-</div>
 
-        </div>
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '77839f07b65e1f0b3a8e',
+    clientSecret: '0b58c3ffec14dc675b58de52f89f1e231be455f2',
+    repo: 'blog',
+    owner: 'belier-cn',
+    admin: ['belier-cn'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
       </div>
     </div>
 

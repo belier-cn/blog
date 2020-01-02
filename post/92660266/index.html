@@ -26,7 +26,7 @@
 
   </head>
   <body>
-    <div class="main px-4 flex flex-col lg:flex-row">
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
       <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
   <div class="lg:sticky top-0">
     <div class="sidebar-content">
@@ -40,30 +40,26 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">一键安装脚本</a></li>
+<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85">手动安装</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87">安装准备</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8-docker-%E6%9C%8D%E5%8A%A1">启动 Docker 服务</a></li>
+<li><a href="#docker-%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">Docker 服务命令</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">配置阿里镜像加速器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -101,85 +97,154 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="latest-article text-lg text-gray-700 mb-8">
-          <i class="remixicon-article-line"></i>
-          最新文章
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-09-08 / 266 words
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/38562561" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?38562561">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/38562561">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+        <div class="post-content yue">
+          <h2 id="一键安装脚本">一键安装脚本</h2>
+<pre><code class="language-sh">curl -sSL https://get.docker.com/ | sh
+</code></pre>
+<blockquote>
+<p>推荐国外服务器使用，国内使用手动安装</p>
+</blockquote>
+<h2 id="手动安装">手动安装</h2>
+<h3 id="安装准备">安装准备</h3>
+<ol>
+<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
+</ol>
+<pre><code class="language-bash">uname -r 
+</code></pre>
+<ol start="2">
+<li>移除旧的版本</li>
+</ol>
+<pre><code class="language-bash">yum remove docker \
+                docker-client \
+                docker-client-latest \
+                docker-common \
+                docker-latest \
+                docker-latest-logrotate \
+                docker-logrotate \
+                docker-selinux \
+                docker-engine-selinux \
+                docker-engine
+</code></pre>
+<ol start="3">
+<li>安装所需的软件包</li>
+</ol>
+<pre><code class="language-bash">yum install -y yum-utils device-mapper-persistent-data lvm2
+</code></pre>
+<ol start="4">
+<li>添加源</li>
+</ol>
+<pre><code class="language-bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+</code></pre>
+<ol start="5">
+<li>更新 yum 缓存</li>
+</ol>
+<pre><code class="language-bash">yum makecache fast
+</code></pre>
+<h3 id="安装-docker">安装 Docker</h3>
+<pre><code class="language-bash">yum -y install docker-ce
+</code></pre>
+<p>安装成功后查看版本，检查是否安装成功</p>
+<pre><code class="language-bash">docker -v
+</code></pre>
+<h3 id="启动-docker-服务">启动 Docker 服务</h3>
+<pre><code class="language-bash">systemctl start docker
+</code></pre>
+<h3 id="docker-服务命令">Docker 服务命令</h3>
+<pre><code class="language-bash">systemctl start docker     # 启动服务
+systemctl stop docker      # 关闭服务
+systemctl restart docker   # 重启服务
+systemctl enable docker    # 开机自启动
+systemctl disable docker   # 关闭开机自启动
+</code></pre>
+<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
+<ol>
+<li>开通服务</li>
+</ol>
+<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">阿里镜像加速器</a></p>
+<ol start="2">
+<li>配置加速器</li>
+</ol>
+<pre><code class="language-bash">mkdir -p /etc/docker
+tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+{
+  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
+}
+EOF
+systemctl daemon-reload
+systemctl restart docker
+</code></pre>
+
+          <p>写的不好，仅供参考</p>
+        </div>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 4 min read</div>
-    </div>
-  </section>
-
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/92660266" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?92660266">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/92660266">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/925065">
+            <span class="flex-auto">centos7</span>
+          </a>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/882589">
+            <span class="flex-auto">docker</span>
+          </a>
+        
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${2 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/56853309" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?56853309">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/56853309">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 VirtualBox Vagrant 快速搭建 Centos7 系统</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        <p>快速创建虚拟机，方便开发以及测试</p>
 
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 3 min read</div>
-    </div>
-  </section>
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/38562561">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
+                </h3>
+              </a>
+            </div>
+          
 
-        <div class="read-more">
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/56853309">
+                <h3 class="post-title">
+                  使用 VirtualBox Vagrant 快速搭建 Centos7 系统
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
-        <div class="index-page">
-          <div class="pagination-container animated fadeIn">
-  
-    <a href="https://blog.belier.cn/" class="page-btn"><i class="remixicon-arrow-left-line"></i> 上一页</a>
-  
-  
-</div>
 
-        </div>
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '77839f07b65e1f0b3a8e',
+    clientSecret: '0b58c3ffec14dc675b58de52f89f1e231be455f2',
+    repo: 'blog',
+    owner: 'belier-cn',
+    admin: ['belier-cn'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
       </div>
     </div>
 

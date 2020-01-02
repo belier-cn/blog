@@ -26,7 +26,7 @@
 
   </head>
   <body>
-    <div class="main px-4 flex flex-col lg:flex-row">
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
       <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
   <div class="lg:sticky top-0">
     <div class="sidebar-content">
@@ -40,30 +40,22 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
           <p class="my-4 text-gray-600 font-light hidden lg:block">
-            
+            文章目录
           </p>
-          <div class="animated fadeInLeft social-container hidden lg:block" style="animation-delay: 0.6s">
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
-              
-            
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%94%A8%E4%BA%8E%E6%94%BE-nginx-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E7%9B%AE%E5%BD%95">创建用于放 nginx 配置文件的目录</a></li>
+<li><a href="#%E6%8B%B7%E8%B4%9D%E5%87%BA%E9%BB%98%E8%AE%A4%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">拷贝出默认配置文件</a></li>
+<li><a href="#%E8%BF%90%E8%A1%8C-nginx-%E5%AE%B9%E5%99%A8">运行 nginx 容器</a></li>
+<li><a href="#%E9%98%B2%E7%81%AB%E5%A2%99%E6%94%BE%E8%A1%8C-80-443-%E7%AB%AF%E5%8F%A3">防火墙放行 80 443 端口</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95">测试</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8-docker-compose">使用 Docker Compose</a></li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -101,85 +93,128 @@
 </div>
 <div class="mask" onclick="closeMenu()">
 </div>
-      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4">
-        <h2 class="latest-article text-lg text-gray-700 mb-8">
-          <i class="remixicon-article-line"></i>
-          最新文章
-        </h2>
+      <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
+        <h1 class="text-3xl font-bold lg:mt-16">使用 Dokcer 运行 Nginx</h1>
+        <div class="text-sm text-gray-700 lg:my-8">
+          2019-12-26 / 270 words
+        </div>
         
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${0 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/38562561" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?38562561">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/38562561">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+        <div class="post-content yue">
+          <h2 id="创建用于放-nginx-配置文件的目录">创建用于放 nginx 配置文件的目录</h2>
+<pre><code class="language-bash"># 顺带创建一个存放证书的目录
+mkdir -p /usr/local/nginx/ssl
+</code></pre>
+<h2 id="拷贝出默认配置文件">拷贝出默认配置文件</h2>
+<ol>
+<li>简单运行一个 nginx 容器，拷贝配置文件</li>
+</ol>
+<pre><code class="language-bash">docker run -d  --name nginx nginx
+docker cp nginx:/etc/nginx/nginx.conf /usr/local/nginx/nginx.conf
+docker cp nginx:/etc/nginx/conf.d /usr/local/nginx/conf.d
+</code></pre>
+<ol start="2">
+<li>销毁 nginx 容器</li>
+</ol>
+<pre><code class="language-bash">docker rm -f nginx
+</code></pre>
+<h2 id="运行-nginx-容器">运行 nginx 容器</h2>
+<pre><code class="language-bash">docker run -d -p 80:80 -p 443:443 --name nginx \
+-v /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf \
+-v /usr/local/nginx/conf.d:/etc/nginx/conf.d \
+-v /usr/local/nginx/ssl/:/etc/nginx/ssl nginx
+</code></pre>
+<h2 id="防火墙放行-80-443-端口">防火墙放行 80 443 端口</h2>
+<p>这里以 firewall 防火墙为例</p>
+<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=80/tcp 
+firewall-cmd --permanent --zone=public --add-port=443/tcp 
+# 重新加载防护墙配置
+firewall-cmd --reload
+</code></pre>
+<h2 id="测试">测试</h2>
+<p>访问主机的ip，查看是否有 nginx 的欢迎页面</p>
+<h2 id="使用-docker-compose">使用 Docker Compose</h2>
+<p>在 <code>/usr/local/nginx</code> 目录下创建 docker-compose.yml</p>
+<pre><code class="language-yml">version: '3'
+services:
+  nginx:
+    restart: always
+    image: nginx
+    container_name: nginx
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /usr/local/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /usr/local/nginx/conf.d:/etc/nginx/conf.d
+      - /usr/local/nginx/ssl/:/etc/nginx/ssl
+</code></pre>
+<p>启动：<code>docker-compose up -d</code></p>
+
+          <p>写的不好，仅供参考</p>
+        </div>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 4 min read</div>
-    </div>
-  </section>
-
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${1 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/92660266" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?92660266">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/92660266">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">Centos7 安装 Docker</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/811086">
+            <span class="flex-auto">nginx</span>
+          </a>
         
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 2 min read</div>
-    </div>
-  </section>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/882589">
+            <span class="flex-auto">docker</span>
+          </a>
+        
 
-  <section class="post-item md:flex pb-12 animated fadeIn" :style="{ 'animation-delay': `${2 * 0.2}s` }">
-    
-      
-		<a href="https://blog.belier.cn/post/56853309" class="feature-image-wrapper bg-gray-100 rounded-lg flex-shrink-0 mr-8 w-full h-56 h-32 md:w-56 md:h-40">
-          <div class="post-feature-image lazy w-full h-56 h-32 md:w-56 md:h-40" data-bg="https://images.weserv.nl/?url=https://source.unsplash.com/collection/232812?56853309">
-          </div>
-        </a>
-      
-    
-    <div class="content">
-      <a href="https://blog.belier.cn/post/56853309">
-        <h2 class="post-title text-xl font-extrabold mt-5 md:mt-0">使用 VirtualBox Vagrant 快速搭建 Centos7 系统</h2>
-      </a>
-      <div class="post-abstract text-gray-700 font-light my-4">
-        <p>快速创建虚拟机，方便开发以及测试</p>
 
-      </div>
-      <div class="text-gray-400 text-sm font-light">2019-09-08 / 3 min read</div>
-    </div>
-  </section>
+        <div class="flex justify-between py-8">
+          
+            <div class="prev-post">
+              <a href="https://blog.belier.cn/post/65011775">
+                <h3 class="post-title">
+                  <i class="remixicon-arrow-left-line"></i>
+                  Vagrant 创建 root 账号免密登录的 Centos7
+                </h3>
+              </a>
+            </div>
+          
 
-        <div class="read-more">
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/52263335">
+                <h3 class="post-title">
+                  Centos7 安装 netstat
+                  <i class="remixicon-arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
           
         </div>
-        <div class="index-page">
-          <div class="pagination-container animated fadeIn">
-  
-    <a href="https://blog.belier.cn/" class="page-btn"><i class="remixicon-arrow-left-line"></i> 上一页</a>
-  
-  
-</div>
 
-        </div>
+        
+          
+            <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+
+<div id="gitalk-container"></div>
+
+<script>
+
+  var gitalk = new Gitalk({
+    clientID: '77839f07b65e1f0b3a8e',
+    clientSecret: '0b58c3ffec14dc675b58de52f89f1e231be455f2',
+    repo: 'blog',
+    owner: 'belier-cn',
+    admin: ['belier-cn'],
+    id: (location.pathname).substring(0, 49),      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false  // Facebook-like distraction free mode
+  })
+
+  gitalk.render('gitalk-container')
+
+</script>
+
+          
+
+          
+        
+
       </div>
     </div>
 
