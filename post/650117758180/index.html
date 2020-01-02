@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577945140738">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577955212442">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577945140738" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577955212442" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -46,16 +46,10 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">一键安装脚本</a></li>
-<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85">手动安装</a>
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87">安装准备</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8-docker-%E6%9C%8D%E5%8A%A1">启动 Docker 服务</a></li>
-<li><a href="#docker-%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">Docker 服务命令</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">配置阿里镜像加速器</a></li>
-</ul>
-</li>
+<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%88%9B%E5%BB%BA%E6%88%90%E5%8A%9F%E5%90%8E%E6%89%A7%E8%A1%8C%E7%9A%84%E8%84%9A%E6%9C%AC">创建虚拟机创建成功后执行的脚本</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE-vagrantfile">配置 Vagrantfile</a></li>
+<li><a href="#root-%E7%94%A8%E6%88%B7%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95">root 用户免密登录</a></li>
 </ul>
 </li>
 </ul>
@@ -98,97 +92,60 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
-        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker</h1>
+        <h1 class="text-3xl font-bold lg:mt-16">Vagrant 创建 root 账号免密登录的 Centos7</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-09-08 / 2 min read
+          2019-12-26 / 2 min read
         </div>
         
         <div class="post-content yue">
-          <h2 id="一键安装脚本">一键安装脚本</h2>
-<pre><code class="language-sh">curl -sSL https://get.docker.com/ | sh
+          <h2 id="分析">分析</h2>
+<p>vagrant 默认是使用 vagrant 用户免密登录的，所以只要把 vagrant 用户免密登录的公钥拷贝到 root 用户下就可以了</p>
+<h2 id="创建虚拟机创建成功后执行的脚本">创建虚拟机创建成功后执行的脚本</h2>
+<p>在 Vagrantfile 目录下创建 setup.sh</p>
+<pre><code class="language-bash">#!/bin/bash
+
+#安装 expect 用于切换 root 用户
+sudo yum install -y expect
+
+#创建拷贝 authorized_keys 脚本
+sh_str=&quot;#!/bin/sh\ndata=\$(cat /home/vagrant/.ssh/authorized_keys)\nmkdir -p /root/.ssh\necho \${data} &gt; /root/.ssh/authorized_keys&quot;
+sudo echo -e ${sh_str} &gt; /home/vagrant/root.sh
+sudo chmod +x /home/vagrant/root.sh
+
+#切换到 root 用户执行拷贝 authorized_keys
+expect -c &quot;
+spawn su root
+expect \&quot;Password:\&quot;
+send \&quot;vagrant\n\&quot;
+expect &quot;#&quot;
+send \&quot;sh /home/vagrant/root.sh\n\&quot;
+expect &quot;#&quot;
+send \&quot;rm -f /home/vagrant/root.sh\n\&quot;
+&quot;
 </code></pre>
-<blockquote>
-<p>推荐国外服务器使用，国内使用手动安装</p>
-</blockquote>
-<h2 id="手动安装">手动安装</h2>
-<h3 id="安装准备">安装准备</h3>
-<ol>
-<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
-</ol>
-<pre><code class="language-bash">uname -r 
+<h2 id="配置-vagrantfile">配置 Vagrantfile</h2>
+<pre><code class="language-ruby"># -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version &quot;&gt;= 1.6.0&quot;
+
+Vagrant.configure(2) do |config|
+# 配置创建成功后执行的脚本（只在第一次创建成功后执行），以上省略
+config.vm.provision &quot;shell&quot;, path: &quot;./setup.sh&quot;
+end
 </code></pre>
-<ol start="2">
-<li>移除旧的版本</li>
-</ol>
-<pre><code class="language-bash">yum remove docker \
-                docker-client \
-                docker-client-latest \
-                docker-common \
-                docker-latest \
-                docker-latest-logrotate \
-                docker-logrotate \
-                docker-selinux \
-                docker-engine-selinux \
-                docker-engine
-</code></pre>
-<ol start="3">
-<li>安装所需的软件包</li>
-</ol>
-<pre><code class="language-bash">yum install -y yum-utils device-mapper-persistent-data lvm2
-</code></pre>
-<ol start="4">
-<li>添加源</li>
-</ol>
-<pre><code class="language-bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-</code></pre>
-<ol start="5">
-<li>更新 yum 缓存</li>
-</ol>
-<pre><code class="language-bash">yum makecache fast
-</code></pre>
-<h3 id="安装-docker">安装 Docker</h3>
-<pre><code class="language-bash">yum -y install docker-ce
-</code></pre>
-<p>安装成功后查看版本，检查是否安装成功</p>
-<pre><code class="language-bash">docker -v
-</code></pre>
-<h3 id="启动-docker-服务">启动 Docker 服务</h3>
-<pre><code class="language-bash">systemctl start docker
-</code></pre>
-<h3 id="docker-服务命令">Docker 服务命令</h3>
-<pre><code class="language-bash">systemctl start docker     # 启动服务
-systemctl stop docker      # 关闭服务
-systemctl restart docker   # 重启服务
-systemctl enable docker    # 开机自启动
-systemctl disable docker   # 关闭开机自启动
-</code></pre>
-<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
-<ol>
-<li>开通服务</li>
-</ol>
-<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">阿里镜像加速器</a></p>
-<ol start="2">
-<li>配置加速器</li>
-</ol>
-<pre><code class="language-bash">mkdir -p /etc/docker
-tee /etc/docker/daemon.json &lt;&lt;-'EOF'
-{
-  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
-}
-EOF
-systemctl daemon-reload
-systemctl restart docker
-</code></pre>
+<h2 id="root-用户免密登录">root 用户免密登录</h2>
+<p>使用 <code>.vagrant\machines\default\virtualbox\private_key</code> 私钥登录即可</p>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/PBaowpkYK">
-            <span class="flex-auto">centos7</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/nYOfiJpNl">
+            <span class="flex-auto">vagrant</span>
           </a>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/U7RXcJBcXn">
-            <span class="flex-auto">docker</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/PBaowpkYK">
+            <span class="flex-auto">centos7</span>
           </a>
         
 
@@ -196,10 +153,10 @@ systemctl restart docker
         <div class="flex justify-between py-8">
           
             <div class="prev-post">
-              <a href="https://blog.belier.cn/post/jvcfkOdjf">
+              <a href="https://blog.belier.cn/post/956193773516">
                 <h3 class="post-title">
                   <i class="remixicon-arrow-left-line"></i>
-                  使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
+                  Jenkins 使用镜像加速插件下载速度
                 </h3>
               </a>
             </div>
@@ -207,9 +164,9 @@ systemctl restart docker
 
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/i_KOzuNX8">
+              <a href="https://blog.belier.cn/post/899657823062">
                 <h3 class="post-title">
-                  使用 VirtualBox Vagrant 快速搭建 Centos7 系统
+                  使用 Dokcer 运行 Nginx
                   <i class="remixicon-arrow-right-line"></i>
                 </h3>
               </a>

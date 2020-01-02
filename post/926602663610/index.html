@@ -4,7 +4,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577945140738">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1577955212442">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
 <link href="https://cdn.remixicon.com/releases/v1.3.1/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
@@ -33,7 +33,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="remixicon-menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577945140738" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg mx-4 lg:mt-32 lg:mx-0 mt-0 lg:w-24 lg:h-24 w-12 w-12" src="https://blog.belier.cn/images/avatar.png?v=1577955212442" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Blog</h1>
       </div>
@@ -43,7 +43,23 @@
             文章目录
           </p>
           <div class="toc-container hidden lg:block">
-            
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">一键安装脚本</a></li>
+<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85">手动安装</a>
+<ul>
+<li><a href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87">安装准备</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8-docker-%E6%9C%8D%E5%8A%A1">启动 Docker 服务</a></li>
+<li><a href="#docker-%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">Docker 服务命令</a></li>
+<li><a href="#%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">配置阿里镜像加速器</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
           </div>
         </div>
       
@@ -82,77 +98,97 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-32 lg:p-8 lg:w-3/4 post-detail animated fadeIn">
-        <h1 class="text-3xl font-bold lg:mt-16">firewall 防火墙常用命令</h1>
+        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker</h1>
         <div class="text-sm text-gray-700 lg:my-8">
-          2019-12-26 / 1 min read
+          2019-09-08 / 2 min read
         </div>
         
         <div class="post-content yue">
-          <ul>
-<li>开启防火墙</li>
-</ul>
-<pre><code class="language-bash">systemctl start firewalld.service
+          <h2 id="一键安装脚本">一键安装脚本</h2>
+<pre><code class="language-sh">curl -sSL https://get.docker.com/ | sh
 </code></pre>
-<ul>
-<li>关闭防火墙</li>
-</ul>
-<pre><code class="language-bash">systemctl stop firewalld.service
+<blockquote>
+<p>推荐国外服务器使用，国内使用手动安装</p>
+</blockquote>
+<h2 id="手动安装">手动安装</h2>
+<h3 id="安装准备">安装准备</h3>
+<ol>
+<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
+</ol>
+<pre><code class="language-bash">uname -r 
 </code></pre>
-<ul>
-<li>开机自动启动</li>
-</ul>
-<pre><code class="language-bash">systemctl enable firewalld.service
+<ol start="2">
+<li>移除旧的版本</li>
+</ol>
+<pre><code class="language-bash">yum remove docker \
+                docker-client \
+                docker-client-latest \
+                docker-common \
+                docker-latest \
+                docker-latest-logrotate \
+                docker-logrotate \
+                docker-selinux \
+                docker-engine-selinux \
+                docker-engine
 </code></pre>
-<ul>
-<li>关闭开机自动启动</li>
-</ul>
-<pre><code class="language-bash">systemctl disable firewalld.service
+<ol start="3">
+<li>安装所需的软件包</li>
+</ol>
+<pre><code class="language-bash">yum install -y yum-utils device-mapper-persistent-data lvm2
 </code></pre>
-<ul>
-<li>查看状态</li>
-</ul>
-<pre><code class="language-bash">systemctl status firewalld
+<ol start="4">
+<li>添加源</li>
+</ol>
+<pre><code class="language-bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 </code></pre>
-<ul>
-<li>重新加载配置</li>
-</ul>
-<pre><code class="language-bash">firewall-cmd --reload
+<ol start="5">
+<li>更新 yum 缓存</li>
+</ol>
+<pre><code class="language-bash">yum makecache fast
 </code></pre>
-<ul>
-<li>临时启用某个服务</li>
-</ul>
-<pre><code class="language-bash">firewall-cmd --zone=public --add-service=https
+<h3 id="安装-docker">安装 Docker</h3>
+<pre><code class="language-bash">yum -y install docker-ce
 </code></pre>
-<ul>
-<li>永久启用某个服务</li>
-</ul>
-<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-service=https
+<p>安装成功后查看版本，检查是否安装成功</p>
+<pre><code class="language-bash">docker -v
 </code></pre>
-<ul>
-<li>临时开启某个端口</li>
-</ul>
-<pre><code class="language-bash">firewall-cmd  --zone=public --add-port=8080/tcp 
+<h3 id="启动-docker-服务">启动 Docker 服务</h3>
+<pre><code class="language-bash">systemctl start docker
 </code></pre>
-<ul>
-<li>永久开启某个端口</li>
-</ul>
-<pre><code class="language-bash">firewall-cmd --permanent --zone=public --add-port=8080/tcp 
+<h3 id="docker-服务命令">Docker 服务命令</h3>
+<pre><code class="language-bash">systemctl start docker     # 启动服务
+systemctl stop docker      # 关闭服务
+systemctl restart docker   # 重启服务
+systemctl enable docker    # 开机自启动
+systemctl disable docker   # 关闭开机自启动
 </code></pre>
-<ul>
-<li>手动修改服务和端口配置</li>
-</ul>
-<pre><code class="language-bash">vi  /etc/firewalld/zones/public.xml
+<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
+<ol>
+<li>开通服务</li>
+</ol>
+<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">阿里镜像加速器</a></p>
+<ol start="2">
+<li>配置加速器</li>
+</ol>
+<pre><code class="language-bash">mkdir -p /etc/docker
+tee /etc/docker/daemon.json &lt;&lt;-'EOF'
+{
+  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
+}
+EOF
+systemctl daemon-reload
+systemctl restart docker
 </code></pre>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/sD5GAMKNo">
-            <span class="flex-auto">firewall</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/PBaowpkYK">
+            <span class="flex-auto">centos7</span>
           </a>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/nvfOp7-6oc">
-            <span class="flex-auto">linux</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full flex lg:inline-flex m-4 " href="https://blog.belier.cn/tag/U7RXcJBcXn">
+            <span class="flex-auto">docker</span>
           </a>
         
 
@@ -160,10 +196,10 @@
         <div class="flex justify-between py-8">
           
             <div class="prev-post">
-              <a href="https://blog.belier.cn/post/ip3oNK0we">
+              <a href="https://blog.belier.cn/post/385625618960">
                 <h3 class="post-title">
                   <i class="remixicon-arrow-left-line"></i>
-                  Centos7 安装 netstat
+                  使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
                 </h3>
               </a>
             </div>
@@ -171,9 +207,9 @@
 
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/OtovyDLsE">
+              <a href="https://blog.belier.cn/post/568533097976">
                 <h3 class="post-title">
-                  Centos7 开启密码登录和 root 用户远程登录
+                  使用 VirtualBox Vagrant 快速搭建 Centos7 系统
                   <i class="remixicon-arrow-right-line"></i>
                 </h3>
               </a>
