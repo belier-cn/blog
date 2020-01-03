@@ -2,13 +2,30 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2020-01-02T13:13:20.704Z</updated>
+    <updated>2020-01-03T09:52:01.417Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[解决 electron 下载慢的问题]]></title>
+        <id>https://blog.belier.cn/post/60333938</id>
+        <link href="https://blog.belier.cn/post/60333938">
+        </link>
+        <updated>2020-01-03T09:03:33.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="修改全局镜像">修改全局镜像</h2>
+<pre><code class="language-bash">yarn config set registry https://registry.npm.taobao.org/
+npm config set registry https://registry.npm.taobao.org/
+</code></pre>
+<h2 id="配置-electron-镜像">配置 electron 镜像</h2>
+<pre><code class="language-bash">yarn config set electron_mirror https://cdn.npm.taobao.org/dist/electron/
+npm config set electron_mirror https://cdn.npm.taobao.org/dist/electron/
+</code></pre>
+<p>参考：<a href="https://github.com/electron/get/issues/120">Regression: taobao mirror does not have v in directory path</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[不同 Docker Compose 下通信]]></title>
         <id>https://blog.belier.cn/post/59969103</id>
@@ -313,150 +330,6 @@ vi /etc/ssh/sshd_config<pre><code class="language-bash">PermitRootLogin yes
 </code></pre>
 </li>
 </ol>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Linux 学习之 SSH]]></title>
-        <id>https://blog.belier.cn/post/83335599</id>
-        <link href="https://blog.belier.cn/post/83335599">
-        </link>
-        <updated>2019-09-11T15:07:12.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="什么是-ssh">什么是 SSH</h2>
-<p>Secure Shell（安全外壳协议，简称SSH）是一种加密的网络传输协议，可在不安全的网络中为网络服务提供安全的传输环境。SSH通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接<br>
-来自维基百科 <a href="https://zh.wikipedia.org/wiki/Secure_Shell">Secure Shell (SSH)</a></p>
-<h2 id="ssh-服务端">SSH 服务端</h2>
-<p>SSH 服务端就是一个守护进程，后台运行，响应客户端的请求</p>
-<ul>
-<li>centos 安装：</li>
-</ul>
-<pre><code class="language-sh">yum install -y openssh-server
-</code></pre>
-<blockquote>
-<p>一般都会默认安装的，图形化的 linux 系统一般没有</p>
-</blockquote>
-<ul>
-<li>服务相关命令</li>
-</ul>
-<pre><code>systemctl start sshd      #启动
-systemctl stop sshd      #关闭
-systemctl restart sshd   #重启
-systemctl enable sshd   #开机自启
-systemctl disable sshd  #关闭开机自启
-systemctl status sshd    #查看状态
-</code></pre>
-<h2 id="ssh-客户端">SSH 客户端</h2>
-<ul>
-<li>centos 安装</li>
-</ul>
-<pre><code>yum install -y openssh-client
-</code></pre>
-<blockquote>
-<p>安装了服务端，默认就会安装客户端</p>
-</blockquote>
-<ul>
-<li>windows 下的 SSH 客户端</li>
-</ul>
-<p>securecrt xshell ... 应用程序，都是可视化操作，比较简单</p>
-<h2 id="连接服务端">连接服务端</h2>
-<h3 id="密码登录">密码登录</h3>
-<pre><code class="language-sh">ssh user@host -p port
-# 或者
-ssh -i ~/.ssh/id_rsa -p port -l user host
-</code></pre>
-<p>user ：用户名，例如：root<br>
-host : 主机地址，例如：192.168.0.100<br>
--p : 端口，不指定默认 22<br>
--i : 证书文件，默认 ~/.ssh/id_rsa ，如果用免密登录才需要<br>
--l : 用户名</p>
-<h3 id="免密登录">免密登录</h3>
-<p>假设 A 要访问 B ,就得在 A 服务器上生成一对秘钥，将生成的公钥配置到 B 服务器</p>
-<ul>
-<li>生成秘钥（私钥+公钥）<br>
-window 可以使用软件生成，这里说说 linux 生成</li>
-</ul>
-<pre><code># 在当前目录生成，这里在 ~/.ssh 目录
-ssh-keygen –t rsa -f belier -P &quot;&quot;
-</code></pre>
-<p>-t : 使用什么加密方式，默认 rsa，一般有 rsa dsa esdsa ...<br>
--f : 设置文件名称，默认文件名：id_rsa，如果不指定会提示输入，不输入直接回车还是会使用默认文件名<br>
--P : 秘钥的密码，&quot;&quot; 就是不设置密码</p>
-<ul>
-<li>配置公钥<br>
-将生 ~/.ssh/{name}.pub 拷贝到 B 服务器的 ~/.ssh/authorized_keys 文件中<br>
-输出公钥内容</li>
-</ul>
-<pre><code>cat ~/.ssh/{name}.pub
-</code></pre>
-<p>如果没有  ~/.ssh/authorized_keys 文件，使用如下命令创建</p>
-<pre><code>touch ~/.ssh/authorized_keys
-</code></pre>
-<p>配置多个公钥，可以换行进行分割</p>
-<blockquote>
-<p>~ 是当前用户的根目录，root 用户的根目录就是 /root ，如果想使用 root 用户免密登录，B 服务器就得切换到 root 用户</p>
-</blockquote>
-<ul>
-<li>使用免密登录</li>
-</ul>
-<pre><code class="language-sh"># 我的秘钥不是默认名称，需要指定私钥文件
-ssh root@192.168.10.100 -i ~/.ssh/belier
-</code></pre>
-<p>第一次免密登录有一个确认提示：</p>
-<pre><code class="language-sh">The authenticity of host '192.168.10.100 (192.168.10.100)' can't be established.
-ECDSA key fingerprint is SHA256:F1wrt2fjlZuDDTuUeNnuB10m4FifT6zQdA6moSIbQLQ.
-ECDSA key fingerprint is MD5:29:ed:82:6e:3b:7c:63:86:48:91:75:df:2e:91:90:c2.
-Are you sure you want to continue connecting (yes/no)?
-</code></pre>
-<p>主要是让你确认远程服务器信息，避免中间人劫持，发现问题就 no ,不连接</p>
-<p>如果出现问题：</p>
-<pre><code class="language-sh">Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
-</code></pre>
-<p>方案：</p>
-<pre><code># 编辑 /etc/ssh/sshd_config 文件
-RSAAuthentication yes
-PubkeyAuthentication yes
-# 设置 权限
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/authorized_keys 
-</code></pre>
-<h3 id="快捷登录">快捷登录</h3>
-<p>上面的登录方式要输一大串命令，我们可以通过配置文件的方式，记录登录信息，通过设置别名简化命令</p>
-<p>用户配置文件，放置在 ~/.ssh/config，只有当前用户能使用<br>
-系统配置文件，放置在 /etc/ssh/ssh_config，都能使用（区别于 /etc/ssh/sshd_config）</p>
-<p>这里我使用 ~/.ssh/config</p>
-<pre><code># 设置的别名
-Host server-b
-  # 主机地址
-  HostName 192.168.10.100
-  # 用户名
-  User root
-  # 私钥地址
-  IdentityFile ~/.ssh/belier
-  # 端口 
-  Port 22 
-</code></pre>
-<p>使用：</p>
-<pre><code class="language-sh"># 现在就简洁多了
-ssh server-b
-</code></pre>
-<h2 id="端口更改">端口更改</h2>
-<p>为了更好的保证服务器的安全性，修改默认端口还是有必要的，其它的服务最好也修改掉默认端口</p>
-<p>编辑 /etc/ssh/sshd_config 文件</p>
-<pre><code>Port 22
-Port 2233
-</code></pre>
-<blockquote>
-<p>最好先把默认端口保留，避免新的端口没有配置好，导致后面连不上，等尝试能正常连接了，再将默认的端口删除</p>
-</blockquote>
-<p>重启服务：</p>
-<pre><code>systemctl restart sshd
-</code></pre>
-<p>端口放行：<br>
-这里以 firewall 防火墙为例</p>
-<pre><code># 开放端口
-firewall-cmd --permanent --zone=public --add-port=2233/tcp 
-# 重启加载防火墙配置
-firewall-cmd --reload
-</code></pre>
 ]]></content>
     </entry>
 </feed>
