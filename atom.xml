@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2020-01-06T02:06:09.240Z</updated>
+    <updated>2020-01-06T02:06:52.962Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -19,7 +19,7 @@
 <ol>
 <li>electron 的 npm 包要先下载，默认从 https://registry.npmjs.org/ 下载<br>
 方案：设置全局 npm 镜像</li>
-<li>electron 的 npm 包会在安装完成后执行<code>install.js</code>会去下载编译好的 electron，默认从 github 下载<br>
+<li>electron 的 npm 包会在安装完成后执行 <code>install.js</code> 会去下载编译好的 electron，默认从 github 下载<br>
 方案：设置下载 electron 的镜像</li>
 </ol>
 <h2 id="设置全局-npm-镜像">设置全局 npm 镜像</h2>
