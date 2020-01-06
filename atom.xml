@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2020-01-03T09:52:01.417Z</updated>
+    <updated>2020-01-06T02:06:09.240Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -15,11 +15,18 @@
         <link href="https://blog.belier.cn/post/60333938">
         </link>
         <updated>2020-01-03T09:03:33.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="修改全局镜像">修改全局镜像</h2>
+        <content type="html"><![CDATA[<h2 id="分析">分析</h2>
+<ol>
+<li>electron 的 npm 包要先下载，默认从 https://registry.npmjs.org/ 下载<br>
+方案：设置全局 npm 镜像</li>
+<li>electron 的 npm 包会在安装完成后执行<code>install.js</code>会去下载编译好的 electron，默认从 github 下载<br>
+方案：设置下载 electron 的镜像</li>
+</ol>
+<h2 id="设置全局-npm-镜像">设置全局 npm 镜像</h2>
 <pre><code class="language-bash">yarn config set registry https://registry.npm.taobao.org/
 npm config set registry https://registry.npm.taobao.org/
 </code></pre>
-<h2 id="配置-electron-镜像">配置 electron 镜像</h2>
+<h2 id="设置下载-electron-的镜像">设置下载 electron 的镜像</h2>
 <pre><code class="language-bash">yarn config set electron_mirror https://cdn.npm.taobao.org/dist/electron/
 npm config set electron_mirror https://cdn.npm.taobao.org/dist/electron/
 </code></pre>
