@@ -2,13 +2,45 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Blog</title>
-    <updated>2020-01-06T02:06:52.962Z</updated>
+    <updated>2020-01-08T07:39:02.828Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[css 实现高度与宽度保持一致]]></title>
+        <id>https://blog.belier.cn/post/83917392</id>
+        <link href="https://blog.belier.cn/post/83917392">
+        </link>
+        <updated>2020-01-08T06:55:08.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="效果">效果</h2>
+<p>可以改变浏览器窗口大小试试效果，高度始终和宽度保持一致</p>
+<style>
+    .box-666666{
+        width: 10%;
+        border: 1px solid #2D3748;
+        height: 0;
+        padding-bottom: 10%;
+    }
+</style>
+<div class="box-666666"></div> 
+<h2 id="代码">代码</h2>
+<pre><code class="language-html">&lt;style&gt;
+    .box{
+        width: 10%;
+        border: 1px solid #2D3748;
+        height: 0;
+        padding-bottom: 10%;
+    }
+&lt;/style&gt;
+&lt;div class=&quot;box&quot;&gt;&lt;/div&gt; 
+</code></pre>
+<h2 id="原理">原理</h2>
+<p>padding 是基于 width 计算的，让 padding 撑开元素就可以了</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[解决 electron 下载慢的问题]]></title>
         <id>https://blog.belier.cn/post/60333938</id>
@@ -309,34 +341,6 @@ arp
 </ul>
 <pre><code class="language-bash">vi  /etc/firewalld/zones/public.xml
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Centos7 开启密码登录和 root 用户远程登录]]></title>
-        <id>https://blog.belier.cn/post/75573037</id>
-        <link href="https://blog.belier.cn/post/75573037">
-        </link>
-        <updated>2019-12-26T01:31:22.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="开启密码登录">开启密码登录</h2>
-<ol>
-<li>编辑配置文件<br>
-vi /etc/ssh/sshd_config<pre><code class="language-bash">PasswordAuthentication yes
-</code></pre>
-</li>
-<li>重启 SSH 服务<pre><code class="language-bash">systemctl restart sshd
-</code></pre>
-</li>
-</ol>
-<h2 id="开启-root-用户远程登录">开启 root 用户远程登录</h2>
-<ol>
-<li>编辑配置文件<br>
-vi /etc/ssh/sshd_config<pre><code class="language-bash">PermitRootLogin yes
-</code></pre>
-</li>
-<li>重启 SSH 服务<pre><code class="language-bash">systemctl restart sshd
-</code></pre>
-</li>
-</ol>
 ]]></content>
     </entry>
 </feed>
