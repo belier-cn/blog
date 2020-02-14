@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-02-13T04:31:57.869Z</updated>
+    <updated>2020-02-14T14:20:13.095Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -10,12 +10,127 @@
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
     <entry>
+        <title type="html"><![CDATA[Spring Boot Jenkins Pipeline Docker]]></title>
+        <id>https://blog.belier.cn/post/52168793</id>
+        <link href="https://blog.belier.cn/post/52168793">
+        </link>
+        <updated>2020-02-14T02:16:38.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="准备一个简单的-spring-boot-项目">准备一个简单的 Spring Boot 项目</h2>
+<p><a href="https://github.com/belier-cn/spring-boot-docker">https://github.com/belier-cn/spring-boot-docker.git</a></p>
+<h2 id="jenkins-安装">Jenkins 安装</h2>
+<p><a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a><br>
+不用安装默认推荐插件，太多了，没有必要<br>
+<a href="/post/95619377/">Jenkins 汉化和加速插件下载</a></p>
+<h2 id="jenkins-安装所需插件">Jenkins 安装所需插件</h2>
+<ol>
+<li>Pipeline<br>
+<a href="https://jenkins.io/zh/doc/book/pipeline/">Pipeline 介绍</a></li>
+<li>Blue Ocean<br>
+<a href="https://jenkins.io/zh/doc/book/blueocean/">Blue Ocean 介绍</a></li>
+<li>Git Plugin<br>
+<a href="https://github.com/jenkinsci/git-plugin">Git Plugin Github 地址</a></li>
+<li>SSH Pipeline Steps<br>
+<a href="https://github.com/jenkinsci/ssh-steps-plugin">SSH Pipeline Steps Github 地址</a></li>
+</ol>
+<h2 id="创建-pipeline-项目">创建 Pipeline 项目</h2>
+<p><a href="https://jenkins.io/zh/doc/book/pipeline/getting-started/">Pipline 入门</a></p>
+<h2 id="编写-pipeline-脚本">编写 Pipeline 脚本</h2>
+<p><a href="https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/">Jenkinsfile 使用</a></p>
+<pre><code class="language-groovy">pipeline {
+    agent none
+    // 定义环境变量
+    environment {
+        // 根据 id 获取配置在 Jenkins 中的凭证 参考文档：https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/#%E5%A4%84%E7%90%86%E5%87%AD%E6%8D%AE
+        DOCKER_REGISTRY = credentials('aliyun-docker-registry')
+        REGISTRY_URL = 'registry.cn-shanghai.aliyuncs.com'
+        IMAGE_NAME = 'registry.cn-shanghai.aliyuncs.com/belier/test'
+        CONTAINER_NAME = 'test'
+        REMOTE_HOST = '192.168.56.11'
+        GIT_URL = 'https://github.com/belier-cn/spring-boot-docker.git'
+    }
+    stages {
+        stage('Checkout') {
+            agent any
+            steps {
+                // 拉取代码，参考文档：https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
+            }
+        }
+        stage('Build Jar') {
+            agent {
+                // 参考文档：https://jenkins.io/zh/doc/book/pipeline/docker/
+                docker {
+                    image 'maven:3-alpine'
+                    // 挂载目录，如果要配置 maven 的阿里云仓库地址，在 /usr/local/src/maven 下放一个配置好的 settings.xml 文件即可
+                    args '-v /usr/local/src/maven:/root/.m2'
+                }
+            }
+            steps {
+                // 打包
+                sh 'mvn clean -Dmaven.test.skip=true package'
+            }
+        }
+        stage('Build Image') {
+            agent any
+            steps {
+                // 构建镜像
+                sh &quot;docker build -t ${IMAGE_NAME} .&quot;
+            }
+        }
+        stage('Push Image') {
+            agent any
+            steps {
+                // 登陆到阿里云镜像仓库
+                sh &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
+                // 推送镜像到阿里云镜像仓库
+                sh &quot;docker push ${IMAGE_NAME}&quot;
+            }
+        }
+        stage('Deploy') {
+            agent any
+            steps {
+                script {
+                    // 登陆远程服务器，拉取镜像并运行，参考文档：https://github.com/jenkinsci/ssh-steps-plugin#withcredentials
+                    def remote = [:]
+                    remote.name = &quot;centos7-11&quot;
+                    remote.host = REMOTE_HOST
+                    remote.allowAnyHosts = true
+                    withCredentials([sshUserPrivateKey(credentialsId: REMOTE_HOST, keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                        remote.user = userName
+                        remote.identityFile = identity
+                        // 登陆到阿里云镜像仓库
+                        sshCommand remote: remote, command: &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
+                        try {
+                            // 删除已经存在的容器
+                            sshCommand remote: remote, command: &quot;docker rm -f ${CONTAINER_NAME}&quot;
+                        } catch (e) {
+                            echo '容器不存在'
+                        }
+                        // 运行容器
+                        sshCommand remote: remote, command: &quot;docker run --name ${CONTAINER_NAME} -p 8080:8080 -d ${IMAGE_NAME}&quot;
+                    }
+                }
+            }
+        }
+    }
+}
+
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Spring Boot Logback 配置 Sentry]]></title>
         <id>https://blog.belier.cn/post/85127963</id>
         <link href="https://blog.belier.cn/post/85127963">
         </link>
         <updated>2020-02-13T03:43:00.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="sentry-配置">Sentry 配置</h2>
+        <summary type="html"><![CDATA[<p>将错误日志发送到 Sentry 方便后期排查和维护</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>将错误日志发送到 Sentry 方便后期排查和维护</p>
+<!-- more -->
+<h2 id="sentry-简介">Sentry 简介</h2>
+<p><a href="https://sentry.io/about/">About Sentry</a></p>
+<h2 id="sentry-配置">Sentry 配置</h2>
 <p>在 <code>resources</code>目录下创建 <code>sentry.properties</code></p>
 <pre><code class="language-properties">dsn=你的 dsn
 stacktrace.app.packages=
@@ -118,6 +233,15 @@ stacktrace.app.packages=
                     &lt;/snapshots&gt;
                 &lt;/repository&gt;
             &lt;/repositories&gt;
+
+            &lt;pluginRepositories&gt;
+                &lt;pluginRepository&gt;
+                    &lt;id&gt;central&lt;/id&gt;
+                    &lt;name&gt;central&lt;/name&gt;
+                    &lt;url&gt;https://maven.aliyun.com/repository/public/&lt;/url&gt;
+                &lt;/pluginRepository&gt;
+            &lt;/pluginRepositories&gt;
+
         &lt;/profile&gt;
     &lt;/profiles&gt;
 
@@ -135,7 +259,11 @@ stacktrace.app.packages=
         <link href="https://blog.belier.cn/post/65279163">
         </link>
         <updated>2020-02-03T04:59:52.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="分析">分析</h2>
+        <summary type="html"><![CDATA[<p>加速网站访问速度</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>加速网站访问速度</p>
+<!-- more -->
+<h2 id="分析">分析</h2>
 <p>在发布的时候使用 <a href="https://github.com/qiniu/nodejs-sdk">qiniu nodejs sdk</a> 将编译后的资源全部上传到七牛云，如果使用 history 路由，index.html 得使用 nginx 或者其它 web 服务器进行部署</p>
 <h2 id="安装-qiniu-nodejs-sdk">安装 qiniu nodejs sdk</h2>
 <pre><code class="language-js">yarn add qiniu -D
@@ -361,7 +489,7 @@ npm config set electron_mirror https://cdn.npm.taobao.org/dist/electron/
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[不同 Docker Compose 下通信]]></title>
+        <title type="html"><![CDATA[不同 Docker Compose 下网络通信]]></title>
         <id>https://blog.belier.cn/post/59969103</id>
         <link href="https://blog.belier.cn/post/59969103">
         </link>
@@ -397,7 +525,7 @@ networks:
         </link>
         <updated>2019-12-27T11:50:12.000Z</updated>
         <content type="html"><![CDATA[<h2 id="下载-docker-compose-二进制文件">下载 Docker Compose 二进制文件</h2>
-<pre><code class="language-bash">curl -L &quot;https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+<pre><code class="language-bash">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
 </code></pre>
 <h2 id="给与文件可执行权限">给与文件可执行权限</h2>
 <pre><code class="language-bash">chmod +x /usr/local/bin/docker-compose
@@ -406,43 +534,6 @@ networks:
 <pre><code class="language-bash">docker-compose --version
 </code></pre>
 <p>参考：<a href="https://docs.docker.com/compose/install/#install-compose">Docker Compose Install</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 Docker Compose 运行 Jenkins]]></title>
-        <id>https://blog.belier.cn/post/55817706</id>
-        <link href="https://blog.belier.cn/post/55817706">
-        </link>
-        <updated>2019-12-27T11:13:12.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="创建存放目录">创建存放目录</h2>
-<pre><code class="language-bash">mkdir -p /usr/local/jenkins/jenkins_home
-</code></pre>
-<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
-<p>在 <code>/usr/local/jenkins</code> 目录下创建</p>
-<pre><code class="language-yml">version: '3'
-services:
-jenkins:
-  user: root
-  restart: always
-  image: jenkins/jenkins:lts
-  container_name: jenkins
-  ports:
-    - '3000:8080'
-  volumes:
-    - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
-    - /var/run/docker.sock:/var/run/docker.sock
-    - /usr/bin/docker:/usr/bin/docker
-    - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
-</code></pre>
-<h2 id="启动">启动</h2>
-<pre><code class="language-bash">docker-compose up -d
-</code></pre>
-<h2 id="获取首次登陆密码">获取首次登陆密码</h2>
-<pre><code class="language-bash">docker exec -it jenkins cat /var/jenkins_home/secrets/initialAdminPassword
-</code></pre>
-<h2 id="加速插件下载">加速插件下载</h2>
-<p>默认速度感人，还容易失败<br>
-参考：<a href="/post/95619377">Jenkins 使用镜像加速插件下载速度</a></p>
 ]]></content>
     </entry>
 </feed>

@@ -1,5 +1,6 @@
 <html>
   <head>
+    <base target="_blank" />
     
       <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
       <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
@@ -10,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581568205700">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581689033361">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -40,7 +41,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581568205700" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581689033361" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -116,18 +117,19 @@
 <p>在 <code>/usr/local/jenkins</code> 目录下创建</p>
 <pre><code class="language-yml">version: '3'
 services:
-jenkins:
-  user: root
-  restart: always
-  image: jenkins/jenkins:lts
-  container_name: jenkins
-  ports:
-    - '3000:8080'
-  volumes:
-    - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
-    - /var/run/docker.sock:/var/run/docker.sock
-    - /usr/bin/docker:/usr/bin/docker
-    - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+  jenkins:
+    user: root
+    restart: always
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    ports:
+      - '3000:8080'
+    volumes:
+      - /usr/local/jenkins/jenkins_home/:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+
 </code></pre>
 <h2 id="启动">启动</h2>
 <pre><code class="language-bash">docker-compose up -d
@@ -137,7 +139,7 @@ jenkins:
 </code></pre>
 <h2 id="加速插件下载">加速插件下载</h2>
 <p>默认速度感人，还容易失败<br>
-参考：<a href="/post/95619377">Jenkins 使用镜像加速插件下载速度</a></p>
+参考：<a href="/post/95619377/">Jenkins 汉化和加速插件下载</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>
@@ -169,7 +171,7 @@ jenkins:
             <div class="next-post">
               <a href="https://blog.belier.cn/post/95619377">
                 <h3 class="post-title">
-                  Jenkins 使用镜像加速插件下载速度
+                  Jenkins 汉化和加速插件下载
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -486,7 +488,7 @@ var PLUGIN_NAME = 'line-numbers';
 		'remove-indent': true,
 		'left-trim': true,
 		'right-trim': true,
-		'break-lines': 100,
+		'break-lines': 100000,
 		'tabs-to-spaces': 2
 	});
       </script>

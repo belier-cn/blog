@@ -56,16 +56,11 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">一键安装脚本</a></li>
-<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85">手动安装</a>
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87">安装准备</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8-docker-%E6%9C%8D%E5%8A%A1">启动 Docker 服务</a></li>
-<li><a href="#docker-%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">Docker 服务命令</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">配置阿里镜像加速器</a></li>
-</ul>
-</li>
+<li><a href="#%E5%87%86%E5%A4%87%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84-spring-boot-%E9%A1%B9%E7%9B%AE">准备一个简单的 Spring Boot 项目</a></li>
+<li><a href="#jenkins-%E5%AE%89%E8%A3%85">Jenkins 安装</a></li>
+<li><a href="#jenkins-%E5%AE%89%E8%A3%85%E6%89%80%E9%9C%80%E6%8F%92%E4%BB%B6">Jenkins 安装所需插件</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-pipeline-%E9%A1%B9%E7%9B%AE">创建 Pipeline 项目</a></li>
+<li><a href="#%E7%BC%96%E5%86%99-pipeline-%E8%84%9A%E6%9C%AC">编写 Pipeline 脚本</a></li>
 </ul>
 </li>
 </ul>
@@ -109,93 +104,123 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="92660266">
-          <i class="iconfont calendar-line"></i> 2019-09-08 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">Spring Boot Jenkins Pipeline Docker</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="52168793">
+          <i class="iconfont calendar-line"></i> 2020-02-14 | <i class="iconfont time-line"></i> 3 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <h2 id="一键安装脚本">一键安装脚本</h2>
-<pre><code class="language-bash">curl -sSL https://get.docker.com/ | sh
-</code></pre>
-<blockquote>
-<p>推荐国外服务器使用，国内使用手动安装</p>
-</blockquote>
-<h2 id="手动安装">手动安装</h2>
-<h3 id="安装准备">安装准备</h3>
+          <h2 id="准备一个简单的-spring-boot-项目">准备一个简单的 Spring Boot 项目</h2>
+<p><a href="https://github.com/belier-cn/spring-boot-docker">https://github.com/belier-cn/spring-boot-docker.git</a></p>
+<h2 id="jenkins-安装">Jenkins 安装</h2>
+<p><a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a><br>
+不用安装默认推荐插件，太多了，没有必要<br>
+<a href="/post/95619377/">Jenkins 汉化和加速插件下载</a></p>
+<h2 id="jenkins-安装所需插件">Jenkins 安装所需插件</h2>
 <ol>
-<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
+<li>Pipeline<br>
+<a href="https://jenkins.io/zh/doc/book/pipeline/">Pipeline 介绍</a></li>
+<li>Blue Ocean<br>
+<a href="https://jenkins.io/zh/doc/book/blueocean/">Blue Ocean 介绍</a></li>
+<li>Git Plugin<br>
+<a href="https://github.com/jenkinsci/git-plugin">Git Plugin Github 地址</a></li>
+<li>SSH Pipeline Steps<br>
+<a href="https://github.com/jenkinsci/ssh-steps-plugin">SSH Pipeline Steps Github 地址</a></li>
 </ol>
-<pre><code class="language-bash">uname -r 
-</code></pre>
-<ol start="2">
-<li>移除旧的版本</li>
-</ol>
-<pre><code class="language-bash">yum remove docker \
-                docker-client \
-                docker-client-latest \
-                docker-common \
-                docker-latest \
-                docker-latest-logrotate \
-                docker-logrotate \
-                docker-selinux \
-                docker-engine-selinux \
-                docker-engine
-</code></pre>
-<ol start="3">
-<li>安装所需的软件包</li>
-</ol>
-<pre><code class="language-bash">yum install -y yum-utils device-mapper-persistent-data lvm2
-</code></pre>
-<ol start="4">
-<li>添加源</li>
-</ol>
-<pre><code class="language-bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
-</code></pre>
-<ol start="5">
-<li>更新 yum 缓存</li>
-</ol>
-<pre><code class="language-bash">yum makecache fast
-</code></pre>
-<h3 id="安装-docker">安装 Docker</h3>
-<pre><code class="language-bash">yum -y install docker-ce
-</code></pre>
-<p>安装成功后查看版本，检查是否安装成功</p>
-<pre><code class="language-bash">docker -v
-</code></pre>
-<h3 id="启动-docker-服务">启动 Docker 服务</h3>
-<pre><code class="language-bash">systemctl start docker
-</code></pre>
-<h3 id="docker-服务命令">Docker 服务命令</h3>
-<pre><code class="language-bash">systemctl start docker     # 启动服务
-systemctl stop docker      # 关闭服务
-systemctl restart docker   # 重启服务
-systemctl enable docker    # 开机自启动
-systemctl disable docker   # 关闭开机自启动
-</code></pre>
-<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
-<ol>
-<li>开通服务</li>
-</ol>
-<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">阿里镜像加速器</a></p>
-<ol start="2">
-<li>配置加速器</li>
-</ol>
-<pre><code class="language-bash">mkdir -p /etc/docker
-tee /etc/docker/daemon.json &lt;&lt;-'EOF'
-{
-  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
+<h2 id="创建-pipeline-项目">创建 Pipeline 项目</h2>
+<p><a href="https://jenkins.io/zh/doc/book/pipeline/getting-started/">Pipline 入门</a></p>
+<h2 id="编写-pipeline-脚本">编写 Pipeline 脚本</h2>
+<p><a href="https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/">Jenkinsfile 使用</a></p>
+<pre><code class="language-groovy">pipeline {
+    agent none
+    // 定义环境变量
+    environment {
+        // 根据 id 获取配置在 Jenkins 中的凭证 参考文档：https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/#%E5%A4%84%E7%90%86%E5%87%AD%E6%8D%AE
+        DOCKER_REGISTRY = credentials('aliyun-docker-registry')
+        REGISTRY_URL = 'registry.cn-shanghai.aliyuncs.com'
+        IMAGE_NAME = 'registry.cn-shanghai.aliyuncs.com/belier/test'
+        CONTAINER_NAME = 'test'
+        REMOTE_HOST = '192.168.56.11'
+        GIT_URL = 'https://github.com/belier-cn/spring-boot-docker.git'
+    }
+    stages {
+        stage('Checkout') {
+            agent any
+            steps {
+                // 拉取代码，参考文档：https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
+            }
+        }
+        stage('Build Jar') {
+            agent {
+                // 参考文档：https://jenkins.io/zh/doc/book/pipeline/docker/
+                docker {
+                    image 'maven:3-alpine'
+                    // 挂载目录，如果要配置 maven 的阿里云仓库地址，在 /usr/local/src/maven 下放一个配置好的 settings.xml 文件即可
+                    args '-v /usr/local/src/maven:/root/.m2'
+                }
+            }
+            steps {
+                // 打包
+                sh 'mvn clean -Dmaven.test.skip=true package'
+            }
+        }
+        stage('Build Image') {
+            agent any
+            steps {
+                // 构建镜像
+                sh &quot;docker build -t ${IMAGE_NAME} .&quot;
+            }
+        }
+        stage('Push Image') {
+            agent any
+            steps {
+                // 登陆到阿里云镜像仓库
+                sh &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
+                // 推送镜像到阿里云镜像仓库
+                sh &quot;docker push ${IMAGE_NAME}&quot;
+            }
+        }
+        stage('Deploy') {
+            agent any
+            steps {
+                script {
+                    // 登陆远程服务器，拉取镜像并运行，参考文档：https://github.com/jenkinsci/ssh-steps-plugin#withcredentials
+                    def remote = [:]
+                    remote.name = &quot;centos7-11&quot;
+                    remote.host = REMOTE_HOST
+                    remote.allowAnyHosts = true
+                    withCredentials([sshUserPrivateKey(credentialsId: REMOTE_HOST, keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+                        remote.user = userName
+                        remote.identityFile = identity
+                        // 登陆到阿里云镜像仓库
+                        sshCommand remote: remote, command: &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
+                        try {
+                            // 删除已经存在的容器
+                            sshCommand remote: remote, command: &quot;docker rm -f ${CONTAINER_NAME}&quot;
+                        } catch (e) {
+                            echo '容器不存在'
+                        }
+                        // 运行容器
+                        sshCommand remote: remote, command: &quot;docker run --name ${CONTAINER_NAME} -p 8080:8080 -d ${IMAGE_NAME}&quot;
+                    }
+                }
+            }
+        }
+    }
 }
-EOF
-systemctl daemon-reload
-systemctl restart docker
+
 </code></pre>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/925065">
-            <span class="flex-auto">Centos7</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/613789">
+            <span class="flex-auto">Spring Boot</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/197503">
+            <span class="flex-auto">Jenkins</span>
           </a>
         
           <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589">
@@ -207,21 +232,12 @@ systemctl restart docker
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/38562561">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/56853309">
+              <a href="https://blog.belier.cn/post/85127963">
                 <h3 class="post-title">
-                  使用 VirtualBox Vagrant 快速搭建 Centos7 系统
+                  Spring Boot Logback 配置 Sentry
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -239,7 +255,7 @@ systemctl restart docker
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 92660266,
+        path: 52168793,
         visitor: true,
         highlight: false
 })

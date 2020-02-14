@@ -1,5 +1,6 @@
 <html>
   <head>
+    <base target="_blank" />
     
       <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
       <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
@@ -10,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581568205700">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581689033361">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -40,7 +41,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581568205700" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581689033361" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -55,6 +56,7 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
+<li><a href="#sentry-%E7%AE%80%E4%BB%8B">Sentry 简介</a></li>
 <li><a href="#sentry-%E9%85%8D%E7%BD%AE">Sentry 配置</a></li>
 <li><a href="#logbak-%E9%85%8D%E7%BD%AE">Logbak 配置</a></li>
 </ul>
@@ -106,7 +108,11 @@
         </div>
         
         <div class="post-content yue">
-          <h2 id="sentry-配置">Sentry 配置</h2>
+          <p>将错误日志发送到 Sentry 方便后期排查和维护</p>
+<!-- more -->
+<h2 id="sentry-简介">Sentry 简介</h2>
+<p><a href="https://sentry.io/about/">About Sentry</a></p>
+<h2 id="sentry-配置">Sentry 配置</h2>
 <p>在 <code>resources</code>目录下创建 <code>sentry.properties</code></p>
 <pre><code class="language-properties">dsn=你的 dsn
 stacktrace.app.packages=
@@ -154,6 +160,15 @@ stacktrace.app.packages=
 
         <div class="flex justify-between py-8">
           <div class="prev-post">
+            
+             
+                <a href="https://blog.belier.cn/post/52168793">
+                  <h3 class="post-title">
+                    <i class="iconfont arrow-left-line"></i>
+                    Spring Boot Jenkins Pipeline Docker
+                  </h3>
+                </a>
+              
             
           </div>
           
@@ -477,7 +492,7 @@ var PLUGIN_NAME = 'line-numbers';
 		'remove-indent': true,
 		'left-trim': true,
 		'right-trim': true,
-		'break-lines': 100,
+		'break-lines': 100000,
 		'tabs-to-spaces': 2
 	});
       </script>
