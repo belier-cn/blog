@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581766787691">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1581829145673">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -41,7 +41,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581766787691" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1581829145673" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -58,6 +58,14 @@
 <ul>
 <li><a href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">创建目录</a></li>
 <li><a href="#%E8%B5%8B%E4%BA%88%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90">赋予目录权限</a></li>
+<li><a href="#%E8%AE%BE%E7%BD%AE%E7%B3%BB%E7%BB%9F%E5%8F%82%E6%95%B0">设置系统参数</a>
+<ul>
+<li><a href="#%E4%B8%B4%E6%97%B6%E7%94%9F%E6%95%88">临时生效</a></li>
+<li><a href="#ulimit-%E6%B0%B8%E4%B9%85%E7%94%9F%E6%95%88">ulimit 永久生效</a></li>
+<li><a href="#sysctl-%E6%B0%B8%E4%B9%85%E7%94%9F%E6%95%88">sysctl 永久生效</a></li>
+<li><a href="#%E9%87%8D%E5%90%AF%E7%B3%BB%E7%BB%9F">重启系统</a></li>
+</ul>
+</li>
 <li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
 <li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li>
 <li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
@@ -106,7 +114,7 @@
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
         <h1 class="text-3xl font-bold lg:mt-16">使用 Docker Compose 运行 SonarQube 7.9.2</h1>
         <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="58129673">
-          <i class="iconfont calendar-line"></i> 2020-02-15 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+          <i class="iconfont calendar-line"></i> 2020-02-15 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
@@ -124,6 +132,33 @@ chown -R 999:999 .
 <pre><code>Unable to locate appender &quot;file_es&quot; for logger config &quot;root&quot;
 </code></pre>
 <p>参考：<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<h2 id="设置系统参数">设置系统参数</h2>
+<h3 id="临时生效">临时生效</h3>
+<pre><code class="language-bash">sysctl -w vm.max_map_count=262144
+sysctl -w fs.file-max=65536
+ulimit -n 65536
+ulimit -u 4096
+</code></pre>
+<h3 id="ulimit-永久生效">ulimit 永久生效</h3>
+<p>编辑 <code>/etc/security/limits.conf</code> 加入如下配置</p>
+<pre><code># * 代表所有用户，可以针对某个用户配置 如：root soft notfile 65536
+* soft nofile 65536
+* hard nofile 65536
+
+* soft nproc 65565
+* hard nproc 65565
+</code></pre>
+<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28">https://github.com/iwhile/blogbook/issues/28</a></p>
+<h3 id="sysctl-永久生效">sysctl 永久生效</h3>
+<p>编辑 <code>/etc/sysctl.conf</code> 加入如下配置</p>
+<pre><code>vm.max_map_count=262144
+fs.file-max=65536
+</code></pre>
+<p>加载 <code>/etc/sysctl.conf</code>配置</p>
+<pre><code>sysctl -p
+</code></pre>
+<h3 id="重启系统">重启系统</h3>
+<p>如果采用永久配置，保险起见，重启系统</p>
 <h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
 <p>在<code>/usr/local/src/sonarqube</code>目录下创建</p>
 <pre><code class="language-yaml">version: '3'
@@ -148,8 +183,7 @@ services:
 <pre><code class="language-bash">docker-compse up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a><br>
-<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>

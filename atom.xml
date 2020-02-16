@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-02-15T11:41:14.247Z</updated>
+    <updated>2020-02-16T05:03:26.315Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -29,6 +29,33 @@ chown -R 999:999 .
 <pre><code>Unable to locate appender &quot;file_es&quot; for logger config &quot;root&quot;
 </code></pre>
 <p>参考：<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<h2 id="设置系统参数">设置系统参数</h2>
+<h3 id="临时生效">临时生效</h3>
+<pre><code class="language-bash">sysctl -w vm.max_map_count=262144
+sysctl -w fs.file-max=65536
+ulimit -n 65536
+ulimit -u 4096
+</code></pre>
+<h3 id="ulimit-永久生效">ulimit 永久生效</h3>
+<p>编辑 <code>/etc/security/limits.conf</code> 加入如下配置</p>
+<pre><code># * 代表所有用户，可以针对某个用户配置 如：root soft notfile 65536
+* soft nofile 65536
+* hard nofile 65536
+
+* soft nproc 65565
+* hard nproc 65565
+</code></pre>
+<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28">https://github.com/iwhile/blogbook/issues/28</a></p>
+<h3 id="sysctl-永久生效">sysctl 永久生效</h3>
+<p>编辑 <code>/etc/sysctl.conf</code> 加入如下配置</p>
+<pre><code>vm.max_map_count=262144
+fs.file-max=65536
+</code></pre>
+<p>加载 <code>/etc/sysctl.conf</code>配置</p>
+<pre><code>sysctl -p
+</code></pre>
+<h3 id="重启系统">重启系统</h3>
+<p>如果采用永久配置，保险起见，重启系统</p>
 <h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
 <p>在<code>/usr/local/src/sonarqube</code>目录下创建</p>
 <pre><code class="language-yaml">version: '3'
@@ -53,8 +80,7 @@ services:
 <pre><code class="language-bash">docker-compse up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a><br>
-<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a></p>
 ]]></content>
     </entry>
     <entry>
