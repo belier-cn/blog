@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1583053760136">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1583055584598">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -41,7 +41,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1583053760136" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1583055584598" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -152,12 +152,27 @@ public @interface SwaggerEnum {
 <pre><code class="language-java">@Component
 public class EnumCommon {
 
-    public EnumDesc getDesc(Class enumClass) {
+    /**
+     * 获取 {@link SwaggerEnum}
+     *
+     * @param enumClass 枚举类
+     * @return {@link SwaggerEnum}
+     */
+    public SwaggerEnum getSwaggerEnum(Class enumClass) {
         if (enumClass == null || !Enum.class.isAssignableFrom(enumClass)) {
             return null;
         }
-        // 判断是否有 SwaggerEnum 注解
-        SwaggerEnum swaggerEnum = AnnotationUtils.findAnnotation(enumClass, SwaggerEnum.class);
+        return AnnotationUtils.findAnnotation(enumClass, SwaggerEnum.class);
+    }
+
+    /**
+     * 生成 desc
+     *
+     * @param enumClass   枚举类
+     * @param swaggerEnum {@link SwaggerEnum}
+     * @return desc
+     */
+    public String getDesc(Class enumClass, SwaggerEnum swaggerEnum) {
         if (swaggerEnum == null) {
             return null;
         }
@@ -167,7 +182,8 @@ public class EnumCommon {
             return null;
         }
         // 将枚举的值转成字符串
-        String description = Arrays.stream(enumConstants).filter(Objects::nonNull)
+        return Arrays.stream(enumConstants)
+                .filter(Objects::nonNull)
                 .map(item -&gt; {
                     try {
                         Reflect enumReflect = Reflect.on(item);
@@ -179,8 +195,6 @@ public class EnumCommon {
                     }
                 }).filter(Objects::nonNull)
                 .collect(Collectors.joining(&quot;，&quot;, swaggerEnum.value() + &quot;  &quot;, &quot;&quot;));
-
-        return EnumDesc.builder().desc(description).swaggerEnum(swaggerEnum).build();
     }
 
 
@@ -188,18 +202,6 @@ public class EnumCommon {
 </code></pre>
 <p>Reflect 使用的 <a href="https://github.com/jOOQ/jOOR">joor</a><br>
 StrUtil 使用的 <a href="https://hutool.cn/">hutool</a></p>
-<pre><code class="language-java">@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class EnumDesc {
-
-    private String desc;
-
-    private SwaggerEnum swaggerEnum;
-
-}
-</code></pre>
 <h2 id="创建-expandedparameterbuilderplugin">创建 ExpandedParameterBuilderPlugin</h2>
 <p>用于处理 query 传参中的枚举</p>
 <pre><code class="language-java">@Component
@@ -209,30 +211,28 @@ public class EnumExpandedParameterBuilderPlugin implements ExpandedParameterBuil
 
     private final TypeResolver resolver;
 
-    private final EnumTypeDeterminer enumTypeDeterminer;
-
-    public EnumExpandedParameterBuilderPlugin(EnumCommon enumCommon, TypeResolver resolver, EnumTypeDeterminer enumTypeDeterminer) {
+    public EnumExpandedParameterBuilderPlugin(EnumCommon enumCommon, TypeResolver resolver) {
         this.enumCommon = enumCommon;
         this.resolver = resolver;
-        this.enumTypeDeterminer = enumTypeDeterminer;
     }
 
     @Override
     public void apply(ParameterExpansionContext context) {
-        ResolvedType resolved = resolver.resolve(context.getFieldType());
-        Class&lt;?&gt; erasedType = resolved.getErasedType();
-        if (enumTypeDeterminer.isEnum(erasedType)) {
-            EnumDesc desc = enumCommon.getDesc(erasedType);
-            if (desc != null) {
-                Reflect parameterBuilderReflect = Reflect.on(context.getParameterBuilder());
-                parameterBuilderReflect.set(&quot;allowableValues&quot;, null);
-                context.getParameterBuilder()
-                        .allowMultiple(false)
-                        .modelRef(new ModelRef(desc.getSwaggerEnum().modelRef()))
-                        .description(desc.getDesc())
-                        .type(resolver.resolve(desc.getSwaggerEnum().type()));
-            }
+        Class&lt;?&gt; erasedType = context.getFieldType().getErasedType();
+        SwaggerEnum swaggerEnum = enumCommon.getSwaggerEnum(erasedType);
+        String desc = enumCommon.getDesc(erasedType, swaggerEnum);
+        if (desc != null) {
+            Reflect parameterBuilderReflect = Reflect.on(context.getParameterBuilder());
+            // 将 allowableValues 设置成 null
+            // context.getParameterBuilder().allowableValues() 并不能设置 null，只能反射
+            parameterBuilderReflect.set(&quot;allowableValues&quot;, null);
+            context.getParameterBuilder()
+                    .allowMultiple(false)
+                    .modelRef(new ModelRef(swaggerEnum.modelRef()))
+                    .description(desc)
+                    .type(resolver.resolve(swaggerEnum.type()));
         }
+
     }
 
     @Override
@@ -255,16 +255,16 @@ public class EnumModelPropertyBuilderPlugin implements ModelPropertyBuilderPlugi
 
     @Override
     public void apply(ModelPropertyContext context) {
-        if (!context.getBeanPropertyDefinition().isPresent()) {
-            return;
+        if (context.getBeanPropertyDefinition().isPresent()) {
+            Class&lt;?&gt; rawPrimaryType = context.getBeanPropertyDefinition().get().getRawPrimaryType();
+            SwaggerEnum swaggerEnum = enumCommon.getSwaggerEnum(rawPrimaryType);
+            String desc = enumCommon.getDesc(rawPrimaryType, swaggerEnum);
+            if (desc != null) {
+                // 修改描述和类型
+                ResolvedType type = context.getResolver().resolve(swaggerEnum.type());
+                context.getBuilder().description(desc).type(type);
+            }
         }
-        EnumDesc desc = enumCommon.getDesc(context.getBeanPropertyDefinition().get().getRawPrimaryType());
-        if (desc == null) {
-            return;
-        }
-        // 修改描述和类型
-        ResolvedType type = context.getResolver().resolve(desc.getSwaggerEnum().type());
-        context.getBuilder().description(desc.getDesc()).type(type);
     }
 
     @Override
