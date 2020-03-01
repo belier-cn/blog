@@ -49,6 +49,24 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
         
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA-swaggerenum-%E6%B3%A8%E8%A7%A3">创建 SwaggerEnum 注解</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E5%A4%84%E7%90%86%E6%9E%9A%E4%B8%BE%E7%9A%84%E5%B7%A5%E5%85%B7%E7%B1%BB">创建处理枚举的工具类</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-expandedparameterbuilderplugin">创建 ExpandedParameterBuilderPlugin</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-modelpropertybuilderplugin">创建 ModelPropertyBuilderPlugin</a></li>
+<li><a href="#%E7%A4%BA%E4%BE%8B">示例</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        
         </div>
       
     </div>
@@ -86,25 +104,210 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Nginx 隐藏版本号信息</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="38567915">
-          <i class="iconfont calendar-line"></i> 2020-02-12 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">Spring Boot Swagger 枚举处理</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="35678129">
+          <i class="iconfont calendar-line"></i> 2020-02-29 | <i class="iconfont time-line"></i> 3 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <p>隐藏版本号有利于提高服务安全性</p>
-<!-- more -->
-<pre><code class="language-nginx">http {
-    # 在 http 中添加
-    server_tokens off;
+          <h2 id="创建-swaggerenum-注解">创建 SwaggerEnum 注解</h2>
+<p>用于标识枚举类</p>
+<pre><code class="language-java">@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SwaggerEnum {
+
+    String VALUE = &quot;value&quot;;
+
+    String DESC = &quot;desc&quot;;
+
+    /**
+     * @return 枚举的含义
+     */
+    String value();
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    Class type() default Integer.class;
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    String modelRef() default &quot;int&quot;;
+
+    /**
+     * @return 枚举实际使用的字段
+     */
+    String valueName() default VALUE;
+
+    /**
+     * @return 枚举中用于描述的字段
+     */
+    String descName() default DESC;
+
+}
+
+</code></pre>
+<h2 id="创建处理枚举的工具类">创建处理枚举的工具类</h2>
+<pre><code class="language-java">@Component
+public class EnumCommon {
+
+    public EnumDesc getDesc(Class enumClass) {
+        if (enumClass == null || !Enum.class.isAssignableFrom(enumClass)) {
+            return null;
+        }
+        // 判断是否有 SwaggerEnum 注解
+        SwaggerEnum swaggerEnum = AnnotationUtils.findAnnotation(enumClass, SwaggerEnum.class);
+        if (swaggerEnum == null) {
+            return null;
+        }
+        // 获取枚举对应的值
+        Object[] enumConstants = enumClass.getEnumConstants();
+        if (ArrayUtils.isEmpty(enumConstants)) {
+            return null;
+        }
+        // 将枚举的值转成字符串
+        String description = Arrays.stream(enumConstants).filter(Objects::nonNull)
+                .map(item -&gt; {
+                    try {
+                        Reflect enumReflect = Reflect.on(item);
+                        Object value = enumReflect.get(swaggerEnum.valueName());
+                        Object desc = enumReflect.get(swaggerEnum.descName());
+                        return StrUtil.format(&quot;{} : {}&quot;, value, desc);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .collect(Collectors.joining(&quot;，&quot;, swaggerEnum.value() + &quot;  &quot;, &quot;&quot;));
+
+        return EnumDesc.builder().desc(description).swaggerEnum(swaggerEnum).build();
+    }
+
+
 }
 </code></pre>
+<p>Reflect 使用的 <a href="https://github.com/jOOQ/jOOR">joor</a><br>
+StrUtil 使用的 <a href="https://hutool.cn/">hutool</a></p>
+<pre><code class="language-java">@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class EnumDesc {
+
+    private String desc;
+
+    private SwaggerEnum swaggerEnum;
+
+}
+</code></pre>
+<h2 id="创建-expandedparameterbuilderplugin">创建 ExpandedParameterBuilderPlugin</h2>
+<p>用于处理 query 传参中的枚举</p>
+<pre><code class="language-java">@Component
+public class EnumExpandedParameterBuilderPlugin implements ExpandedParameterBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    private final TypeResolver resolver;
+
+    private final EnumTypeDeterminer enumTypeDeterminer;
+
+    public EnumExpandedParameterBuilderPlugin(EnumCommon enumCommon, TypeResolver resolver, EnumTypeDeterminer enumTypeDeterminer) {
+        this.enumCommon = enumCommon;
+        this.resolver = resolver;
+        this.enumTypeDeterminer = enumTypeDeterminer;
+    }
+
+    @Override
+    public void apply(ParameterExpansionContext context) {
+        ResolvedType resolved = resolver.resolve(context.getFieldType());
+        Class&lt;?&gt; erasedType = resolved.getErasedType();
+        if (enumTypeDeterminer.isEnum(erasedType)) {
+            EnumDesc desc = enumCommon.getDesc(erasedType);
+            if (desc != null) {
+                Reflect parameterBuilderReflect = Reflect.on(context.getParameterBuilder());
+                parameterBuilderReflect.set(&quot;allowableValues&quot;, null);
+                context.getParameterBuilder()
+                        .allowMultiple(false)
+                        .modelRef(new ModelRef(desc.getSwaggerEnum().modelRef()))
+                        .description(desc.getDesc())
+                        .type(resolver.resolve(desc.getSwaggerEnum().type()));
+            }
+        }
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="创建-modelpropertybuilderplugin">创建 ModelPropertyBuilderPlugin</h2>
+<p>用于处理 request body 对应的类以及接口的返回值的类</p>
+<pre><code class="language-java">@Component
+public class EnumModelPropertyBuilderPlugin implements ModelPropertyBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    public EnumModelPropertyBuilderPlugin(EnumCommon enumCommon) {
+        this.enumCommon = enumCommon;
+    }
+
+    @Override
+    public void apply(ModelPropertyContext context) {
+        if (!context.getBeanPropertyDefinition().isPresent()) {
+            return;
+        }
+        EnumDesc desc = enumCommon.getDesc(context.getBeanPropertyDefinition().get().getRawPrimaryType());
+        if (desc == null) {
+            return;
+        }
+        // 修改描述和类型
+        ResolvedType type = context.getResolver().resolve(desc.getSwaggerEnum().type());
+        context.getBuilder().description(desc.getDesc()).type(type);
+    }
+
+    @Override
+    public boolean supports(DocumentationType documentationType) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="示例">示例</h2>
+<pre><code class="language-java">@SwaggerEnum(&quot;性别&quot;)
+public enum GenderEnum {
+
+    /**
+     * 枚举值
+     */
+    MAN(1, &quot;男&quot;),
+    WOMAN(2, &quot;女&quot;);
+
+    @Getter
+    private int value;
+
+    @Getter
+    private String desc;
+
+    GenderEnum(int value, String desc) {
+        this.value = value;
+        this.desc = desc;
+    }
+
+}
+</code></pre>
+<p>最后生成的 description ：<code>性别 1 : 男，2 : 女</code></p>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/811086/">
-            <span class="flex-auto">Nginx</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/621375/">
+            <span class="flex-auto">Swagger</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/613789/">
+            <span class="flex-auto">Spring Boot</span>
           </a>
         
 
@@ -113,10 +316,10 @@
           <div class="prev-post">
             
              
-                <a href="https://blog.belier.cn/post/85127963/">
+                <a href="https://blog.belier.cn/post/52178956/">
                   <h3 class="post-title">
                     <i class="iconfont arrow-left-line"></i>
-                    Spring Boot Logback 配置 Sentry
+                    Spring Boot Swagger Pageable 处理
                   </h3>
                 </a>
               
@@ -124,9 +327,9 @@
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/66712598/">
+              <a href="https://blog.belier.cn/post/61782395/">
                 <h3 class="post-title">
-                  Maven 同时配置阿里云仓库和私有仓库
+                  Spring Boot 优雅的使用枚举类
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -144,7 +347,7 @@
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 38567915,
+        path: 35678129,
         visitor: true,
         highlight: false
 })

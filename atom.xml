@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-02-16T05:03:26.315Z</updated>
+    <updated>2020-03-01T09:10:17.025Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -10,9 +10,483 @@
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
     <entry>
+        <title type="html"><![CDATA[Spring Boot Swagger Pageable 处理]]></title>
+        <id>https://blog.belier.cn/post/52178956/</id>
+        <link href="https://blog.belier.cn/post/52178956/">
+        </link>
+        <updated>2020-03-01T09:04:28.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="将-pageable-当成-void-处理">将 Pageable 当成 Void 处理</h2>
+<pre><code class="language-java">@Bean
+public AlternateTypeRuleConvention pageableConvention(final TypeResolver resolver) {
+    return new AlternateTypeRuleConvention() {
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE;
+        }
+
+        @Override
+        public List&lt;AlternateTypeRule&gt; rules() {
+            // 将 Pageable 当成 Void 处理，配合 PageableParamPlugin 进行处理
+            return Lists.newArrayList(AlternateTypeRules.newRule(resolver.resolve(Pageable.class), resolver.resolve(Void.class)));
+        }
+    };
+}
+</code></pre>
+<h2 id="在参数中有-pageable-的接口中手动添加分页参数">在参数中有 Pageable 的接口中手动添加分页参数</h2>
+<pre><code class="language-java">@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class PageableParamPlugin implements OperationBuilderPlugin {
+
+    private ResolvedType pageableType;
+
+    private List&lt;Parameter&gt; parameters;
+
+    private final TypeResolver resolver;
+
+    private final SpringDataWebProperties springDataWebProperties;
+
+    public PageableParamPlugin(TypeResolver resolver, SpringDataWebProperties springDataWebProperties) {
+        this.resolver = resolver;
+        this.springDataWebProperties = springDataWebProperties;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (resolver == null || springDataWebProperties == null) {
+            return;
+        }
+        this.pageableType = resolver.resolve(Pageable.class);
+        ModelRef stringModel = new ModelRef(&quot;string&quot;);
+        ModelRef intModel = new ModelRef(&quot;int&quot;);
+        String parameterType = &quot;query&quot;;
+        parameters = Lists.newArrayListWithExpectedSize(3);
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getPageable().getPageParameter())
+                .modelRef(intModel)
+                .description(&quot;当前页&quot;)
+                .build());
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getPageable().getSizeParameter())
+                .modelRef(intModel)
+                .description(&quot;查询的记录数&quot;)
+                .build());
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getSort().getSortParameter())
+                .modelRef(stringModel)
+                .allowMultiple(true)
+                .description(&quot;排序参数&quot;)
+                .build());
+    }
+
+    @Override
+    public void apply(OperationContext context) {
+        if (CollectionUtils.isEmpty(parameters)) {
+            return;
+        }
+        boolean hasPageableParam = context.getParameters()
+                .stream().anyMatch(parameter -&gt; pageableType.equals(parameter.getParameterType()));
+        if (hasPageableParam) {
+            context.operationBuilder().parameters(parameters);
+        }
+    }
+
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot Swagger 枚举处理]]></title>
+        <id>https://blog.belier.cn/post/35678129/</id>
+        <link href="https://blog.belier.cn/post/35678129/">
+        </link>
+        <updated>2020-02-29T06:23:36.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建-swaggerenum-注解">创建 SwaggerEnum 注解</h2>
+<p>用于标识枚举类</p>
+<pre><code class="language-java">@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SwaggerEnum {
+
+    String VALUE = &quot;value&quot;;
+
+    String DESC = &quot;desc&quot;;
+
+    /**
+     * @return 枚举的含义
+     */
+    String value();
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    Class type() default Integer.class;
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    String modelRef() default &quot;int&quot;;
+
+    /**
+     * @return 枚举实际使用的字段
+     */
+    String valueName() default VALUE;
+
+    /**
+     * @return 枚举中用于描述的字段
+     */
+    String descName() default DESC;
+
+}
+
+</code></pre>
+<h2 id="创建处理枚举的工具类">创建处理枚举的工具类</h2>
+<pre><code class="language-java">@Component
+public class EnumCommon {
+
+    public EnumDesc getDesc(Class enumClass) {
+        if (enumClass == null || !Enum.class.isAssignableFrom(enumClass)) {
+            return null;
+        }
+        // 判断是否有 SwaggerEnum 注解
+        SwaggerEnum swaggerEnum = AnnotationUtils.findAnnotation(enumClass, SwaggerEnum.class);
+        if (swaggerEnum == null) {
+            return null;
+        }
+        // 获取枚举对应的值
+        Object[] enumConstants = enumClass.getEnumConstants();
+        if (ArrayUtils.isEmpty(enumConstants)) {
+            return null;
+        }
+        // 将枚举的值转成字符串
+        String description = Arrays.stream(enumConstants).filter(Objects::nonNull)
+                .map(item -&gt; {
+                    try {
+                        Reflect enumReflect = Reflect.on(item);
+                        Object value = enumReflect.get(swaggerEnum.valueName());
+                        Object desc = enumReflect.get(swaggerEnum.descName());
+                        return StrUtil.format(&quot;{} : {}&quot;, value, desc);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .collect(Collectors.joining(&quot;，&quot;, swaggerEnum.value() + &quot;  &quot;, &quot;&quot;));
+
+        return EnumDesc.builder().desc(description).swaggerEnum(swaggerEnum).build();
+    }
+
+
+}
+</code></pre>
+<p>Reflect 使用的 <a href="https://github.com/jOOQ/jOOR">joor</a><br>
+StrUtil 使用的 <a href="https://hutool.cn/">hutool</a></p>
+<pre><code class="language-java">@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class EnumDesc {
+
+    private String desc;
+
+    private SwaggerEnum swaggerEnum;
+
+}
+</code></pre>
+<h2 id="创建-expandedparameterbuilderplugin">创建 ExpandedParameterBuilderPlugin</h2>
+<p>用于处理 query 传参中的枚举</p>
+<pre><code class="language-java">@Component
+public class EnumExpandedParameterBuilderPlugin implements ExpandedParameterBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    private final TypeResolver resolver;
+
+    private final EnumTypeDeterminer enumTypeDeterminer;
+
+    public EnumExpandedParameterBuilderPlugin(EnumCommon enumCommon, TypeResolver resolver, EnumTypeDeterminer enumTypeDeterminer) {
+        this.enumCommon = enumCommon;
+        this.resolver = resolver;
+        this.enumTypeDeterminer = enumTypeDeterminer;
+    }
+
+    @Override
+    public void apply(ParameterExpansionContext context) {
+        ResolvedType resolved = resolver.resolve(context.getFieldType());
+        Class&lt;?&gt; erasedType = resolved.getErasedType();
+        if (enumTypeDeterminer.isEnum(erasedType)) {
+            EnumDesc desc = enumCommon.getDesc(erasedType);
+            if (desc != null) {
+                Reflect parameterBuilderReflect = Reflect.on(context.getParameterBuilder());
+                parameterBuilderReflect.set(&quot;allowableValues&quot;, null);
+                context.getParameterBuilder()
+                        .allowMultiple(false)
+                        .modelRef(new ModelRef(desc.getSwaggerEnum().modelRef()))
+                        .description(desc.getDesc())
+                        .type(resolver.resolve(desc.getSwaggerEnum().type()));
+            }
+        }
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="创建-modelpropertybuilderplugin">创建 ModelPropertyBuilderPlugin</h2>
+<p>用于处理 request body 对应的类以及接口的返回值的类</p>
+<pre><code class="language-java">@Component
+public class EnumModelPropertyBuilderPlugin implements ModelPropertyBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    public EnumModelPropertyBuilderPlugin(EnumCommon enumCommon) {
+        this.enumCommon = enumCommon;
+    }
+
+    @Override
+    public void apply(ModelPropertyContext context) {
+        if (!context.getBeanPropertyDefinition().isPresent()) {
+            return;
+        }
+        EnumDesc desc = enumCommon.getDesc(context.getBeanPropertyDefinition().get().getRawPrimaryType());
+        if (desc == null) {
+            return;
+        }
+        // 修改描述和类型
+        ResolvedType type = context.getResolver().resolve(desc.getSwaggerEnum().type());
+        context.getBuilder().description(desc.getDesc()).type(type);
+    }
+
+    @Override
+    public boolean supports(DocumentationType documentationType) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="示例">示例</h2>
+<pre><code class="language-java">@SwaggerEnum(&quot;性别&quot;)
+public enum GenderEnum {
+
+    /**
+     * 枚举值
+     */
+    MAN(1, &quot;男&quot;),
+    WOMAN(2, &quot;女&quot;);
+
+    @Getter
+    private int value;
+
+    @Getter
+    private String desc;
+
+    GenderEnum(int value, String desc) {
+        this.value = value;
+        this.desc = desc;
+    }
+
+}
+</code></pre>
+<p>最后生成的 description ：<code>性别 1 : 男，2 : 女</code></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot 优雅的使用枚举类]]></title>
+        <id>https://blog.belier.cn/post/61782395/</id>
+        <link href="https://blog.belier.cn/post/61782395/">
+        </link>
+        <updated>2020-02-29T05:58:44.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="枚举规范接口类">枚举规范接口类</h2>
+<p>所有的枚举类都实现该接口，统一规范</p>
+<pre><code class="language-java">public interface BaseEnum {
+
+    /**
+     * 获取实际的值
+     * Jackson 在反序列化的时候会根据 value 进行反序列化，所以不用自定义反序列化规则
+     *
+     * @return value
+     */
+    int getValue();
+
+    /**
+     * 获取对应的描述
+     *
+     * @return desc
+     */
+    String getDesc();
+}
+</code></pre>
+<h2 id="jackson-序列化">Jackson 序列化</h2>
+<p>创建序列化类</p>
+<pre><code class="language-java">public class BaseEnumSerializer extends JsonSerializer&lt;BaseEnum&gt; {
+
+    /**
+     * 缓存
+     */
+    private static final Map&lt;BaseEnum, Map&lt;String, Object&gt;&gt; CACHE = new HashMap&lt;&gt;();
+
+    @Override
+    public void serialize(BaseEnum baseEnum, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (baseEnum == null) {
+            gen.writeObject(MapUtils.EMPTY_SORTED_MAP);
+            return;
+        }
+        Map&lt;String, Object&gt; result = Optional.ofNullable(CACHE.get(baseEnum)).orElseGet(() -&gt; {
+            HashMap&lt;String, Object&gt; map = new HashMap&lt;&gt;(2);
+            map.put(&quot;value&quot;, baseEnum.getValue());
+            map.put(&quot;desc&quot;, baseEnum.getDesc());
+            CACHE.put(baseEnum, map);
+            return map;
+        });
+        gen.writeObject(result);
+    }
+
+    @Override
+    public Class&lt;BaseEnum&gt; handledType() {
+        return BaseEnum.class;
+    }
+}
+</code></pre>
+<p>Spring Boot Jackson 配置</p>
+<pre><code class="language-java">@Configuration
+public class JacksonConfig {
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer objectMapperBuilderCustomizer() {
+        return objectMapperBuilder -&gt; objectMapperBuilder
+                .serializers(new BaseEnumSerializer());
+    }
+
+}
+</code></pre>
+<h2 id="jackson-反序列化">Jackson 反序列化</h2>
+<p>Jackson 在反序列化的时候会根据 value 进行反序列化，所以不用自定义反序列化规则</p>
+<h2 id="spring-mvc-使用枚举传参">Spring MVC 使用枚举传参</h2>
+<p>创建 ConverterFactory 和 Convert</p>
+<pre><code class="language-java">public class StringToEnumConverterFactory implements ConverterFactory&lt;String, BaseEnum&gt; {
+
+    @Override
+    public &lt;T extends BaseEnum&gt; Converter&lt;String, T&gt; getConverter(Class&lt;T&gt; targetType) {
+        return new StringToEnumConverter&lt;&gt;(targetType);
+    }
+
+
+    private static class StringToEnumConverter&lt;T extends BaseEnum&gt; implements Converter&lt;String, T&gt; {
+
+        private Map&lt;String, T&gt; enumMap = Maps.newHashMap();
+
+        public StringToEnumConverter(Class&lt;T&gt; enumType) {
+            T[] enums = enumType.getEnumConstants();
+            for (T e : enums) {
+                enumMap.put(e.getValue() + &quot;&quot;, e);
+            }
+        }
+
+        @Override
+        public T convert(String source) {
+            T t = enumMap.get(source);
+            if (ObjectUtil.isNull(t)) {
+                throw new IllegalArgumentException(&quot;无法匹配对应的枚举值&quot;);
+            }
+            return t;
+        }
+    }
+
+}
+</code></pre>
+<h2 id="mybatis-plus-使用枚举">Mybatis Plus 使用枚举</h2>
+<p><a href="https://mybatis.plus/guide/enum.html">https://mybatis.plus/guide/enum.html</a></p>
+<h2 id="通用-mapper-使用枚举">通用 Mapper 使用枚举</h2>
+<p><a href="https://github.com/abel533/Mapper/wiki/7.2.typehandler">https://github.com/abel533/Mapper/wiki/7.2.typehandler</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Maven 项目 Jenkins Pipeline 使用 Sonarqube]]></title>
+        <id>https://blog.belier.cn/post/38512795/</id>
+        <link href="https://blog.belier.cn/post/38512795/">
+        </link>
+        <updated>2020-02-17T12:23:17.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="环境安装">环境安装</h2>
+<p><a href="/post/58129673/">使用 Docker Compose 运行 SonarQube 7.9.2</a><br>
+<a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a></p>
+<h2 id="sonarqube-创建令牌">Sonarqube 创建令牌</h2>
+<p>创建地址：<code>{your_sonarqube_server}/account/security/</code><br>
+填写令牌名称，然后创建，令牌记得立即保存，否则后面就看不到了</p>
+<h2 id="sonarqube-配置-jenkins-webhooks">Sonarqube 配置 Jenkins Webhooks</h2>
+<p>配置地址：<code>{your_sonarqube_server}/admin/webhooks</code><br>
+Jenkins Webhooks 地址：<code>{your_jenkins_server}/sonarqube-webhook/</code></p>
+<h2 id="jenkins-安装-sonarqube-插件">Jenkins 安装 Sonarqube 插件</h2>
+<p>插件列表搜索关键词 <code>SonarQube Scanner for Jenkins</code> 进行安装</p>
+<h2 id="jenkins-配置-sonarqube-server">Jenkins 配置 Sonarqube Server</h2>
+<h3 id="创建凭证">创建凭证</h3>
+<p>创建地址：<code>{your_jenkins_server}/credentials/store/system/domain/_/newCredentials</code><br>
+选择 Sercert text 类型，Sercert 填写 <code>刚创建的 Sonarqube 令牌</code>，ID 随便写（如：sonarqube）</p>
+<h3 id="配置-server">配置 Server</h3>
+<p>配置地址：<code>{your_jenkins_server}/configure</code><br>
+添加一个 Sonarqube Server，填写 Name（后面 withSonarQubeEnv 使用的就是这个名称）、Server Url ，选择刚才创建的凭证，然后保存即可</p>
+<h2 id="jenkins-pipeline-使用-sonarqube">Jenkins Pipeline 使用 Sonarqube</h2>
+<p>以 Maven 项目为例</p>
+<pre><code class="language-groovy">pipeline {
+    agent none
+    // 定义环境变量
+    environment {
+        GIT_URL = 'https://github.com/belier-cn/spring-boot-docker.git'
+    }
+    stages {
+        stage('Checkout') {
+            agent any
+            steps {
+                // 拉取代码，参考文档：https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
+            }
+        }
+        stage('Build') {
+            agent {
+                // 参考文档：https://jenkins.io/zh/doc/book/pipeline/docker/
+                docker {
+                    image 'maven:3-alpine'
+                    // 挂载目录，如果要配置 maven 的阿里云仓库地址，在 /usr/local/src/maven 下放一个配置好的 settings.xml 文件即可
+                    args '-v /usr/local/src/maven:/root/.m2'
+                }
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn clean -Dmaven.test.skip=true package org.sonarsource.scanner.maven:sonar-maven-plugin:3.6.0.1398:sonar'
+                }
+            }
+
+        }
+
+        // 等待 SonarQube 执行结束并回调
+        stage(&quot;Quality Gate&quot;) {
+            steps {
+                // 设置超时时间为1小时，避免一直等待
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+    }
+}
+</code></pre>
+<h2 id="参考">参考</h2>
+<p><a href="https://jenkins.io/doc/pipeline/steps/sonar/">SonarQube Scanner for Jenkins</a></p>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[使用 Docker Compose 运行 SonarQube 7.9.2]]></title>
-        <id>https://blog.belier.cn/post/58129673</id>
-        <link href="https://blog.belier.cn/post/58129673">
+        <id>https://blog.belier.cn/post/58129673/</id>
+        <link href="https://blog.belier.cn/post/58129673/">
         </link>
         <updated>2020-02-15T04:23:05.000Z</updated>
         <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
@@ -85,8 +559,8 @@ services:
     </entry>
     <entry>
         <title type="html"><![CDATA[使用 Docker Compose 运行 PostgreSQL]]></title>
-        <id>https://blog.belier.cn/post/35127562</id>
-        <link href="https://blog.belier.cn/post/35127562">
+        <id>https://blog.belier.cn/post/35127562/</id>
+        <link href="https://blog.belier.cn/post/35127562/">
         </link>
         <updated>2020-02-15T03:26:50.000Z</updated>
         <content type="html"><![CDATA[<h2 id="创建所需目录和文件">创建所需目录和文件</h2>
@@ -118,8 +592,8 @@ services:
     </entry>
     <entry>
         <title type="html"><![CDATA[使用 Docker Compose 运行 Mysql 5.7]]></title>
-        <id>https://blog.belier.cn/post/69821753</id>
-        <link href="https://blog.belier.cn/post/69821753">
+        <id>https://blog.belier.cn/post/69821753/</id>
+        <link href="https://blog.belier.cn/post/69821753/">
         </link>
         <updated>2020-02-15T03:17:23.000Z</updated>
         <content type="html"><![CDATA[<h2 id="创建存放目录">创建存放目录</h2>
@@ -155,13 +629,14 @@ services:
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Spring Boot Jenkins Pipeline Docker]]></title>
-        <id>https://blog.belier.cn/post/52168793</id>
-        <link href="https://blog.belier.cn/post/52168793">
+        <title type="html"><![CDATA[Spring Boot Jenkins Pipeline SonarQube Docker]]></title>
+        <id>https://blog.belier.cn/post/52168793/</id>
+        <link href="https://blog.belier.cn/post/52168793/">
         </link>
         <updated>2020-02-14T02:16:38.000Z</updated>
         <content type="html"><![CDATA[<h2 id="准备一个简单的-spring-boot-项目">准备一个简单的 Spring Boot 项目</h2>
-<p><a href="https://github.com/belier-cn/spring-boot-docker">https://github.com/belier-cn/spring-boot-docker.git</a></p>
+<p>是不是 Spring Boot 项目无所谓，只要是使用 Maven 的项目都可以完全按照来，其它项目除了编译都几乎一样<br>
+<a href="https://github.com/belier-cn/spring-boot-docker">https://github.com/belier-cn/spring-boot-docker.git</a></p>
 <h2 id="jenkins-安装">Jenkins 安装</h2>
 <p><a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a><br>
 不用安装默认推荐插件，太多了，没有必要<br>
@@ -261,12 +736,14 @@ services:
 }
 
 </code></pre>
+<h2 id="集成-sonarqube">集成 Sonarqube</h2>
+<p>参考：<a href="/post/38512795/">Maven 项目 Jenkins Pipeline 使用 Sonarqube</a></p>
 ]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Spring Boot Logback 配置 Sentry]]></title>
-        <id>https://blog.belier.cn/post/85127963</id>
-        <link href="https://blog.belier.cn/post/85127963">
+        <id>https://blog.belier.cn/post/85127963/</id>
+        <link href="https://blog.belier.cn/post/85127963/">
         </link>
         <updated>2020-02-13T03:43:00.000Z</updated>
         <summary type="html"><![CDATA[<p>将错误日志发送到 Sentry 方便后期排查和维护</p>
@@ -282,35 +759,78 @@ stacktrace.app.packages=
 </code></pre>
 <p>stacktrace.app.packages 必须配置，参考：<a href="https://docs.sentry.io/clients/java/config#in-application-stack-frames">sentry docs</a></p>
 <h2 id="logbak-配置">Logbak 配置</h2>
+<p>安装依赖</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.sentry&lt;/groupId&gt;
+    &lt;artifactId&gt;sentry-logback&lt;/artifactId&gt;
+    &lt;version&gt;${version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
 <p>在 <code>resources</code>目录下创建 <code>logback-spring.xml</code></p>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;configuration&gt;
-    
+
     &lt;!-- 引入 spring 的默认配置--&gt;
-    &lt;include resource=&quot;org/springframework/boot/logging/logback/base.xml&quot;/&gt;
+    &lt;include resource=&quot;org/springframework/boot/logging/logback/defaults.xml&quot;/&gt;
 
-    &lt;appender name=&quot;Sentry&quot; class=&quot;io.sentry.logback.SentryAppender&quot;&gt;
-        &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;
-            &lt;level&gt;ERROR&lt;/level&gt;
-        &lt;/filter&gt;
-    &lt;/appender&gt;
+    &lt;!--非开发环境--&gt;
+    &lt;springProfile name=&quot;!dev&quot;&gt;
+        &lt;property name=&quot;LOG_FILE&quot; value=&quot;${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}&quot;/&gt;
+        &lt;include resource=&quot;org/springframework/boot/logging/logback/file-appender.xml&quot;/&gt;
+        &lt;appender name=&quot;Sentry&quot; class=&quot;io.sentry.logback.SentryAppender&quot;&gt;
+            &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;
+                &lt;level&gt;ERROR&lt;/level&gt;
+            &lt;/filter&gt;
+        &lt;/appender&gt;
+        &lt;root level=&quot;INFO&quot;&gt;
+            &lt;appender-ref ref=&quot;FILE&quot;/&gt;
+            &lt;appender-ref ref=&quot;Sentry&quot;/&gt;
+        &lt;/root&gt;
+    &lt;/springProfile&gt;
 
-    &lt;root level=&quot;INFO&quot;&gt;
-        &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;
-        &lt;appender-ref ref=&quot;FILE&quot;/&gt;
-        &lt;appender-ref ref=&quot;Sentry&quot;/&gt;
-    &lt;/root&gt;
+    &lt;!--开发环境--&gt;
+    &lt;springProfile name=&quot;dev&quot;&gt;
+        &lt;include resource=&quot;org/springframework/boot/logging/logback/console-appender.xml&quot;/&gt;
+        &lt;root level=&quot;INFO&quot;&gt;
+            &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;
+        &lt;/root&gt;
+    &lt;/springProfile&gt;
 &lt;/configuration&gt;
 
 </code></pre>
+<h2 id="全局处理-spring-异常">全局处理 Spring 异常</h2>
+<p>安装依赖</p>
+<pre><code class="language-xml">&lt;dependency&gt;
+    &lt;groupId&gt;io.sentry&lt;/groupId&gt;
+    &lt;artifactId&gt;sentry-spring&lt;/artifactId&gt;
+    &lt;version&gt;${version}&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>配置 bean</p>
+<pre><code class="language-java">public class SentryExceptionResolverCondition implements Condition {
+    @Override
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        return Arrays.stream(context.getEnvironment().getActiveProfiles())
+                .noneMatch(ProfileConstant.DEV::equals);
+    }
+}
+
+</code></pre>
+<pre><code class="language-java">@Bean
+@Conditional(SentryExceptionResolverCondition.class)
+public HandlerExceptionResolver sentryExceptionResolver() {
+    return new io.sentry.spring.SentryExceptionResolver();
+}
+</code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://docs.sentry.io/clients/java/integrations/#logback">Sentry Docs Java Logback</a></p>
+<p><a href="https://docs.sentry.io/clients/java/integrations/#logback">Sentry Docs Java Logback</a><br>
+<a href="https://docs.sentry.io/clients/java/integrations/#spring">Sentry Docs Java Spring</a></p>
 ]]></content>
     </entry>
     <entry>
         <title type="html"><![CDATA[Nginx 隐藏版本号信息]]></title>
-        <id>https://blog.belier.cn/post/38567915</id>
-        <link href="https://blog.belier.cn/post/38567915">
+        <id>https://blog.belier.cn/post/38567915/</id>
+        <link href="https://blog.belier.cn/post/38567915/">
         </link>
         <updated>2020-02-12T12:26:14.000Z</updated>
         <summary type="html"><![CDATA[<p>隐藏版本号有利于提高服务安全性</p>
@@ -322,289 +842,6 @@ stacktrace.app.packages=
     server_tokens off;
 }
 </code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Maven 同时配置阿里云仓库和私有仓库]]></title>
-        <id>https://blog.belier.cn/post/66712598</id>
-        <link href="https://blog.belier.cn/post/66712598">
-        </link>
-        <updated>2020-02-12T12:03:47.000Z</updated>
-        <summary type="html"><![CDATA[<p>公开的依赖从阿里云仓库下载，私有的依赖从私有仓库下载</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>公开的依赖从阿里云仓库下载，私有的依赖从私有仓库下载</p>
-<!-- more -->
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
-&lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
-          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
-          xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
-
-    &lt;!-- 本地仓库的存储路径 --&gt;
-    &lt;localRepository&gt;D:/maven/repositories&lt;/localRepository&gt;
-
-    &lt;servers&gt;
-        &lt;server&gt;
-            &lt;id&gt;nexus&lt;/id&gt;
-            &lt;username&gt;nexus 仓库的用户名&lt;/username&gt;
-            &lt;password&gt;nexus 仓库的密码&lt;/password&gt;
-        &lt;/server&gt;
-    &lt;/servers&gt;
-    
-    &lt;profiles&gt;
-        &lt;profile&gt;
-            &lt;id&gt;nexus&lt;/id&gt;
-            &lt;repositories&gt;
-                &lt;repository&gt;
-                    &lt;id&gt;central&lt;/id&gt;
-                    &lt;url&gt;https://maven.aliyun.com/repository/public/&lt;/url&gt;
-                    &lt;releases&gt;
-                        &lt;enabled&gt;true&lt;/enabled&gt;
-                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
-                    &lt;/releases&gt;
-                    &lt;snapshots&gt;
-                        &lt;enabled&gt;true&lt;/enabled&gt;
-                        &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;
-                    &lt;/snapshots&gt;
-                &lt;/repository&gt;
-                &lt;repository&gt;
-                    &lt;id&gt;nexus&lt;/id&gt;
-                    &lt;url&gt;私有仓库的地址&lt;/url&gt;
-                    &lt;releases&gt;
-                        &lt;enabled&gt;true&lt;/enabled&gt;
-                        &lt;updatePolicy&gt;never&lt;/updatePolicy&gt;
-                    &lt;/releases&gt;
-                    &lt;snapshots&gt;
-                        &lt;enabled&gt;true&lt;/enabled&gt;
-                        &lt;updatePolicy&gt;always&lt;/updatePolicy&gt;
-                    &lt;/snapshots&gt;
-                &lt;/repository&gt;
-            &lt;/repositories&gt;
-
-            &lt;pluginRepositories&gt;
-                &lt;pluginRepository&gt;
-                    &lt;id&gt;central&lt;/id&gt;
-                    &lt;name&gt;central&lt;/name&gt;
-                    &lt;url&gt;https://maven.aliyun.com/repository/public/&lt;/url&gt;
-                &lt;/pluginRepository&gt;
-            &lt;/pluginRepositories&gt;
-
-        &lt;/profile&gt;
-    &lt;/profiles&gt;
-
-    &lt;activeProfiles&gt;
-        &lt;activeProfile&gt;nexus&lt;/activeProfile&gt;
-    &lt;/activeProfiles&gt;
-    
-&lt;/settings&gt;
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Vue 全站使用七牛 CDN]]></title>
-        <id>https://blog.belier.cn/post/65279163</id>
-        <link href="https://blog.belier.cn/post/65279163">
-        </link>
-        <updated>2020-02-03T04:59:52.000Z</updated>
-        <summary type="html"><![CDATA[<p>加速网站访问速度</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>加速网站访问速度</p>
-<!-- more -->
-<h2 id="分析">分析</h2>
-<p>在发布的时候使用 <a href="https://github.com/qiniu/nodejs-sdk">qiniu nodejs sdk</a> 将编译后的资源全部上传到七牛云，如果使用 history 路由，index.html 得使用 nginx 或者其它 web 服务器进行部署</p>
-<h2 id="安装-qiniu-nodejs-sdk">安装 qiniu nodejs sdk</h2>
-<pre><code class="language-js">yarn add qiniu -D
-// or
-npm install qiniu -D
-</code></pre>
-<h2 id="创建-qiniuuploadjs-用于上传资源文件">创建 qiniu.upload.js 用于上传资源文件</h2>
-<p>放在项目根路径下</p>
-<pre><code class="language-js">const qiniu = require(&quot;qiniu&quot;);
-const glob = require(&quot;glob&quot;);
-const mime = require(&quot;mime&quot;);
-const path = require(&quot;path&quot;);
-const crypto = require(&quot;crypto&quot;);
-const fs = require(&quot;fs&quot;);
-// 编译后的目录
-const distDir = &quot;./dist&quot;;
-const isWindow = /^win/.test(process.platform);
-let pre = path.resolve(__dirname, distDir + &quot;/&quot;) + (isWindow ? &quot;\\&quot; : &quot;&quot;);
-pre = pre.replace(/\\/g, &quot;/&quot;);
-
-const files = glob.sync(`${path.join(__dirname, distDir + &quot;/**/*.*&quot;)}`);
-
-const bucket = &quot;&quot;;
-const accessKey = &quot;&quot;;
-const secretKey = &quot;&quot;;
-
-const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-const config = new qiniu.conf.Config({
-  // bucket 区域
-  zone: qiniu.zone.Zone_z2
-});
-const formUploader = new qiniu.form_up.FormUploader(config);
-const bucketManager = new qiniu.rs.BucketManager(mac, config);
-
-// 上传文件列表
-async function uploadFiles(files) {
-  files.map(async file =&gt; {
-    const key = getFileKey(pre, file);
-    let md5 = await getFileMd5(file);
-    let info = await getQiniuFileInfo(bucket, key);
-    const fileExist =
-      info &amp;&amp; info.respInfo &amp;&amp; info.respInfo.data &amp;&amp; info.respInfo.data.md5;
-    if (fileExist &amp;&amp; info.respInfo.data.md5 === md5) {
-      console.log(`文件已存在且没有改变，跳过上传 key: ${key} md5: ${md5}`);
-    } else {
-      const changeStr =
-        fileExist &amp;&amp; info.respInfo.data.md5 !== md5
-          ? &quot;文件发生改变重新上传，&quot;
-          : &quot;未存在的文件，&quot;;
-      try {
-        await uploadFIle(key, file);
-        console.log(`${changeStr}上传成功 key: ${key}`);
-      } catch (e) {
-        console.log(`${changeStr}上传失败 key: ${key} error:`, e);
-      }
-    }
-  });
-}
-
-// 封装单文件上传
-function uploadFIle(key, localFile) {
-  const extname = path.extname(localFile);
-  const mimeName = mime.getType(extname);
-  const putExtra = new qiniu.form_up.PutExtra({ mimeType: mimeName });
-  const putPolicy = new qiniu.rs.PutPolicy({
-    // 覆盖上传
-    scope: bucket + &quot;:&quot; + key
-  });
-  const uploadToken = putPolicy.uploadToken(mac);
-  return new Promise((resolve, reject) =&gt; {
-    formUploader.putFile(uploadToken, key, localFile, putExtra, function(
-      err,
-      respBody,
-      respInfo
-    ) {
-      if (err) {
-        reject(err);
-      } else {
-        if (respInfo.statusCode === 200) {
-          resolve({ respBody, respInfo });
-        } else {
-          reject(respInfo);
-        }
-      }
-    });
-  });
-}
-
-// 获取七牛文件信息
-function getQiniuFileInfo(bucket, key) {
-  return new Promise(resolve =&gt; {
-    bucketManager.stat(bucket, key, function(err, respBody, respInfo) {
-      resolve({ respBody, respInfo });
-    });
-  });
-}
-
-// 获取文件的 key
-function getFileKey(pre, file) {
-  if (file.indexOf(pre) &gt; -1) {
-    const key = file.split(pre)[1];
-    return key.startsWith(&quot;/&quot;) ? key.substring(1) : key;
-  }
-  return file;
-}
-
-// 获取文件 md5
-function getFileMd5(file) {
-  return new Promise(reslove =&gt; {
-    let md5sum = crypto.createHash(&quot;md5&quot;);
-    let stream = fs.createReadStream(file);
-    stream.on(&quot;data&quot;, function(chunk) {
-      md5sum.update(chunk);
-    });
-    stream.on(&quot;end&quot;, function() {
-      let fileMd5 = md5sum.digest(&quot;hex&quot;);
-      reslove(fileMd5);
-    });
-  });
-}
-
-(async () =&gt; {
-  console.time(&quot;上传文件到 cdn&quot;);
-  await uploadFiles(files);
-  console.timeEnd(&quot;上传文件到 cdn&quot;);
-})();
-
-</code></pre>
-<h2 id="修改-vueconfigjs-的-publicpath">修改 vue.config.js 的 publicPath</h2>
-<pre><code class="language-js">const cdnDomain = 'cdn地址'
-module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? cdnDomain : '/'
-}
-</code></pre>
-<h2 id="上传">上传</h2>
-<p>方式一：手动执行命令</p>
-<pre><code class="language-js">node qiniu.upload.js
-</code></pre>
-<p>方式二：编译正式环境的时候一并执行</p>
-<pre><code class="language-js">&quot;scripts&quot;: {
-  &quot;build&quot;: &quot;vue-cli-service build &amp;&amp; node qiniu.upload.js&quot;
-},
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Chrome 显示 https 和 www]]></title>
-        <id>https://blog.belier.cn/post/62578159</id>
-        <link href="https://blog.belier.cn/post/62578159">
-        </link>
-        <updated>2020-01-08T08:32:01.000Z</updated>
-        <summary type="html"><![CDATA[<p>强迫症福音</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>强迫症福音</p>
-<!-- more -->
-<p>http 暂时没有找到方法显示</p>
-<p>安装插件：<a href="https://chrome.google.com/webstore/detail/suspicious-site-reporter/jknemblkbdhdcpllfgbfekkdciegfboi">Suspicious Site Reporter</a></p>
-<p>官方提供，有点意思</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[CSS 实现高度与宽度保持一致]]></title>
-        <id>https://blog.belier.cn/post/83917392</id>
-        <link href="https://blog.belier.cn/post/83917392">
-        </link>
-        <updated>2020-01-08T06:55:08.000Z</updated>
-        <summary type="html"><![CDATA[<p>手机端开发还是有点用处的</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>手机端开发还是有点用处的</p>
-<!-- more -->
-<h2 id="效果">效果</h2>
-<p>可以改变浏览器窗口大小试试效果，高度始终和宽度保持一致</p>
-<style>
-    .box-666666{
-        width: 10%;
-        border: 1px solid #2D3748;
-        height: 0;
-        padding-bottom: 10%;
-    }
-</style>
-<div class="box-666666"></div> 
-<h2 id="代码">代码</h2>
-<pre><code class="language-html">&lt;style&gt;
-    .box{
-        width: 10%;
-        border: 1px solid #2D3748;
-        height: 0;
-        padding-bottom: 10%;
-    }
-&lt;/style&gt;
-&lt;div class=&quot;box&quot;&gt;&lt;/div&gt; 
-</code></pre>
-<h2 id="原理">原理</h2>
-<p>padding 是基于 width 计算的，让 padding 撑开元素就可以了</p>
 ]]></content>
     </entry>
 </feed>
