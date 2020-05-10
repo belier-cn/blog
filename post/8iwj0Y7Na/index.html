@@ -56,11 +56,11 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E5%88%86%E6%9E%90">分析</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-qiniu-nodejs-sdk">安装 qiniu nodejs sdk</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BA-qiniuuploadjs-%E7%94%A8%E4%BA%8E%E4%B8%8A%E4%BC%A0%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6">创建 qiniu.upload.js 用于上传资源文件</a></li>
-<li><a href="#%E4%BF%AE%E6%94%B9-vueconfigjs-%E7%9A%84-publicpath">修改 vue.config.js 的 publicPath</a></li>
-<li><a href="#%E4%B8%8A%E4%BC%A0">上传</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-nexus-%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93">安装 Nexus 私有仓库</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-maven-%E9%A1%B9%E7%9B%AE%E7%9A%84-pomxml">修改 Maven 项目的 pom.xml</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-maven-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-settingsxml">修改 Maven 配置文件 settings.xml</a></li>
+<li><a href="#%E5%8F%91%E5%B8%83">发布</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93">使用私有仓库</a></li>
 </ul>
 </li>
 </ul>
@@ -104,190 +104,76 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Vue 全站使用七牛 CDN</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="65279163">
-          <i class="iconfont calendar-line"></i> 2020-02-03 | <i class="iconfont time-line"></i> 4 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">将 Maven 项目发布到 Nexus 私有仓库</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="8iwj0Y7Na">
+          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 3 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <p>加速网站访问速度</p>
-<!-- more -->
-<h2 id="分析">分析</h2>
-<p>在发布的时候使用 <a href="https://github.com/qiniu/nodejs-sdk">qiniu nodejs sdk</a> 将编译后的资源全部上传到七牛云，如果使用 history 路由，index.html 得使用 nginx 或者其它 web 服务器进行部署</p>
-<h2 id="安装-qiniu-nodejs-sdk">安装 qiniu nodejs sdk</h2>
-<pre><code class="language-js">yarn add qiniu -D
-// or
-npm install qiniu -D
+          <h2 id="安装-nexus-私有仓库">安装 Nexus 私有仓库</h2>
+<p>参考：<a href="/post/63571659/">Docker Compose 运行 nexus3</a></p>
+<h2 id="修改-maven-项目的-pomxml">修改 Maven 项目的 pom.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;distributionManagement&gt;
+        &lt;snapshotRepository&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-public/&lt;/url&gt;
+        &lt;/snapshotRepository&gt;
+        &lt;repository&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/distributionManagement&gt;
+&lt;/project&gt;
 </code></pre>
-<h2 id="创建-qiniuuploadjs-用于上传资源文件">创建 qiniu.upload.js 用于上传资源文件</h2>
-<p>放在项目根路径下</p>
-<pre><code class="language-js">const qiniu = require(&quot;qiniu&quot;);
-const glob = require(&quot;glob&quot;);
-const mime = require(&quot;mime&quot;);
-const path = require(&quot;path&quot;);
-const crypto = require(&quot;crypto&quot;);
-const fs = require(&quot;fs&quot;);
-// 编译后的目录
-const distDir = &quot;./dist&quot;;
-const isWindow = /^win/.test(process.platform);
-let pre = path.resolve(__dirname, distDir + &quot;/&quot;) + (isWindow ? &quot;\\&quot; : &quot;&quot;);
-pre = pre.replace(/\\/g, &quot;/&quot;);
+<h2 id="修改-maven-配置文件-settingsxml">修改 Maven 配置文件 settings.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 
-const files = glob.sync(`${path.join(__dirname, distDir + &quot;/**/*.*&quot;)}`);
+&lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
+          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+          xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
 
-const bucket = &quot;&quot;;
-const accessKey = &quot;&quot;;
-const secretKey = &quot;&quot;;
-
-const mac = new qiniu.auth.digest.Mac(accessKey, secretKey);
-const config = new qiniu.conf.Config({
-  // bucket 区域
-  zone: qiniu.zone.Zone_z2
-});
-const formUploader = new qiniu.form_up.FormUploader(config);
-const bucketManager = new qiniu.rs.BucketManager(mac, config);
-
-// 上传文件列表
-async function uploadFiles(files) {
-  files.map(async file =&gt; {
-    const key = getFileKey(pre, file);
-    let md5 = await getFileMd5(file);
-    let info = await getQiniuFileInfo(bucket, key);
-    const fileExist =
-      info &amp;&amp; info.respInfo &amp;&amp; info.respInfo.data &amp;&amp; info.respInfo.data.md5;
-    if (fileExist &amp;&amp; info.respInfo.data.md5 === md5) {
-      console.log(`文件已存在且没有改变，跳过上传 key: ${key} md5: ${md5}`);
-    } else {
-      const changeStr =
-        fileExist &amp;&amp; info.respInfo.data.md5 !== md5
-          ? &quot;文件发生改变重新上传，&quot;
-          : &quot;未存在的文件，&quot;;
-      try {
-        await uploadFIle(key, file);
-        console.log(`${changeStr}上传成功 key: ${key}`);
-      } catch (e) {
-        console.log(`${changeStr}上传失败 key: ${key} error:`, e);
-      }
-    }
-  });
-}
-
-// 封装单文件上传
-function uploadFIle(key, localFile) {
-  const extname = path.extname(localFile);
-  const mimeName = mime.getType(extname);
-  const putExtra = new qiniu.form_up.PutExtra({ mimeType: mimeName });
-  const putPolicy = new qiniu.rs.PutPolicy({
-    // 覆盖上传
-    scope: bucket + &quot;:&quot; + key
-  });
-  const uploadToken = putPolicy.uploadToken(mac);
-  return new Promise((resolve, reject) =&gt; {
-    formUploader.putFile(uploadToken, key, localFile, putExtra, function(
-      err,
-      respBody,
-      respInfo
-    ) {
-      if (err) {
-        reject(err);
-      } else {
-        if (respInfo.statusCode === 200) {
-          resolve({ respBody, respInfo });
-        } else {
-          reject(respInfo);
-        }
-      }
-    });
-  });
-}
-
-// 获取七牛文件信息
-function getQiniuFileInfo(bucket, key) {
-  return new Promise(resolve =&gt; {
-    bucketManager.stat(bucket, key, function(err, respBody, respInfo) {
-      resolve({ respBody, respInfo });
-    });
-  });
-}
-
-// 获取文件的 key
-function getFileKey(pre, file) {
-  if (file.indexOf(pre) &gt; -1) {
-    const key = file.split(pre)[1];
-    return key.startsWith(&quot;/&quot;) ? key.substring(1) : key;
-  }
-  return file;
-}
-
-// 获取文件 md5
-function getFileMd5(file) {
-  return new Promise(reslove =&gt; {
-    let md5sum = crypto.createHash(&quot;md5&quot;);
-    let stream = fs.createReadStream(file);
-    stream.on(&quot;data&quot;, function(chunk) {
-      md5sum.update(chunk);
-    });
-    stream.on(&quot;end&quot;, function() {
-      let fileMd5 = md5sum.digest(&quot;hex&quot;);
-      reslove(fileMd5);
-    });
-  });
-}
-
-(async () =&gt; {
-  console.time(&quot;上传文件到 cdn&quot;);
-  await uploadFiles(files);
-  console.timeEnd(&quot;上传文件到 cdn&quot;);
-})();
-
+    &lt;servers&gt;
+        &lt;server&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+    &lt;/servers&gt;
+&lt;/settings&gt;
 </code></pre>
-<h2 id="修改-vueconfigjs-的-publicpath">修改 vue.config.js 的 publicPath</h2>
-<pre><code class="language-js">const cdnDomain = 'cdn地址'
-module.exports = {
-  publicPath: process.env.NODE_ENV === 'production' ? cdnDomain : '/'
-}
+<h2 id="发布">发布</h2>
+<p>如果使用 IDEA，直接在 IDEA 右侧的 Maven 小窗口中执行 deploy</p>
+<p>命令方式：在项目根路径下执行如下命令</p>
+<pre><code class="language-bash"># --settings E:\maven\settings.xml 指定配置文件，以自己的路径为准
+# -Dmaven.test.skip=true 跳过测试，看自己需求
+mvn deploy --settings E:\maven\settings.xml -Dmaven.test.skip=true
 </code></pre>
-<h2 id="上传">上传</h2>
-<p>方式一：手动执行命令</p>
-<pre><code class="language-js">node qiniu.upload.js
-</code></pre>
-<p>方式二：编译正式环境的时候一并执行</p>
-<pre><code class="language-js">&quot;scripts&quot;: {
-  &quot;build&quot;: &quot;vue-cli-service build &amp;&amp; node qiniu.upload.js&quot;
-},
-</code></pre>
+<h2 id="使用私有仓库">使用私有仓库</h2>
+<p>参考：<a href="/post/66712598/">Maven 同时配置阿里云仓库和私有仓库</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>
-        
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/861295/">
-            <span class="flex-auto">Vue</span>
-          </a>
-        
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/631852/">
-            <span class="flex-auto">Qiniu</span>
-          </a>
         
 
 
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/66712598/">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    Maven 同时配置阿里云仓库和私有仓库
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/62578159/">
+              <a href="https://blog.belier.cn/post/63571659/">
                 <h3 class="post-title">
-                  Chrome 显示 https 和 www
+                  Docker Compose 运行 nexus3
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -305,7 +191,7 @@ module.exports = {
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 65279163,
+        path: 8iwj0Y7Na,
         visitor: true,
         highlight: false
 })

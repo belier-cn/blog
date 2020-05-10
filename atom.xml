@@ -2,13 +2,70 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-10T06:11:52.049Z</updated>
+    <updated>2020-05-10T08:24:34.909Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[将 Maven 项目发布到 Nexus 私有仓库]]></title>
+        <id>https://blog.belier.cn/post/8iwj0Y7Na/</id>
+        <link href="https://blog.belier.cn/post/8iwj0Y7Na/">
+        </link>
+        <updated>2020-05-10T06:12:02.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="安装-nexus-私有仓库">安装 Nexus 私有仓库</h2>
+<p>参考：<a href="/post/63571659/">Docker Compose 运行 nexus3</a></p>
+<h2 id="修改-maven-项目的-pomxml">修改 Maven 项目的 pom.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;distributionManagement&gt;
+        &lt;snapshotRepository&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-public/&lt;/url&gt;
+        &lt;/snapshotRepository&gt;
+        &lt;repository&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/distributionManagement&gt;
+&lt;/project&gt;
+</code></pre>
+<h2 id="修改-maven-配置文件-settingsxml">修改 Maven 配置文件 settings.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
+          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+          xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
+
+    &lt;servers&gt;
+        &lt;server&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+    &lt;/servers&gt;
+&lt;/settings&gt;
+</code></pre>
+<h2 id="发布">发布</h2>
+<p>如果使用 IDEA，直接在 IDEA 右侧的 Maven 小窗口中执行 deploy</p>
+<p>命令方式：在项目根路径下执行如下命令</p>
+<pre><code class="language-bash"># --settings E:\maven\settings.xml 指定配置文件，以自己的路径为准
+# -Dmaven.test.skip=true 跳过测试，看自己需求
+mvn deploy --settings E:\maven\settings.xml -Dmaven.test.skip=true
+</code></pre>
+<h2 id="使用私有仓库">使用私有仓库</h2>
+<p>参考：<a href="/post/66712598/">Maven 同时配置阿里云仓库和私有仓库</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Docker Compose 运行 nexus3]]></title>
         <id>https://blog.belier.cn/post/63571659/</id>
@@ -780,93 +837,6 @@ services:
 </code></pre>
 <h2 id="集成-sonarqube">集成 Sonarqube</h2>
 <p>参考：<a href="/post/38512795/">Maven 项目 Jenkins Pipeline 使用 Sonarqube</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring Boot Logback 配置 Sentry]]></title>
-        <id>https://blog.belier.cn/post/85127963/</id>
-        <link href="https://blog.belier.cn/post/85127963/">
-        </link>
-        <updated>2020-02-13T03:43:00.000Z</updated>
-        <summary type="html"><![CDATA[<p>将错误日志发送到 Sentry 方便后期排查和维护</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>将错误日志发送到 Sentry 方便后期排查和维护</p>
-<!-- more -->
-<h2 id="sentry-简介">Sentry 简介</h2>
-<p><a href="https://sentry.io/about/">About Sentry</a></p>
-<h2 id="sentry-配置">Sentry 配置</h2>
-<p>在 <code>resources</code>目录下创建 <code>sentry.properties</code></p>
-<pre><code class="language-properties">dsn=你的 dsn
-stacktrace.app.packages=
-</code></pre>
-<p>stacktrace.app.packages 必须配置，参考：<a href="https://docs.sentry.io/clients/java/config#in-application-stack-frames">sentry docs</a></p>
-<h2 id="logbak-配置">Logbak 配置</h2>
-<p>安装依赖</p>
-<pre><code class="language-xml">&lt;dependency&gt;
-    &lt;groupId&gt;io.sentry&lt;/groupId&gt;
-    &lt;artifactId&gt;sentry-logback&lt;/artifactId&gt;
-    &lt;version&gt;${version}&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>在 <code>resources</code>目录下创建 <code>logback-spring.xml</code></p>
-<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;configuration&gt;
-
-    &lt;!-- 引入 spring 的默认配置--&gt;
-    &lt;include resource=&quot;org/springframework/boot/logging/logback/defaults.xml&quot;/&gt;
-
-    &lt;!--非开发环境--&gt;
-    &lt;springProfile name=&quot;!dev&quot;&gt;
-        &lt;property name=&quot;LOG_FILE&quot; value=&quot;${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/spring.log}&quot;/&gt;
-        &lt;include resource=&quot;org/springframework/boot/logging/logback/file-appender.xml&quot;/&gt;
-        &lt;appender name=&quot;Sentry&quot; class=&quot;io.sentry.logback.SentryAppender&quot;&gt;
-            &lt;filter class=&quot;ch.qos.logback.classic.filter.ThresholdFilter&quot;&gt;
-                &lt;level&gt;ERROR&lt;/level&gt;
-            &lt;/filter&gt;
-        &lt;/appender&gt;
-        &lt;root level=&quot;INFO&quot;&gt;
-            &lt;appender-ref ref=&quot;FILE&quot;/&gt;
-            &lt;appender-ref ref=&quot;Sentry&quot;/&gt;
-        &lt;/root&gt;
-    &lt;/springProfile&gt;
-
-    &lt;!--开发环境--&gt;
-    &lt;springProfile name=&quot;dev&quot;&gt;
-        &lt;include resource=&quot;org/springframework/boot/logging/logback/console-appender.xml&quot;/&gt;
-        &lt;root level=&quot;INFO&quot;&gt;
-            &lt;appender-ref ref=&quot;CONSOLE&quot;/&gt;
-        &lt;/root&gt;
-    &lt;/springProfile&gt;
-&lt;/configuration&gt;
-
-</code></pre>
-<h2 id="全局处理-spring-异常">全局处理 Spring 异常</h2>
-<p>安装依赖</p>
-<pre><code class="language-xml">&lt;dependency&gt;
-    &lt;groupId&gt;io.sentry&lt;/groupId&gt;
-    &lt;artifactId&gt;sentry-spring&lt;/artifactId&gt;
-    &lt;version&gt;${version}&lt;/version&gt;
-&lt;/dependency&gt;
-</code></pre>
-<p>配置 bean</p>
-<pre><code class="language-java">public class SentryExceptionResolverCondition implements Condition {
-    @Override
-    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        return Arrays.stream(context.getEnvironment().getActiveProfiles())
-                .noneMatch(ProfileConstant.DEV::equals);
-    }
-}
-
-</code></pre>
-<pre><code class="language-java">@Bean
-@Conditional(SentryExceptionResolverCondition.class)
-public HandlerExceptionResolver sentryExceptionResolver() {
-    return new io.sentry.spring.SentryExceptionResolver();
-}
-</code></pre>
-<h2 id="参考">参考</h2>
-<p><a href="https://docs.sentry.io/clients/java/integrations/#logback">Sentry Docs Java Logback</a><br>
-<a href="https://docs.sentry.io/clients/java/integrations/#spring">Sentry Docs Java Spring</a></p>
 ]]></content>
     </entry>
 </feed>
