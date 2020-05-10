@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-10T08:25:38.052Z</updated>
+    <updated>2020-05-10T08:30:37.310Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -25,10 +25,12 @@
     &lt;distributionManagement&gt;
         &lt;snapshotRepository&gt;
             &lt;id&gt;snapshots&lt;/id&gt;
-            &lt;url&gt;http://192.168.56.10:8081/repository/maven-public/&lt;/url&gt;
+            &lt;!-- 替换成你的地址 --&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-snapshots/&lt;/url&gt;
         &lt;/snapshotRepository&gt;
         &lt;repository&gt;
             &lt;id&gt;releases&lt;/id&gt;
+            &lt;!-- 替换成你的地址 --&gt;
             &lt;url&gt;http://192.168.56.10:8081/repository/maven-releases/&lt;/url&gt;
         &lt;/repository&gt;
     &lt;/distributionManagement&gt;
@@ -36,7 +38,6 @@
 </code></pre>
 <h2 id="修改-maven-配置文件-settingsxml">修改 Maven 配置文件 settings.xml</h2>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-
 &lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
           xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
           xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
