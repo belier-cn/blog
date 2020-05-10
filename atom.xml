@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-03-01T09:40:29.077Z</updated>
+    <updated>2020-05-10T05:01:57.636Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -369,7 +369,14 @@ public class JacksonConfig {
 }
 </code></pre>
 <h2 id="jackson-反序列化">Jackson 反序列化</h2>
-<p>Jackson 在反序列化的时候会根据 value 进行反序列化，所以不用自定义反序列化规则</p>
+<p>在枚举类中定义一个静态方法用于返回枚举值，并使用<code>JsonCreator</code>注解标识<br>
+示例：</p>
+<pre><code class="language-java">@JsonCreator
+public static BaseEnum getItem(String value){
+    // 根据 value 返回具体的枚举值
+    return null;
+}
+</code></pre>
 <h2 id="spring-mvc-使用枚举传参">Spring MVC 使用枚举传参</h2>
 <p>创建 ConverterFactory 和 Convert</p>
 <pre><code class="language-java">public class StringToEnumConverterFactory implements ConverterFactory&lt;String, BaseEnum&gt; {
