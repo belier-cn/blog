@@ -56,16 +56,12 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%80%E9%94%AE%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC">一键安装脚本</a></li>
-<li><a href="#%E6%89%8B%E5%8A%A8%E5%AE%89%E8%A3%85">手动安装</a>
-<ul>
-<li><a href="#%E5%AE%89%E8%A3%85%E5%87%86%E5%A4%87">安装准备</a></li>
-<li><a href="#%E5%AE%89%E8%A3%85-docker">安装 Docker</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8-docker-%E6%9C%8D%E5%8A%A1">启动 Docker 服务</a></li>
-<li><a href="#docker-%E6%9C%8D%E5%8A%A1%E5%91%BD%E4%BB%A4">Docker 服务命令</a></li>
-<li><a href="#%E9%85%8D%E7%BD%AE%E9%98%BF%E9%87%8C%E9%95%9C%E5%83%8F%E5%8A%A0%E9%80%9F%E5%99%A8">配置阿里镜像加速器</a></li>
-</ul>
-</li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">创建目录</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E7%A4%BA%E4%BE%8B%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">下载示例配置文件</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-redisconf">修改 redis.conf</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E5%90%AF%E5%8A%A8%E6%88%90%E5%8A%9F">测试是否启动成功</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5">测试远程连接</a></li>
 </ul>
 </li>
 </ul>
@@ -109,93 +105,64 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="92660266">
-          <i class="iconfont calendar-line"></i> 2019-09-08 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">Docker Compose 运行 Redis</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="52712356">
+          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <h2 id="一键安装脚本">一键安装脚本</h2>
-<pre><code class="language-bash">curl -sSL https://get.docker.com/ | sh
+          <h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/redis/data
 </code></pre>
-<blockquote>
-<p>推荐国外服务器使用，国内使用手动安装</p>
-</blockquote>
-<h2 id="手动安装">手动安装</h2>
-<h3 id="安装准备">安装准备</h3>
-<ol>
-<li>查看 CentOS 系统的内核版本是否高于 3.10</li>
-</ol>
-<pre><code class="language-bash">uname -r 
+<h2 id="下载示例配置文件">下载示例配置文件</h2>
+<pre><code class="language-bash"># -o /usr/local/src/redis/redis.conf 将内容保存到 /usr/local/src/redis/redis.conf
+curl -o /usr/local/src/redis/redis.conf http://download.redis.io/redis-stable/redis.conf
 </code></pre>
-<ol start="2">
-<li>移除旧的版本</li>
-</ol>
-<pre><code class="language-bash">yum remove docker \
-                docker-client \
-                docker-client-latest \
-                docker-common \
-                docker-latest \
-                docker-latest-logrotate \
-                docker-logrotate \
-                docker-selinux \
-                docker-engine-selinux \
-                docker-engine
+<h2 id="修改-redisconf">修改 redis.conf</h2>
+<p>开启远程访问：</p>
+<pre><code># 注释掉  bind 127.0.0.1
+# bind 127.0.0.1
+# 设置密码，由于默认开启了保护模式，必须设置密码才能远程访问，也建议这样做
+requirepass 123456
 </code></pre>
-<ol start="3">
-<li>安装所需的软件包</li>
-</ol>
-<pre><code class="language-bash">yum install -y yum-utils device-mapper-persistent-data lvm2
+<p>持久化到文件：</p>
+<pre><code>appendonly yes
 </code></pre>
-<ol start="4">
-<li>添加源</li>
-</ol>
-<pre><code class="language-bash">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+<p>更多配置参考默认配置文件，或者参考文章：<a href="https://juejin.im/post/5e046e0cf265da33d45209ce">Redis配置文件详解</a></p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - $PWD/data:/data
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
 </code></pre>
-<ol start="5">
-<li>更新 yum 缓存</li>
-</ol>
-<pre><code class="language-bash">yum makecache fast
+<h2 id="测试是否启动成功">测试是否启动成功</h2>
+<pre><code class="language-bash"># 进入容器
+docker exec -it redis /bin/bash
+# 连接 redis
+redis-cli -h 127.0.0.1 -p 6379
+# 设置一个值
+set a 1
+# 获取刚设置的值
+get a
+# 退出容器
+exit
 </code></pre>
-<h3 id="安装-docker">安装 Docker</h3>
-<pre><code class="language-bash">yum -y install docker-ce
-</code></pre>
-<p>安装成功后查看版本，检查是否安装成功</p>
-<pre><code class="language-bash">docker -v
-</code></pre>
-<h3 id="启动-docker-服务">启动 Docker 服务</h3>
-<pre><code class="language-bash">systemctl start docker
-</code></pre>
-<h3 id="docker-服务命令">Docker 服务命令</h3>
-<pre><code class="language-bash">systemctl start docker     # 启动服务
-systemctl stop docker      # 关闭服务
-systemctl restart docker   # 重启服务
-systemctl enable docker    # 开机自启动
-systemctl disable docker   # 关闭开机自启动
-</code></pre>
-<h3 id="配置阿里镜像加速器">配置阿里镜像加速器</h3>
-<ol>
-<li>开通服务</li>
-</ol>
-<p>地址：<a href="https://cr.console.aliyun.com/cn-shanghai/instances/mirrors">阿里镜像加速器</a></p>
-<ol start="2">
-<li>配置加速器</li>
-</ol>
-<pre><code class="language-bash">mkdir -p /etc/docker
-tee /etc/docker/daemon.json &lt;&lt;-'EOF'
-{
-  &quot;registry-mirrors&quot;: [&quot;你的地址&quot;]
-}
-EOF
-systemctl daemon-reload
-systemctl restart docker
-</code></pre>
+<h2 id="测试远程连接">测试远程连接</h2>
+<p>windows 建议使用 <a href="https://github.com/qishibo/AnotherRedisDesktopManager">AnotherRedisDesktopManager</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/925065/">
-            <span class="flex-auto">Centos7</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/815276/">
+            <span class="flex-auto">Redis</span>
           </a>
         
           <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589/">
@@ -207,21 +174,12 @@ systemctl restart docker
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/38562561/">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/56853309/">
+              <a href="https://blog.belier.cn/post/86123957/">
                 <h3 class="post-title">
-                  使用 VirtualBox Vagrant 快速搭建 Centos7 系统
+                  将 Maven 项目发布到 Nexus 私有仓库
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -239,7 +197,7 @@ systemctl restart docker
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 92660266,
+        path: 52712356,
         visitor: true,
         highlight: false
 })

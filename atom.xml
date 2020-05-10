@@ -2,13 +2,67 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-10T08:30:37.310Z</updated>
+    <updated>2020-05-10T13:24:18.589Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Docker Compose 运行 Redis]]></title>
+        <id>https://blog.belier.cn/post/52712356/</id>
+        <link href="https://blog.belier.cn/post/52712356/">
+        </link>
+        <updated>2020-05-10T10:37:46.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/redis/data
+</code></pre>
+<h2 id="下载示例配置文件">下载示例配置文件</h2>
+<pre><code class="language-bash"># -o /usr/local/src/redis/redis.conf 将内容保存到 /usr/local/src/redis/redis.conf
+curl -o /usr/local/src/redis/redis.conf http://download.redis.io/redis-stable/redis.conf
+</code></pre>
+<h2 id="修改-redisconf">修改 redis.conf</h2>
+<p>开启远程访问：</p>
+<pre><code># 注释掉  bind 127.0.0.1
+# bind 127.0.0.1
+# 设置密码，由于默认开启了保护模式，必须设置密码才能远程访问，也建议这样做
+requirepass 123456
+</code></pre>
+<p>持久化到文件：</p>
+<pre><code>appendonly yes
+</code></pre>
+<p>更多配置参考默认配置文件，或者参考文章：<a href="https://juejin.im/post/5e046e0cf265da33d45209ce">Redis配置文件详解</a></p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - $PWD/data:/data
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+</code></pre>
+<h2 id="测试是否启动成功">测试是否启动成功</h2>
+<pre><code class="language-bash"># 进入容器
+docker exec -it redis /bin/bash
+# 连接 redis
+redis-cli -h 127.0.0.1 -p 6379
+# 设置一个值
+set a 1
+# 获取刚设置的值
+get a
+# 退出容器
+exit
+</code></pre>
+<h2 id="测试远程连接">测试远程连接</h2>
+<p>windows 建议使用 <a href="https://github.com/qishibo/AnotherRedisDesktopManager">AnotherRedisDesktopManager</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[将 Maven 项目发布到 Nexus 私有仓库]]></title>
         <id>https://blog.belier.cn/post/86123957/</id>
@@ -726,118 +780,6 @@ services:
 </code></pre>
 <h2 id="参考">参考</h2>
 <p><a href="https://hub.docker.com/_/mysql">Docker Mysql 官方支持</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Spring Boot Jenkins Pipeline SonarQube Docker]]></title>
-        <id>https://blog.belier.cn/post/52168793/</id>
-        <link href="https://blog.belier.cn/post/52168793/">
-        </link>
-        <updated>2020-02-14T02:16:38.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="准备一个简单的-spring-boot-项目">准备一个简单的 Spring Boot 项目</h2>
-<p>是不是 Spring Boot 项目无所谓，只要是使用 Maven 的项目都可以完全按照来，其它项目除了编译都几乎一样<br>
-<a href="https://github.com/belier-cn/spring-boot-docker">https://github.com/belier-cn/spring-boot-docker.git</a></p>
-<h2 id="jenkins-安装">Jenkins 安装</h2>
-<p><a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a><br>
-不用安装默认推荐插件，太多了，没有必要<br>
-<a href="/post/95619377/">Jenkins 汉化和加速插件下载</a></p>
-<h2 id="jenkins-安装所需插件">Jenkins 安装所需插件</h2>
-<ol>
-<li>Pipeline<br>
-<a href="https://jenkins.io/zh/doc/book/pipeline/">Pipeline 介绍</a></li>
-<li>Blue Ocean<br>
-<a href="https://jenkins.io/zh/doc/book/blueocean/">Blue Ocean 介绍</a></li>
-<li>Git Plugin<br>
-<a href="https://github.com/jenkinsci/git-plugin">Git Plugin Github 地址</a></li>
-<li>SSH Pipeline Steps<br>
-<a href="https://github.com/jenkinsci/ssh-steps-plugin">SSH Pipeline Steps Github 地址</a></li>
-</ol>
-<h2 id="创建-pipeline-项目">创建 Pipeline 项目</h2>
-<p><a href="https://jenkins.io/zh/doc/book/pipeline/getting-started/">Pipline 入门</a></p>
-<h2 id="编写-pipeline-脚本">编写 Pipeline 脚本</h2>
-<p><a href="https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/">Jenkinsfile 使用</a></p>
-<pre><code class="language-groovy">pipeline {
-    agent none
-    // 定义环境变量
-    environment {
-        // 根据 id 获取配置在 Jenkins 中的凭证 参考文档：https://jenkins.io/zh/doc/book/pipeline/jenkinsfile/#%E5%A4%84%E7%90%86%E5%87%AD%E6%8D%AE
-        DOCKER_REGISTRY = credentials('aliyun-docker-registry')
-        REGISTRY_URL = 'registry.cn-shanghai.aliyuncs.com'
-        IMAGE_NAME = 'registry.cn-shanghai.aliyuncs.com/belier/test'
-        CONTAINER_NAME = 'test'
-        REMOTE_HOST = '192.168.56.11'
-        GIT_URL = 'https://github.com/belier-cn/spring-boot-docker.git'
-    }
-    stages {
-        stage('Checkout') {
-            agent any
-            steps {
-                // 拉取代码，参考文档：https://jenkins.io/doc/pipeline/steps/workflow-scm-step/
-                checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: GIT_URL]]])
-            }
-        }
-        stage('Build Jar') {
-            agent {
-                // 参考文档：https://jenkins.io/zh/doc/book/pipeline/docker/
-                docker {
-                    image 'maven:3-alpine'
-                    // 挂载目录，如果要配置 maven 的阿里云仓库地址，在 /usr/local/src/maven 下放一个配置好的 settings.xml 文件即可
-                    args '-v /usr/local/src/maven:/root/.m2'
-                }
-            }
-            steps {
-                // 打包
-                sh 'mvn clean -Dmaven.test.skip=true package'
-            }
-        }
-        stage('Build Image') {
-            agent any
-            steps {
-                // 构建镜像
-                sh &quot;docker build -t ${IMAGE_NAME} .&quot;
-            }
-        }
-        stage('Push Image') {
-            agent any
-            steps {
-                // 登陆到阿里云镜像仓库
-                sh &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
-                // 推送镜像到阿里云镜像仓库
-                sh &quot;docker push ${IMAGE_NAME}&quot;
-            }
-        }
-        stage('Deploy') {
-            agent any
-            steps {
-                script {
-                    // 登陆远程服务器，拉取镜像并运行，参考文档：https://github.com/jenkinsci/ssh-steps-plugin#withcredentials
-                    def remote = [:]
-                    remote.name = &quot;centos7-11&quot;
-                    remote.host = REMOTE_HOST
-                    remote.allowAnyHosts = true
-                    withCredentials([sshUserPrivateKey(credentialsId: REMOTE_HOST, keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
-                        remote.user = userName
-                        remote.identityFile = identity
-                        // 登陆到阿里云镜像仓库
-                        sshCommand remote: remote, command: &quot;docker login -u=${DOCKER_REGISTRY_USR} -p=${DOCKER_REGISTRY_PSW} ${REGISTRY_URL}&quot;
-                        try {
-                            // 删除已经存在的容器
-                            sshCommand remote: remote, command: &quot;docker rm -f ${CONTAINER_NAME}&quot;
-                        } catch (e) {
-                            echo '容器不存在'
-                        }
-                        // 运行容器
-                        sshCommand remote: remote, command: &quot;docker run --name ${CONTAINER_NAME} -p 8080:8080 -d ${IMAGE_NAME}&quot;
-                    }
-                }
-            }
-        }
-    }
-}
-
-</code></pre>
-<h2 id="集成-sonarqube">集成 Sonarqube</h2>
-<p>参考：<a href="/post/38512795/">Maven 项目 Jenkins Pipeline 使用 Sonarqube</a></p>
 ]]></content>
     </entry>
 </feed>
