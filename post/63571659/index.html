@@ -56,9 +56,11 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E4%B8%8B%E8%BD%BD-docker-compose-%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6">下载 Docker Compose 二进制文件</a></li>
-<li><a href="#%E7%BB%99%E4%B8%8E%E6%96%87%E4%BB%B6%E5%8F%AF%E6%89%A7%E8%A1%8C%E6%9D%83%E9%99%90">给与文件可执行权限</a></li>
-<li><a href="#%E6%A3%80%E6%B5%8B%E6%98%AF%E5%90%A6%E5%8F%AF%E7%94%A8">检测是否可用</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">创建目录</a></li>
+<li><a href="#%E8%B5%8B%E4%BA%88-data-%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90">赋予 data 目录权限</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li>
+<li><a href="#%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81">用户名和密码</a></li>
 <li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
 </ul>
 </li>
@@ -103,26 +105,46 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Centos7 安装 Docker Compose</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="38157117">
-          <i class="iconfont calendar-line"></i> 2019-12-27 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">Docker Compose 运行 nexus3</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="63571659">
+          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <h2 id="下载-docker-compose-二进制文件">下载 Docker Compose 二进制文件</h2>
-<pre><code class="language-bash">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+          <h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/nexus3/data
 </code></pre>
-<h2 id="给与文件可执行权限">给与文件可执行权限</h2>
-<pre><code class="language-bash">chmod +x /usr/local/bin/docker-compose
+<h2 id="赋予-data-目录权限">赋予 data 目录权限</h2>
+<pre><code class="language-bash">chown -R 200 /usr/local/src/nexus3/data
 </code></pre>
-<h2 id="检测是否可用">检测是否可用</h2>
-<pre><code class="language-bash">docker-compose --version
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  nexus3:
+    image: sonatype/nexus3
+    restart: always
+    container_name: nexus
+    ports:
+      - 8081:8081
+    volumes:
+      - $PWD/data:/nexus-data
 </code></pre>
+<h2 id="启动">启动</h2>
+<pre><code class="language-bash">docker-compse up -d
+</code></pre>
+<p>启动比较慢，大概2-5分钟</p>
+<h2 id="用户名和密码">用户名和密码</h2>
+<p>默认用户名：admin<br>
+密码：/usr/local/src/nexus3/data/admin.password 文件的内容就是密码</p>
 <h2 id="参考">参考</h2>
-<p><a href="https://docs.docker.com/compose/install/#install-compose">Docker Compose Install</a></p>
+<p><a href="https://hub.docker.com/r/sonatype/nexus3">docker hub nexus3</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/315682/">
+            <span class="flex-auto">Nexus</span>
+          </a>
         
           <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589/">
             <span class="flex-auto">Docker</span>
@@ -133,21 +155,12 @@
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/59969103/">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    不同 Docker Compose 下网络通信
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/55817706/">
+              <a href="https://blog.belier.cn/post/52178956/">
                 <h3 class="post-title">
-                  使用 Docker Compose 运行 Jenkins
+                  Spring Boot Swagger Pageable 处理
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -165,7 +178,7 @@
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 38157117,
+        path: 63571659,
         visitor: true,
         highlight: false
 })
