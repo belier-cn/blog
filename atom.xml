@@ -2,13 +2,48 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-10T05:01:57.636Z</updated>
+    <updated>2020-05-10T06:03:57.629Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Docker Compose 运行 nexus3]]></title>
+        <id>https://blog.belier.cn/post/BPxY_vHIT/</id>
+        <link href="https://blog.belier.cn/post/BPxY_vHIT/">
+        </link>
+        <updated>2020-05-10T05:08:52.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/nexus3/data
+</code></pre>
+<h2 id="赋予-data-目录权限">赋予 data 目录权限</h2>
+<pre><code class="language-bash">chown -R 200 /usr/local/src/nexus3/data
+</code></pre>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  nexus3:
+    image: sonatype/nexus3
+    restart: always
+    container_name: nexus
+    ports:
+      - 8081:8081
+    volumes:
+      - $PWD/data:/nexus-data
+</code></pre>
+<h2 id="启动">启动</h2>
+<pre><code class="language-bash">docker-compse up -d
+</code></pre>
+<p>启动比较慢，大概2-5分钟</p>
+<h2 id="用户名和密码">用户名和密码</h2>
+<p>默认用户名：admin<br>
+密码：/usr/local/src/nexus3/data/admin.password 文件的内容就是密码</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://hub.docker.com/r/sonatype/nexus3">docker hub nexus3</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Spring Boot Swagger Pageable 处理]]></title>
         <id>https://blog.belier.cn/post/52178956/</id>
@@ -832,23 +867,6 @@ public HandlerExceptionResolver sentryExceptionResolver() {
 <h2 id="参考">参考</h2>
 <p><a href="https://docs.sentry.io/clients/java/integrations/#logback">Sentry Docs Java Logback</a><br>
 <a href="https://docs.sentry.io/clients/java/integrations/#spring">Sentry Docs Java Spring</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[Nginx 隐藏版本号信息]]></title>
-        <id>https://blog.belier.cn/post/38567915/</id>
-        <link href="https://blog.belier.cn/post/38567915/">
-        </link>
-        <updated>2020-02-12T12:26:14.000Z</updated>
-        <summary type="html"><![CDATA[<p>隐藏版本号有利于提高服务安全性</p>
-]]></summary>
-        <content type="html"><![CDATA[<p>隐藏版本号有利于提高服务安全性</p>
-<!-- more -->
-<pre><code class="language-nginx">http {
-    # 在 http 中添加
-    server_tokens off;
-}
-</code></pre>
 ]]></content>
     </entry>
 </feed>
