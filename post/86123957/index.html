@@ -56,12 +56,11 @@
             <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">创建目录</a></li>
-<li><a href="#%E8%B5%8B%E4%BA%88-data-%E7%9B%AE%E5%BD%95%E6%9D%83%E9%99%90">赋予 data 目录权限</a></li>
-<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
-<li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li>
-<li><a href="#%E7%94%A8%E6%88%B7%E5%90%8D%E5%92%8C%E5%AF%86%E7%A0%81">用户名和密码</a></li>
-<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+<li><a href="#%E5%AE%89%E8%A3%85-nexus-%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93">安装 Nexus 私有仓库</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-maven-%E9%A1%B9%E7%9B%AE%E7%9A%84-pomxml">修改 Maven 项目的 pom.xml</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-maven-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6-settingsxml">修改 Maven 配置文件 settings.xml</a></li>
+<li><a href="#%E5%8F%91%E5%B8%83">发布</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%A7%81%E6%9C%89%E4%BB%93%E5%BA%93">使用私有仓库</a></li>
 </ul>
 </li>
 </ul>
@@ -105,39 +104,61 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Docker Compose 运行 nexus3</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="63571659">
-          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">将 Maven 项目发布到 Nexus 私有仓库</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="86123957">
+          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 3 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <h2 id="创建目录">创建目录</h2>
-<pre><code class="language-bash">mkdir -p /usr/local/src/nexus3/data
+          <h2 id="安装-nexus-私有仓库">安装 Nexus 私有仓库</h2>
+<p>参考：<a href="/post/63571659/">Docker Compose 运行 nexus3</a></p>
+<h2 id="修改-maven-项目的-pomxml">修改 Maven 项目的 pom.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;distributionManagement&gt;
+        &lt;snapshotRepository&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-public/&lt;/url&gt;
+        &lt;/snapshotRepository&gt;
+        &lt;repository&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/distributionManagement&gt;
+&lt;/project&gt;
 </code></pre>
-<h2 id="赋予-data-目录权限">赋予 data 目录权限</h2>
-<pre><code class="language-bash">chown -R 200 /usr/local/src/nexus3/data
+<h2 id="修改-maven-配置文件-settingsxml">修改 Maven 配置文件 settings.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
+          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+          xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
+
+    &lt;servers&gt;
+        &lt;server&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+    &lt;/servers&gt;
+&lt;/settings&gt;
 </code></pre>
-<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
-<pre><code class="language-yml">version: '3'
-services:
-  nexus3:
-    image: sonatype/nexus3
-    restart: always
-    container_name: nexus
-    ports:
-      - 8081:8081
-    volumes:
-      - $PWD/data:/nexus-data
+<h2 id="发布">发布</h2>
+<p>如果使用 IDEA，直接在 IDEA 右侧的 Maven 小窗口中执行 deploy</p>
+<p>命令方式：在项目根路径下执行如下命令</p>
+<pre><code class="language-bash"># --settings E:\maven\settings.xml 指定配置文件，以自己的路径为准
+# -Dmaven.test.skip=true 跳过测试，看自己需求
+mvn deploy --settings E:\maven\settings.xml -Dmaven.test.skip=true
 </code></pre>
-<h2 id="启动">启动</h2>
-<pre><code class="language-bash">docker-compse up -d
-</code></pre>
-<p>启动比较慢，大概2-5分钟</p>
-<h2 id="用户名和密码">用户名和密码</h2>
-<p>默认用户名：admin<br>
-密码：/usr/local/src/nexus3/data/admin.password 文件的内容就是密码</p>
-<h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/r/sonatype/nexus3">docker hub nexus3</a></p>
+<h2 id="使用私有仓库">使用私有仓库</h2>
+<p>参考：<a href="/post/66712598/">Maven 同时配置阿里云仓库和私有仓库</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>
@@ -146,8 +167,8 @@ services:
             <span class="flex-auto">Nexus</span>
           </a>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589/">
-            <span class="flex-auto">Docker</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/976128/">
+            <span class="flex-auto">Maven</span>
           </a>
         
 
@@ -155,21 +176,12 @@ services:
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/86123957/">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    将 Maven 项目发布到 Nexus 私有仓库
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/52178956/">
+              <a href="https://blog.belier.cn/post/63571659/">
                 <h3 class="post-title">
-                  Spring Boot Swagger Pageable 处理
+                  Docker Compose 运行 nexus3
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -187,7 +199,7 @@ services:
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 63571659,
+        path: 86123957,
         visitor: true,
         highlight: false
 })
