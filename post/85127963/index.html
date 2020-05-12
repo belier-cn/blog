@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589277810406">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589293408710">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -40,7 +40,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589277810406" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589293408710" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -112,13 +112,13 @@
           <p>将错误日志发送到 Sentry 方便后期排查和维护</p>
 <!-- more -->
 <h2 id="sentry-简介">Sentry 简介</h2>
-<p><a href="https://sentry.io/about/">About Sentry</a></p>
+<p><a href="https://sentry.io/about/" target="_blank">About Sentry</a></p>
 <h2 id="sentry-配置">Sentry 配置</h2>
 <p>在 <code>resources</code>目录下创建 <code>sentry.properties</code></p>
 <pre><code class="language-properties">dsn=你的 dsn
 stacktrace.app.packages=
 </code></pre>
-<p>stacktrace.app.packages 必须配置，参考：<a href="https://docs.sentry.io/clients/java/config#in-application-stack-frames">sentry docs</a></p>
+<p>stacktrace.app.packages 必须配置，参考：<a href="https://docs.sentry.io/clients/java/config#in-application-stack-frames" target="_blank">sentry docs</a></p>
 <h2 id="logbak-配置">Logbak 配置</h2>
 <p>安装依赖</p>
 <pre><code class="language-xml">&lt;dependency&gt;
@@ -184,8 +184,8 @@ public HandlerExceptionResolver sentryExceptionResolver() {
 }
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://docs.sentry.io/clients/java/integrations/#logback">Sentry Docs Java Logback</a><br>
-<a href="https://docs.sentry.io/clients/java/integrations/#spring">Sentry Docs Java Spring</a></p>
+<p><a href="https://docs.sentry.io/clients/java/integrations/#logback" target="_blank">Sentry Docs Java Logback</a><br>
+<a href="https://docs.sentry.io/clients/java/integrations/#spring" target="_blank">Sentry Docs Java Spring</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>

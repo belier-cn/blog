@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589277810406">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589293408710">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -40,7 +40,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589277810406" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589293408710" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -114,9 +114,9 @@
         
         <div class="post-content yue">
           <h2 id="acmesh-简介">acme.sh 简介</h2>
-<p><a href="https://github.com/Neilpang/acme.sh">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
+<p><a href="https://github.com/Neilpang/acme.sh" target="_blank">acme.sh</a> 实现了 acme 协议, 可以从 letsencrypt 生成免费的证书.</p>
 <h2 id="安装-docker">安装 Docker</h2>
-<p>参考我的文章：<a href="/post/-ZFHJzYym/">Centos7 安装 Docker</a></p>
+<p>参考：<a href="/post/92660266/" target="_blank">Centos7 安装 Docker</a></p>
 <h2 id="创建-acmesh-容器">创建 acme.sh 容器</h2>
 <pre><code class="language-bash">docker run -itd  \
 --net=host \
@@ -133,7 +133,7 @@ neilpang/acme.sh daemon
 <ol>
 <li>
 <p>准备一个子账号，用于访问阿里云 DNS 服务<br>
-<a href="https://ram.console.aliyun.com/users/new">添加地址</a><br>
+<a href="https://ram.console.aliyun.com/users/new" target="_blank">添加地址</a><br>
 <img src="https://blog.belier.cn/post-images/1577944289921.png" alt="" loading="lazy"></p>
 </li>
 <li>
@@ -142,7 +142,7 @@ neilpang/acme.sh daemon
 </li>
 <li>
 <p>设置 DNS 管理权限<br>
-<a href="https://ram.console.aliyun.com/permissions">授权地址</a><br>
+<a href="https://ram.console.aliyun.com/permissions" target="_blank">授权地址</a><br>
 <img src="https://blog.belier.cn/post-images/1577944328078.png" alt="" loading="lazy"></p>
 </li>
 <li>
@@ -199,11 +199,11 @@ acme.sh --issue --dns dns_cf -d yourdomain.com \
 acme.sh --deploy -d example.com  --deploy-hook docker
 </code></pre>
 <h2 id="使用测试服">使用测试服</h2>
-<p>letsencrypt 正式服是有速录限制的<a href="https://letsencrypt.org/zh-cn/docs/rate-limits/">详见</a>，如果第一次用，建议使用测试服</p>
+<p>letsencrypt 正式服是有速录限制的<a href="https://letsencrypt.org/zh-cn/docs/rate-limits/" target="_blank">详见</a>，如果第一次用，建议使用测试服</p>
 <p>使用方式：<br>
 添加 --test 或者 --staging 参数</p>
 <h2 id="更新通知">更新通知</h2>
-<p>这里使用 <a href="http://ifttt.com">ifttt</a> 的 <a href="https://ifttt.com/maker_webhooks">WebHooks</a> 来触发邮件发送，更多通知方式参考：<a href="https://github.com/Neilpang/acme.sh/wiki/notify">acme.sh notify</a></p>
+<p>这里使用 <a href="http://ifttt.com" target="_blank">ifttt</a> 的 <a href="https://ifttt.com/maker_webhooks" target="_blank">WebHooks</a> 来触发邮件发送，更多通知方式参考：<a href="https://github.com/Neilpang/acme.sh/wiki/notify" target="_blank">acme.sh notify</a></p>
 <h2 id="注意">注意</h2>
 <p>如果你有域名 yourdomain1.com yourdomain2.com 在两个不同的阿里云账号中，你又需要在一台服务器中生成两个域名的证书，只有最后一个生成的域名会自动续签成功，原因在于 acme.sh 目录下只有一个账号信息配置文件</p>
 <pre><code class="language-bash">AUTO_UPGRADE='1'
@@ -223,7 +223,7 @@ USER_PATH='/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 <li>也可以创建多个容器来实现，会避免有失败的情况，但是会多消耗资源</li>
 </ol>
 <blockquote>
-<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055">acme.sh issues</a> 本人未使用或测试</p>
+<p>以上方案均来自 <a href="https://github.com/Neilpang/acme.sh/issues/2055" target="_blank">acme.sh issues</a> 本人未使用或测试</p>
 </blockquote>
 
           <p>写的不好，仅供参考</p>
