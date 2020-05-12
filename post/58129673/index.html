@@ -1,6 +1,5 @@
 <html>
   <head>
-    <base target="_blank" />
     
       <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
       <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
@@ -11,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589117407364">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589277810406">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -41,7 +40,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589117407364" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589277810406" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -131,7 +130,7 @@ chown -R 999:999 .
 <p>否则会出现如下错误</p>
 <pre><code>Unable to locate appender &quot;file_es&quot; for logger config &quot;root&quot;
 </code></pre>
-<p>参考：<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<p>参考：<a href="https://mlog.club/article/3945654" target="_blank">https://mlog.club/article/3945654</a></p>
 <h2 id="设置系统参数">设置系统参数</h2>
 <h3 id="临时生效">临时生效</h3>
 <pre><code class="language-bash">sysctl -w vm.max_map_count=262144
@@ -148,7 +147,7 @@ ulimit -u 4096
 * soft nproc 65565
 * hard nproc 65565
 </code></pre>
-<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28">https://github.com/iwhile/blogbook/issues/28</a></p>
+<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28" target="_blank">https://github.com/iwhile/blogbook/issues/28</a></p>
 <h3 id="sysctl-永久生效">sysctl 永久生效</h3>
 <p>编辑 <code>/etc/sysctl.conf</code> 加入如下配置</p>
 <pre><code>vm.max_map_count=262144
@@ -183,7 +182,7 @@ services:
 <pre><code class="language-bash">docker-compse up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a></p>
+<p><a href="https://hub.docker.com/_/sonarqube/" target="_blank">Docker Hub SonarQube</a></p>
 
           <p>写的不好，仅供参考</p>
         </div>

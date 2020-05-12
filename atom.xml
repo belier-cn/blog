@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-10T14:40:56.439Z</updated>
+    <updated>2020-05-12T10:03:36.537Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -60,9 +60,9 @@ get a
 exit
 </code></pre>
 <h2 id="测试远程连接">测试远程连接</h2>
-<p>建议使用的可视化客户端 <a href="https://github.com/qishibo/AnotherRedisDesktopManager">AnotherRedisDesktopManager</a></p>
+<p>建议使用的可视化客户端 <a href="https://github.com/qishibo/AnotherRedisDesktopManager" target="_blank">AnotherRedisDesktopManager</a></p>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/redis/">docker hub redis</a></p>
+<p><a href="https://hub.docker.com/_/redis/" target="_blank">Docker Hub Redis</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -72,7 +72,7 @@ exit
         </link>
         <updated>2020-05-10T06:12:02.000Z</updated>
         <content type="html"><![CDATA[<h2 id="安装-nexus-私有仓库">安装 Nexus 私有仓库</h2>
-<p>参考：<a href="/post/63571659/">Docker Compose 运行 nexus3</a></p>
+<p>参考：<a href="/post/63571659/" target="_blank">Docker Compose 运行 nexus3</a></p>
 <h2 id="修改-maven-项目的-pomxml">修改 Maven 项目的 pom.xml</h2>
 <pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
@@ -120,11 +120,11 @@ exit
 mvn deploy --settings E:\maven\settings.xml -Dmaven.test.skip=true
 </code></pre>
 <h2 id="使用私有仓库">使用私有仓库</h2>
-<p>参考：<a href="/post/66712598/">Maven 同时配置阿里云仓库和私有仓库</a></p>
+<p>参考：<a href="/post/66712598/" target="_blank">Maven 同时配置阿里云仓库和私有仓库</a></p>
 ]]></content>
     </entry>
     <entry>
-        <title type="html"><![CDATA[Docker Compose 运行 nexus]]></title>
+        <title type="html"><![CDATA[Docker Compose 运行 Nexus]]></title>
         <id>https://blog.belier.cn/post/63571659/</id>
         <link href="https://blog.belier.cn/post/63571659/">
         </link>
@@ -155,7 +155,7 @@ services:
 <p>默认用户名：admin<br>
 密码：/usr/local/src/nexus3/data/admin.password 文件的内容就是密码</p>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/r/sonatype/nexus3">docker hub nexus3</a></p>
+<p><a href="https://hub.docker.com/r/sonatype/nexus3" target="_blank">Docker Hub Nexus3</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -572,8 +572,8 @@ public static BaseEnum getItem(String value){
         </link>
         <updated>2020-02-17T12:23:17.000Z</updated>
         <content type="html"><![CDATA[<h2 id="环境安装">环境安装</h2>
-<p><a href="/post/58129673/">使用 Docker Compose 运行 SonarQube 7.9.2</a><br>
-<a href="/post/55817706/">使用 Docker Compose 运行 Jenkins</a></p>
+<p><a href="/post/58129673/" target="_blank">使用 Docker Compose 运行 SonarQube 7.9.2</a><br>
+<a href="/post/55817706/" target="_blank">使用 Docker Compose 运行 Jenkins</a></p>
 <h2 id="sonarqube-创建令牌">Sonarqube 创建令牌</h2>
 <p>创建地址：<code>{your_sonarqube_server}/account/security/</code><br>
 填写令牌名称，然后创建，令牌记得立即保存，否则后面就看不到了</p>
@@ -636,7 +636,7 @@ Jenkins Webhooks 地址：<code>{your_jenkins_server}/sonarqube-webhook/</code><
 }
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://jenkins.io/doc/pipeline/steps/sonar/">SonarQube Scanner for Jenkins</a></p>
+<p><a href="https://jenkins.io/doc/pipeline/steps/sonar/" target="_blank">SonarQube Scanner for Jenkins</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -658,7 +658,7 @@ chown -R 999:999 .
 <p>否则会出现如下错误</p>
 <pre><code>Unable to locate appender &quot;file_es&quot; for logger config &quot;root&quot;
 </code></pre>
-<p>参考：<a href="https://mlog.club/article/3945654">https://mlog.club/article/3945654</a></p>
+<p>参考：<a href="https://mlog.club/article/3945654" target="_blank">https://mlog.club/article/3945654</a></p>
 <h2 id="设置系统参数">设置系统参数</h2>
 <h3 id="临时生效">临时生效</h3>
 <pre><code class="language-bash">sysctl -w vm.max_map_count=262144
@@ -675,7 +675,7 @@ ulimit -u 4096
 * soft nproc 65565
 * hard nproc 65565
 </code></pre>
-<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28">https://github.com/iwhile/blogbook/issues/28</a></p>
+<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28" target="_blank">https://github.com/iwhile/blogbook/issues/28</a></p>
 <h3 id="sysctl-永久生效">sysctl 永久生效</h3>
 <p>编辑 <code>/etc/sysctl.conf</code> 加入如下配置</p>
 <pre><code>vm.max_map_count=262144
@@ -710,7 +710,7 @@ services:
 <pre><code class="language-bash">docker-compse up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/sonarqube/">Docker SonarQube</a></p>
+<p><a href="https://hub.docker.com/_/sonarqube/" target="_blank">Docker Hub SonarQube</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -743,7 +743,7 @@ services:
 <pre><code class="language-bash">docker-compose up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/postgres">Docker PostgreSQL</a></p>
+<p><a href="https://hub.docker.com/_/postgres/" target="_blank">Docker Hub PostgreSQL</a></p>
 ]]></content>
     </entry>
     <entry>
@@ -781,7 +781,7 @@ services:
 <pre><code class="language-bash">docker-compose up -d
 </code></pre>
 <h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/mysql">Docker Mysql 官方支持</a></p>
+<p><a href="https://hub.docker.com/_/mysql/" target="_blank">Docker Hub Mysql</a></p>
 ]]></content>
     </entry>
 </feed>
