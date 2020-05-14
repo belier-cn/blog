@@ -2,13 +2,55 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-14T02:03:25.415Z</updated>
+    <updated>2020-05-14T08:29:55.816Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[Centos7 配置 JDK 环境]]></title>
+        <id>https://blog.belier.cn/post/69127523/</id>
+        <link href="https://blog.belier.cn/post/69127523/">
+        </link>
+        <updated>2020-05-13T07:57:44.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建存放的目录">创建存放的目录</h2>
+<pre><code class="language-bash">mdkir -p /usr/local/java
+</code></pre>
+<h2 id="下载-jdk">下载 JDK</h2>
+<p>推荐下载地址：<a href="https://mirrors.huaweicloud.com/java/jdk/" target="_blank">华为 JDK 镜像</a></p>
+<pre><code class="language-bash">cd /usr/local/java
+</code></pre>
+<p>这里我下载1.8的</p>
+<pre><code class="language-bash">curl -O https://mirrors.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz
+</code></pre>
+<p>解压</p>
+<pre><code class="language-bash">tar -zxvf jdk-8u202-linux-x64.tar.gz
+</code></pre>
+<h2 id="配置环境变量">配置环境变量</h2>
+<p>编辑 /etc/profile 文件</p>
+<pre><code class="language-bash">vi /etc/profile
+</code></pre>
+<p>追加如下内容</p>
+<pre><code class="language-bash">JAVA_HOME=/usr/local/java/jdk1.8.0_202	
+CLASSPATH=.:$JAVA_HOME/lib.tools.jar
+PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME CLASSPATH PATH
+</code></pre>
+<p>使环境变量生效</p>
+<pre><code class="language-bash">source /etc/profile
+</code></pre>
+<h2 id="测试">测试</h2>
+<pre><code class="language-bash">java -verison
+</code></pre>
+<p>输出如下内容代表配置成功</p>
+<pre><code>java version &quot;1.8.0_202&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[七牛云批量将文件从一个 Bucket 复制到另一个 Bucket]]></title>
         <id>https://blog.belier.cn/post/76851296/</id>
@@ -35,7 +77,7 @@ c.png	35716	FvCmbGBanK7_p__5DcbTGWVcAzZ7	15891820034656196	image/png	0
 <p>在移动的时我们只需要文件名，所以只需要 files.txt 的第一列</p>
 <pre><code class="language-bash">cat files.txt | awk '{print $1}' &gt;copys.txt
 </code></pre>
-<h2 id="开始移动">开始移动</h2>
+<h2 id="开始复制">开始复制</h2>
 <pre><code class="language-bash"># --success-list success.txt 将成功的记录保存到 success.txt
 # --failure-list failure.txt 将失败的记录保存到 failure.txt
 # -i copys.txt 指定要移动的文件名所在的文件
@@ -752,39 +794,6 @@ services:
 </code></pre>
 <h2 id="参考">参考</h2>
 <p><a href="https://hub.docker.com/_/sonarqube/" target="_blank">Docker Hub SonarQube</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 Docker Compose 运行 PostgreSQL]]></title>
-        <id>https://blog.belier.cn/post/35127562/</id>
-        <link href="https://blog.belier.cn/post/35127562/">
-        </link>
-        <updated>2020-02-15T03:26:50.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="创建所需目录和文件">创建所需目录和文件</h2>
-<pre><code class="language-bash">mkdir -p /usr/local/src/postgres/data
-touch /usr/local/src/postgres/postgres.conf
-</code></pre>
-<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
-<p>在<code>/usr/local/src/sonarqube</code>目录下创建</p>
-<pre><code class="language-yaml">version: '3'
-services:
-  postgres:
-    image: postgres
-    restart: always
-    container_name: postgres
-    ports:
-      - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: admin123
-    volumes:
-      - $PWD/postgres.conf:/etc/postgresql/postgresql.conf
-      - $PWD/data:/var/lib/postgresql/data
-</code></pre>
-<h2 id="启动">启动</h2>
-<pre><code class="language-bash">docker-compose up -d
-</code></pre>
-<h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/postgres/" target="_blank">Docker Hub PostgreSQL</a></p>
 ]]></content>
     </entry>
 </feed>

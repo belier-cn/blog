@@ -10,7 +10,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Belier Blog</title>
 <meta name="description" content="" />
-<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589421802785">
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1589444981238">
 <link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
 <link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
@@ -40,7 +40,7 @@
       <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
         <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
         <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
-          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589421802785" alt="">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1589444981238" alt="">
         </a>
         <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
 
@@ -59,7 +59,7 @@
 <li><a href="#%E6%B7%BB%E5%8A%A0%E4%B8%83%E7%89%9B%E4%BA%91%E8%B4%A6%E5%8F%B7">添加七牛云账号</a></li>
 <li><a href="#%E8%8E%B7%E5%8F%96-bucket-%E4%B8%8B%E7%9A%84%E6%89%80%E6%9C%89%E6%96%87%E4%BB%B6%E4%BF%A1%E6%81%AF">获取 Bucket 下的所有文件信息</a></li>
 <li><a href="#%E5%A4%84%E7%90%86-filestxt">处理 files.txt</a></li>
-<li><a href="#%E5%BC%80%E5%A7%8B%E7%A7%BB%E5%8A%A8">开始移动</a></li>
+<li><a href="#%E5%BC%80%E5%A7%8B%E5%A4%8D%E5%88%B6">开始复制</a></li>
 <li><a href="#%E8%B7%A8%E8%B4%A6%E5%8F%B7">跨账号</a></li>
 <li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
 </ul>
@@ -131,7 +131,7 @@ c.png	35716	FvCmbGBanK7_p__5DcbTGWVcAzZ7	15891820034656196	image/png	0
 <p>在移动的时我们只需要文件名，所以只需要 files.txt 的第一列</p>
 <pre><code class="language-bash">cat files.txt | awk '{print $1}' &gt;copys.txt
 </code></pre>
-<h2 id="开始移动">开始移动</h2>
+<h2 id="开始复制">开始复制</h2>
 <pre><code class="language-bash"># --success-list success.txt 将成功的记录保存到 success.txt
 # --failure-list failure.txt 将失败的记录保存到 failure.txt
 # -i copys.txt 指定要移动的文件名所在的文件
@@ -154,6 +154,15 @@ qshell batchcopy --success-list success.txt --failure-list failure.txt --force -
 
         <div class="flex justify-between py-8">
           <div class="prev-post">
+            
+             
+                <a href="https://blog.belier.cn/post/69127523/">
+                  <h3 class="post-title">
+                    <i class="iconfont arrow-left-line"></i>
+                    Centos7 配置 JDK 环境
+                  </h3>
+                </a>
+              
             
           </div>
           
