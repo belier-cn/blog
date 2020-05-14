@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-14T08:29:55.816Z</updated>
+    <updated>2020-05-14T08:34:08.292Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
@@ -16,13 +16,14 @@
         </link>
         <updated>2020-05-13T07:57:44.000Z</updated>
         <content type="html"><![CDATA[<h2 id="创建存放的目录">创建存放的目录</h2>
-<pre><code class="language-bash">mdkir -p /usr/local/java
+<pre><code class="language-bash">mkdir -p /usr/local/java
 </code></pre>
 <h2 id="下载-jdk">下载 JDK</h2>
 <p>推荐下载地址：<a href="https://mirrors.huaweicloud.com/java/jdk/" target="_blank">华为 JDK 镜像</a></p>
+<p>进入安装目录</p>
 <pre><code class="language-bash">cd /usr/local/java
 </code></pre>
-<p>这里我下载1.8的</p>
+<p>这里我下载 1.8 版本</p>
 <pre><code class="language-bash">curl -O https://mirrors.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz
 </code></pre>
 <p>解压</p>
