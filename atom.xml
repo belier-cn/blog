@@ -2,13 +2,52 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-12T15:07:45.421Z</updated>
+    <updated>2020-05-14T02:03:25.415Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[七牛云批量将文件从一个 Bucket 复制到另一个 Bucket]]></title>
+        <id>https://blog.belier.cn/post/76851296/</id>
+        <link href="https://blog.belier.cn/post/76851296/">
+        </link>
+        <updated>2020-05-13T02:58:54.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="下载-qshell">下载 qshell</h2>
+<p>下载地址：<a href="https://github.com/qiniu/qshell#%E4%B8%8B%E8%BD%BD" target="_blank">https://github.com/qiniu/qshell</a><br>
+解压到目录并重新命名为 qshell.exe ，然后在该目录下执行操作，也可以配置环境变量即可全局使用</p>
+<p>当前使用版本：v2.4.1</p>
+<h2 id="添加七牛云账号">添加七牛云账号</h2>
+<pre><code class="language-bash">qshell account &lt;Your AccessKey&gt; &lt;Your SecretKey&gt; &lt;Your Name&gt;
+</code></pre>
+<h2 id="获取-bucket-下的所有文件信息">获取 Bucket 下的所有文件信息</h2>
+<pre><code># -o files.txt 将所有文件信息保存到 files.txt
+qshell listbucket &lt;Bucket&gt; -o files.txt
+</code></pre>
+<p>files.txt 格式如下</p>
+<pre><code>a.png   15716	FvCmbGBanK7_p__5DcbTGWVcAzZ5	15891820034656194	image/png	0
+b.png	25716	FvCmbGBanK7_p__5DcbTGWVcAzZ6	15891820034656195	image/png	0
+c.png	35716	FvCmbGBanK7_p__5DcbTGWVcAzZ7	15891820034656196	image/png	0
+</code></pre>
+<h2 id="处理-filestxt">处理 files.txt</h2>
+<p>在移动的时我们只需要文件名，所以只需要 files.txt 的第一列</p>
+<pre><code class="language-bash">cat files.txt | awk '{print $1}' &gt;copys.txt
+</code></pre>
+<h2 id="开始移动">开始移动</h2>
+<pre><code class="language-bash"># --success-list success.txt 将成功的记录保存到 success.txt
+# --failure-list failure.txt 将失败的记录保存到 failure.txt
+# -i copys.txt 指定要移动的文件名所在的文件
+# --force 不提示验证码
+qshell batchcopy --success-list success.txt --failure-list failure.txt --force -i copys.txt &lt;Bucket1&gt; &lt;Bucket2&gt;
+</code></pre>
+<h2 id="跨账号">跨账号</h2>
+<p>可在空间设置中进行空间授权，授权给另一个账号</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://github.com/qiniu/qshell#qshell%E4%BD%BF%E7%94%A8" target="_blank">github qshell</a></p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Docker Compose 运行 Redis]]></title>
         <id>https://blog.belier.cn/post/52712356/</id>
@@ -746,44 +785,6 @@ services:
 </code></pre>
 <h2 id="参考">参考</h2>
 <p><a href="https://hub.docker.com/_/postgres/" target="_blank">Docker Hub PostgreSQL</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 Docker Compose 运行 Mysql 5.7]]></title>
-        <id>https://blog.belier.cn/post/69821753/</id>
-        <link href="https://blog.belier.cn/post/69821753/">
-        </link>
-        <updated>2020-02-15T03:17:23.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="创建存放目录">创建存放目录</h2>
-<pre><code class="language-bash"># 存放数据目录
-mkdir -p /usr/local/src/mysql/data
-# 存放配置的目录，这里的配置项会覆盖默认的配置项
-mkdir -p /usr/local/src/mysql/conf.d
-</code></pre>
-<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
-<p>在 <code>/usr/local/src/mysql</code> 目录下创建</p>
-<pre><code class="language-yaml">version: '3'
-services:
-  mysql:
-    image: mysql:5.7
-    restart: always
-    container_name: mysql
-    ports:
-      - 3306:3306
-    environment:
-      MYSQL_ROOT_PASSWORD: admin123
-    volumes:
-      - $PWD/data:/var/lib/mysql
-      - $PWD/conf.d:/etc/mysql/conf.d
-    command:
-      --character-set-server=utf8mb4
-      --collation-server=utf8mb4_general_ci
-</code></pre>
-<h2 id="启动">启动</h2>
-<pre><code class="language-bash">docker-compose up -d
-</code></pre>
-<h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/mysql/" target="_blank">Docker Hub Mysql</a></p>
 ]]></content>
     </entry>
 </feed>
