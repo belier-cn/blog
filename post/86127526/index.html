@@ -48,6 +48,26 @@
       
         <div class="animated fadeInLeft" style="animation-delay: 0.4s">
         
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BB%A3%E7%90%86-https">代理 https</a></li>
+<li><a href="#%E4%BB%A3%E7%90%86-ssh">代理 SSH</a>
+<ul>
+<li><a href="#windows">Windows</a></li>
+<li><a href="#mac">Mac</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        
         </div>
       
     </div>
@@ -85,25 +105,69 @@
 <div class="mask" onclick="closeMenu()">
 </div>
       <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
-        <h1 class="text-3xl font-bold lg:mt-16">Nginx 隐藏版本号信息</h1>
-        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="38567915">
-          <i class="iconfont calendar-line"></i> 2020-02-12 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        <h1 class="text-3xl font-bold lg:mt-16">给 git 命令设置代理</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="86127526">
+          <i class="iconfont calendar-line"></i> 2020-05-14 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
         </div>
         
         <div class="post-content yue">
-          <p>隐藏版本号有利于提高服务安全性</p>
-<!-- more -->
-<pre><code class="language-nginx">http {
-    # 在 http 中添加
-    server_tokens off;
-}
+          <h2 id="代理-https">代理 https</h2>
+<p>示例：git clone https://github.com/owner/git.git</p>
+<p>全局</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.proxy
+</code></pre>
+<p>针对某个域名</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.https://github.com.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.https://github.com.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.https://github.com.proxy
+</code></pre>
+<h2 id="代理-ssh">代理 SSH</h2>
+<p>示例：git clone git@github.com/owner/git.git</p>
+<p>修改SSH配置文件，不存在则新建</p>
+<p>windows：<code>C:\Users\你的用户名\.ssh\config</code></p>
+<p>mac： <code>~/.ssh/config/config</code></p>
+<h3 id="windows">Windows</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+# socks5 协议
+ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+  # socks5 协议
+  ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<h3 id="mac">Mac</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+# socks5 协议
+ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+  # socks5 协议
+  ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
 </code></pre>
 
           <p>写的不好，仅供参考</p>
         </div>
         
-          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/811086/">
-            <span class="flex-auto">Nginx</span>
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/312786/">
+            <span class="flex-auto">Git</span>
           </a>
         
 
@@ -111,21 +175,12 @@
         <div class="flex justify-between py-8">
           <div class="prev-post">
             
-             
-                <a href="https://blog.belier.cn/post/85127963/">
-                  <h3 class="post-title">
-                    <i class="iconfont arrow-left-line"></i>
-                    Spring Boot Logback 配置 Sentry
-                  </h3>
-                </a>
-              
-            
           </div>
           
             <div class="next-post">
-              <a href="https://blog.belier.cn/post/66712598/">
+              <a href="https://blog.belier.cn/post/69127523/">
                 <h3 class="post-title">
-                  Maven 同时配置阿里云仓库和私有仓库
+                  Centos7 配置 JDK 环境
                   <i class="iconfont arrow-right-line"></i>
                 </h3>
               </a>
@@ -143,7 +198,7 @@
         appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
         appKey: '2yWITldJI05zmWvNfeNF4Tfz',
         placeholder: '欢迎留言讨论',
-        path: 38567915,
+        path: 86127526,
         visitor: true,
         highlight: false
 })

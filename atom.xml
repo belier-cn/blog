@@ -2,13 +2,72 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://blog.belier.cn</id>
     <title>Belier Blog</title>
-    <updated>2020-05-14T08:34:08.292Z</updated>
+    <updated>2020-05-15T02:48:21.952Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://blog.belier.cn"/>
     <link rel="self" href="https://blog.belier.cn/atom.xml"/>
     <logo>https://blog.belier.cn/images/avatar.png</logo>
     <icon>https://blog.belier.cn/favicon.ico</icon>
     <rights>All rights reserved 2020, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[给 git 命令设置代理]]></title>
+        <id>https://blog.belier.cn/post/86127526/</id>
+        <link href="https://blog.belier.cn/post/86127526/">
+        </link>
+        <updated>2020-05-14T14:23:30.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="代理-https">代理 https</h2>
+<p>示例：git clone https://github.com/owner/git.git</p>
+<p>全局</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.proxy
+</code></pre>
+<p>针对某个域名</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.https://github.com.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.https://github.com.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.https://github.com.proxy
+</code></pre>
+<h2 id="代理-ssh">代理 SSH</h2>
+<p>示例：git clone git@github.com/owner/git.git</p>
+<p>修改SSH配置文件，不存在则新建</p>
+<p>windows：<code>C:\Users\你的用户名\.ssh\config</code></p>
+<p>mac： <code>~/.ssh/config/config</code></p>
+<h3 id="windows">Windows</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+# socks5 协议
+ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+  # socks5 协议
+  ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<h3 id="mac">Mac</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+# socks5 协议
+ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+  # socks5 协议
+  ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Centos7 配置 JDK 环境]]></title>
         <id>https://blog.belier.cn/post/69127523/</id>
@@ -721,80 +780,6 @@ Jenkins Webhooks 地址：<code>{your_jenkins_server}/sonarqube-webhook/</code><
 </code></pre>
 <h2 id="参考">参考</h2>
 <p><a href="https://jenkins.io/doc/pipeline/steps/sonar/" target="_blank">SonarQube Scanner for Jenkins</a></p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[使用 Docker Compose 运行 SonarQube 7.9.2]]></title>
-        <id>https://blog.belier.cn/post/58129673/</id>
-        <link href="https://blog.belier.cn/post/58129673/">
-        </link>
-        <updated>2020-02-15T04:23:05.000Z</updated>
-        <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
-<pre><code class="language-bash">mkdir -p /usr/local/src/sonarqube/conf
-mkdir -p /usr/local/src/sonarqube/extensions
-mkdir -p /usr/local/src/sonarqube/logs
-mkdir -p /usr/local/src/sonarqube/data
-</code></pre>
-<h2 id="赋予目录权限">赋予目录权限</h2>
-<pre><code class="language-bash">cd /usr/local/src/sonarqube
-chown -R 999:999 .
-</code></pre>
-<p>否则会出现如下错误</p>
-<pre><code>Unable to locate appender &quot;file_es&quot; for logger config &quot;root&quot;
-</code></pre>
-<p>参考：<a href="https://mlog.club/article/3945654" target="_blank">https://mlog.club/article/3945654</a></p>
-<h2 id="设置系统参数">设置系统参数</h2>
-<h3 id="临时生效">临时生效</h3>
-<pre><code class="language-bash">sysctl -w vm.max_map_count=262144
-sysctl -w fs.file-max=65536
-ulimit -n 65536
-ulimit -u 4096
-</code></pre>
-<h3 id="ulimit-永久生效">ulimit 永久生效</h3>
-<p>编辑 <code>/etc/security/limits.conf</code> 加入如下配置</p>
-<pre><code># * 代表所有用户，可以针对某个用户配置 如：root soft notfile 65536
-* soft nofile 65536
-* hard nofile 65536
-
-* soft nproc 65565
-* hard nproc 65565
-</code></pre>
-<p>参考：<a href="https://github.com/iwhile/blogbook/issues/28" target="_blank">https://github.com/iwhile/blogbook/issues/28</a></p>
-<h3 id="sysctl-永久生效">sysctl 永久生效</h3>
-<p>编辑 <code>/etc/sysctl.conf</code> 加入如下配置</p>
-<pre><code>vm.max_map_count=262144
-fs.file-max=65536
-</code></pre>
-<p>加载 <code>/etc/sysctl.conf</code>配置</p>
-<pre><code>sysctl -p
-</code></pre>
-<h3 id="重启系统">重启系统</h3>
-<p>如果采用永久配置，保险起见，重启系统</p>
-<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
-<p>在<code>/usr/local/src/sonarqube</code>目录下创建</p>
-<pre><code class="language-yaml">version: '3'
-services:
-  sonarqube:
-    image: sonarqube:7.9.2-community
-    restart: always
-    container_name: sonarqube
-    ports:
-      - 9000:9000
-    environment:
-      &quot;sonar.jdbc.username&quot;: postgres
-      &quot;sonar.dbc.password&quot;: admin123
-      &quot;sonar.jdbc.url&quot;: jdbc:postgresql://postgres:5432/sonarqube
-    volumes:
-      - $PWD/conf:/opt/sonarqube/conf
-      - $PWD/extensions:/opt/sonarqube/extensions
-      - $PWD/logs:/opt/sonarqube/logs
-      - $PWD/data:/opt/sonarqube/data
-</code></pre>
-<h2 id="启动">启动</h2>
-<pre><code class="language-bash">docker-compse up -d
-</code></pre>
-<h2 id="参考">参考</h2>
-<p><a href="https://hub.docker.com/_/sonarqube/" target="_blank">Docker Hub SonarQube</a></p>
 ]]></content>
     </entry>
 </feed>
