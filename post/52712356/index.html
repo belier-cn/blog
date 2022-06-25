@@ -1,0 +1,518 @@
+<html>
+  <head>
+    
+      <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.js">
+    
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belier Blog</title>
+<meta name="description" content="" />
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1656171452492">
+<link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
+<link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+<link rel="stylesheet" href="https://blog.belier.cn/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Belier Blog - Atom Feed" href="https://blog.belier.cn/atom.xml">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147422351-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147422351-1');
+</script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1656171452492" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
+
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+        
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E7%9B%AE%E5%BD%95">创建目录</a></li>
+<li><a href="#%E4%B8%8B%E8%BD%BD%E7%A4%BA%E4%BE%8B%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6">下载示例配置文件</a></li>
+<li><a href="#%E4%BF%AE%E6%94%B9-redisconf">修改 redis.conf</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E5%90%AF%E5%8A%A8%E6%88%90%E5%8A%9F">测试是否启动成功</a></li>
+<li><a href="#%E6%B5%8B%E8%AF%95%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5">测试远程连接</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="remixicon-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700"></div>
+    <a class="rss" href="https://blog.belier.cn/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
+        <h1 class="text-3xl font-bold lg:mt-16">Docker Compose 运行 Redis</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="52712356">
+          <i class="iconfont calendar-line"></i> 2020-05-10 | <i class="iconfont time-line"></i> 2 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        </div>
+        
+        <div class="post-content yue">
+          <h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/redis/data
+</code></pre>
+<h2 id="下载示例配置文件">下载示例配置文件</h2>
+<pre><code class="language-bash"># -o /usr/local/src/redis/redis.conf 将内容保存到 /usr/local/src/redis/redis.conf
+curl -o /usr/local/src/redis/redis.conf http://download.redis.io/redis-stable/redis.conf
+</code></pre>
+<h2 id="修改-redisconf">修改 redis.conf</h2>
+<p>开启远程访问：</p>
+<pre><code># 注释掉  bind 127.0.0.1
+# bind 127.0.0.1
+# 设置密码，由于默认开启了保护模式，必须设置密码才能远程访问，也建议这样做
+requirepass 123456
+</code></pre>
+<p>持久化到文件：</p>
+<pre><code>appendonly yes
+</code></pre>
+<p>更多配置参考默认配置文件，或者参考文章：<a href="https://juejin.im/post/5e046e0cf265da33d45209ce" target="_blank">Redis配置文件详解</a></p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - $PWD/data:/data
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+</code></pre>
+<h2 id="测试是否启动成功">测试是否启动成功</h2>
+<pre><code class="language-bash"># 进入容器
+docker exec -it redis /bin/bash
+# 连接 redis
+redis-cli -h 127.0.0.1 -p 6379
+# 设置一个值
+set a 1
+# 获取刚设置的值
+get a
+# 删除 a
+del a
+# 退出容器
+exit
+</code></pre>
+<h2 id="测试远程连接">测试远程连接</h2>
+<p>建议使用的可视化客户端 <a href="https://github.com/qishibo/AnotherRedisDesktopManager" target="_blank">AnotherRedisDesktopManager</a></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://hub.docker.com/_/redis/" target="_blank">Docker Hub Redis</a></p>
+
+          <p>写的不好，仅供参考</p>
+        </div>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/815276/">
+            <span class="flex-auto">Redis</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589/">
+            <span class="flex-auto">Docker</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
+          <div class="prev-post">
+            
+             
+                <a href="https://blog.belier.cn/post/76851296/">
+                  <h3 class="post-title">
+                    <i class="iconfont arrow-left-line"></i>
+                    七牛云批量将文件从一个 Bucket 复制到另一个 Bucket
+                  </h3>
+                </a>
+              
+            
+          </div>
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/86123957/">
+                <h3 class="post-title">
+                  将 Maven 项目发布到 Nexus 私有仓库
+                  <i class="iconfont arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+         <div id="valine-comment" class="valine-comment"></div>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+ new Valine({
+        el:'#valine-comment',
+        appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
+        appKey: '2yWITldJI05zmWvNfeNF4Tfz',
+        placeholder: '欢迎留言讨论',
+        path: 52712356,
+        visitor: true,
+        highlight: false
+})
+</script>
+
+      </div>
+    </div>
+    <script>
+
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+
+</script>
+
+
+    
+      <script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/components/prism-core.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/autoloader/prism-autoloader.min.js"></script>
+      <script>
+        
+Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (env) {
+		var linkCopy = document.createElement('button');
+		linkCopy.textContent = '复制';
+
+		if (!ClipboardJS) {
+			callbacks.push(registerClipboard);
+		} else {
+			registerClipboard();
+		}
+
+		return linkCopy;
+
+		function registerClipboard() {
+			var clip = new ClipboardJS(linkCopy, {
+				'text': function () {
+					return env.code;
+				}
+			});
+
+			clip.on('success', function() {
+				linkCopy.textContent = '已复制';
+				resetText();
+			});
+			clip.on('error', function () {
+				linkCopy.textContent = '复制失败，请手动复制';
+
+				resetText();
+			});
+		}
+
+		function resetText() {
+			setTimeout(function () {
+				linkCopy.textContent = '复制';
+			}, 5000);
+		}
+	});
+
+
+
+var PLUGIN_NAME = 'line-numbers';
+
+	/**
+	 * Regular expression used for determining line breaks
+	 * @type {RegExp}
+	 */
+	var NEW_LINE_EXP = /\n(?!$)/g;
+
+	/**
+	 * Resizes line numbers spans according to height of line of code
+	 * @param {Element} element <pre> element
+	 */
+	var _resizeElement = function (element) {
+		var codeStyles = getStyles(element);
+		var whiteSpace = codeStyles['white-space'];
+
+		if (whiteSpace === 'pre-wrap' || whiteSpace === 'pre-line') {
+			var codeElement = element.querySelector('code');
+			var lineNumbersWrapper = element.querySelector('.line-numbers-rows');
+			var lineNumberSizer = element.querySelector('.line-numbers-sizer');
+			var codeLines = codeElement.textContent.split(NEW_LINE_EXP);
+
+			if (!lineNumberSizer) {
+				lineNumberSizer = document.createElement('span');
+				lineNumberSizer.className = 'line-numbers-sizer';
+
+				codeElement.appendChild(lineNumberSizer);
+			}
+
+			lineNumberSizer.style.display = 'block';
+
+			codeLines.forEach(function (line, lineNumber) {
+				lineNumberSizer.textContent = line || '\n';
+				var lineSize = lineNumberSizer.getBoundingClientRect().height;
+				lineNumbersWrapper.children[lineNumber].style.height = lineSize + 'px';
+			});
+
+			lineNumberSizer.textContent = '';
+			lineNumberSizer.style.display = 'none';
+		}
+	};
+
+	/**
+	 * Returns style declarations for the element
+	 * @param {Element} element
+	 */
+	var getStyles = function (element) {
+		if (!element) {
+			return null;
+		}
+
+		return window.getComputedStyle ? getComputedStyle(element) : (element.currentStyle || null);
+	};
+
+	window.addEventListener('resize', function () {
+		Array.prototype.forEach.call(document.querySelectorAll('pre.' + PLUGIN_NAME), _resizeElement);
+	});
+
+	Prism.hooks.add('complete', function (env) {
+		if (!env.code) {
+			return;
+		}
+
+		var code = env.element;
+		var pre = code.parentNode;
+
+		// works only for <code> wrapped inside <pre> (not inline)
+		if (!pre || !/pre/i.test(pre.nodeName)) {
+			return;
+		}
+
+		// Abort if line numbers already exists
+		if (code.querySelector('.line-numbers-rows')) {
+			return;
+		}
+
+		var addLineNumbers = false;
+		var lineNumbersRegex = /(?:^|\s)line-numbers(?:\s|$)/;
+
+		for (var element = code; element; element = element.parentNode) {
+			if (lineNumbersRegex.test(element.className)) {
+				addLineNumbers = true;
+				break;
+			}
+		}
+
+		// only add line numbers if <code> or one of its ancestors has the `line-numbers` class
+		if (!addLineNumbers) {
+			return;
+		}
+
+		// Remove the class 'line-numbers' from the <code>
+		code.className = code.className.replace(lineNumbersRegex, ' ');
+		// Add the class 'line-numbers' to the <pre>
+		if (!lineNumbersRegex.test(pre.className)) {
+			pre.className += ' line-numbers';
+		}
+
+		var match = env.code.match(NEW_LINE_EXP);
+		var linesNum = match ? match.length + 1 : 1;
+		var lineNumbersWrapper;
+
+		var lines = new Array(linesNum + 1).join('<span></span>');
+
+		lineNumbersWrapper = document.createElement('span');
+		lineNumbersWrapper.setAttribute('aria-hidden', 'true');
+		lineNumbersWrapper.className = 'line-numbers-rows';
+		lineNumbersWrapper.innerHTML = lines;
+
+		if (pre.hasAttribute('data-start')) {
+			pre.style.counterReset = 'linenumber ' + (parseInt(pre.getAttribute('data-start'), 10) - 1);
+		}
+
+		env.element.appendChild(lineNumbersWrapper);
+
+		_resizeElement(pre);
+
+		Prism.hooks.run('line-numbers', env);
+	});
+
+	Prism.hooks.add('line-numbers', function (env) {
+		env.plugins = env.plugins || {};
+		env.plugins.lineNumbers = true;
+	});
+
+	/**
+	 * Global exports
+	 */
+	Prism.plugins.lineNumbers = {
+		/**
+		 * Get node for provided line number
+		 * @param {Element} element pre element
+		 * @param {Number} number line number
+		 * @return {Element|undefined}
+		 */
+		getLine: function (element, number) {
+			if (element.tagName !== 'PRE' || !element.classList.contains(PLUGIN_NAME)) {
+				return;
+			}
+
+			var lineNumberRows = element.querySelector('.line-numbers-rows');
+			var lineNumberStart = parseInt(element.getAttribute('data-start'), 10) || 1;
+			var lineNumberEnd = lineNumberStart + (lineNumberRows.children.length - 1);
+
+			if (number < lineNumberStart) {
+				number = lineNumberStart;
+			}
+			if (number > lineNumberEnd) {
+				number = lineNumberEnd;
+			}
+
+			var lineIndex = number - lineNumberStart;
+
+			return lineNumberRows.children[lineIndex];
+		}
+	};
+
+
+	Prism.plugins.NormalizeWhitespace.setDefaults({
+		'remove-trailing': true,
+		'remove-indent': true,
+		'left-trim': true,
+		'right-trim': true,
+		'break-lines': 100000,
+		'tabs-to-spaces': 2
+	});
+      </script>
+    
+  </body>
+</html>

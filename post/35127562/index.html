@@ -1,0 +1,490 @@
+<html>
+  <head>
+    
+      <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.js">
+    
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belier Blog</title>
+<meta name="description" content="" />
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1656171452492">
+<link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
+<link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+<link rel="stylesheet" href="https://blog.belier.cn/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Belier Blog - Atom Feed" href="https://blog.belier.cn/atom.xml">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147422351-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147422351-1');
+</script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1656171452492" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
+
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+        
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E5%88%9B%E5%BB%BA%E6%89%80%E9%9C%80%E7%9B%AE%E5%BD%95%E5%92%8C%E6%96%87%E4%BB%B6">创建所需目录和文件</a></li>
+<li><a href="#%E5%88%9B%E5%BB%BA-docker-composeyml-%E6%96%87%E4%BB%B6">创建 docker-compose.yml 文件</a></li>
+<li><a href="#%E5%90%AF%E5%8A%A8">启动</a></li>
+<li><a href="#%E5%8F%82%E8%80%83">参考</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="remixicon-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700"></div>
+    <a class="rss" href="https://blog.belier.cn/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
+        <h1 class="text-3xl font-bold lg:mt-16">使用 Docker Compose 运行 PostgreSQL</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="35127562">
+          <i class="iconfont calendar-line"></i> 2020-02-15 | <i class="iconfont time-line"></i> 1 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        </div>
+        
+        <div class="post-content yue">
+          <h2 id="创建所需目录和文件">创建所需目录和文件</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/postgres/data
+touch /usr/local/src/postgres/postgres.conf
+</code></pre>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<p>在<code>/usr/local/src/sonarqube</code>目录下创建</p>
+<pre><code class="language-yaml">version: '3'
+services:
+  postgres:
+    image: postgres
+    restart: always
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: admin123
+    volumes:
+      - $PWD/postgres.conf:/etc/postgresql/postgresql.conf
+      - $PWD/data:/var/lib/postgresql/data
+</code></pre>
+<h2 id="启动">启动</h2>
+<pre><code class="language-bash">docker-compose up -d
+</code></pre>
+<h2 id="参考">参考</h2>
+<p><a href="https://hub.docker.com/_/postgres/" target="_blank">Docker Hub PostgreSQL</a></p>
+
+          <p>写的不好，仅供参考</p>
+        </div>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/351785/">
+            <span class="flex-auto">PostgreSQL</span>
+          </a>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/882589/">
+            <span class="flex-auto">Docker</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
+          <div class="prev-post">
+            
+             
+                <a href="https://blog.belier.cn/post/58129673/">
+                  <h3 class="post-title">
+                    <i class="iconfont arrow-left-line"></i>
+                    使用 Docker Compose 运行 SonarQube 7.9.2
+                  </h3>
+                </a>
+              
+            
+          </div>
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/69821753/">
+                <h3 class="post-title">
+                  使用 Docker Compose 运行 Mysql 5.7
+                  <i class="iconfont arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+         <div id="valine-comment" class="valine-comment"></div>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+ new Valine({
+        el:'#valine-comment',
+        appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
+        appKey: '2yWITldJI05zmWvNfeNF4Tfz',
+        placeholder: '欢迎留言讨论',
+        path: 35127562,
+        visitor: true,
+        highlight: false
+})
+</script>
+
+      </div>
+    </div>
+    <script>
+
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+
+</script>
+
+
+    
+      <script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/components/prism-core.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/autoloader/prism-autoloader.min.js"></script>
+      <script>
+        
+Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (env) {
+		var linkCopy = document.createElement('button');
+		linkCopy.textContent = '复制';
+
+		if (!ClipboardJS) {
+			callbacks.push(registerClipboard);
+		} else {
+			registerClipboard();
+		}
+
+		return linkCopy;
+
+		function registerClipboard() {
+			var clip = new ClipboardJS(linkCopy, {
+				'text': function () {
+					return env.code;
+				}
+			});
+
+			clip.on('success', function() {
+				linkCopy.textContent = '已复制';
+				resetText();
+			});
+			clip.on('error', function () {
+				linkCopy.textContent = '复制失败，请手动复制';
+
+				resetText();
+			});
+		}
+
+		function resetText() {
+			setTimeout(function () {
+				linkCopy.textContent = '复制';
+			}, 5000);
+		}
+	});
+
+
+
+var PLUGIN_NAME = 'line-numbers';
+
+	/**
+	 * Regular expression used for determining line breaks
+	 * @type {RegExp}
+	 */
+	var NEW_LINE_EXP = /\n(?!$)/g;
+
+	/**
+	 * Resizes line numbers spans according to height of line of code
+	 * @param {Element} element <pre> element
+	 */
+	var _resizeElement = function (element) {
+		var codeStyles = getStyles(element);
+		var whiteSpace = codeStyles['white-space'];
+
+		if (whiteSpace === 'pre-wrap' || whiteSpace === 'pre-line') {
+			var codeElement = element.querySelector('code');
+			var lineNumbersWrapper = element.querySelector('.line-numbers-rows');
+			var lineNumberSizer = element.querySelector('.line-numbers-sizer');
+			var codeLines = codeElement.textContent.split(NEW_LINE_EXP);
+
+			if (!lineNumberSizer) {
+				lineNumberSizer = document.createElement('span');
+				lineNumberSizer.className = 'line-numbers-sizer';
+
+				codeElement.appendChild(lineNumberSizer);
+			}
+
+			lineNumberSizer.style.display = 'block';
+
+			codeLines.forEach(function (line, lineNumber) {
+				lineNumberSizer.textContent = line || '\n';
+				var lineSize = lineNumberSizer.getBoundingClientRect().height;
+				lineNumbersWrapper.children[lineNumber].style.height = lineSize + 'px';
+			});
+
+			lineNumberSizer.textContent = '';
+			lineNumberSizer.style.display = 'none';
+		}
+	};
+
+	/**
+	 * Returns style declarations for the element
+	 * @param {Element} element
+	 */
+	var getStyles = function (element) {
+		if (!element) {
+			return null;
+		}
+
+		return window.getComputedStyle ? getComputedStyle(element) : (element.currentStyle || null);
+	};
+
+	window.addEventListener('resize', function () {
+		Array.prototype.forEach.call(document.querySelectorAll('pre.' + PLUGIN_NAME), _resizeElement);
+	});
+
+	Prism.hooks.add('complete', function (env) {
+		if (!env.code) {
+			return;
+		}
+
+		var code = env.element;
+		var pre = code.parentNode;
+
+		// works only for <code> wrapped inside <pre> (not inline)
+		if (!pre || !/pre/i.test(pre.nodeName)) {
+			return;
+		}
+
+		// Abort if line numbers already exists
+		if (code.querySelector('.line-numbers-rows')) {
+			return;
+		}
+
+		var addLineNumbers = false;
+		var lineNumbersRegex = /(?:^|\s)line-numbers(?:\s|$)/;
+
+		for (var element = code; element; element = element.parentNode) {
+			if (lineNumbersRegex.test(element.className)) {
+				addLineNumbers = true;
+				break;
+			}
+		}
+
+		// only add line numbers if <code> or one of its ancestors has the `line-numbers` class
+		if (!addLineNumbers) {
+			return;
+		}
+
+		// Remove the class 'line-numbers' from the <code>
+		code.className = code.className.replace(lineNumbersRegex, ' ');
+		// Add the class 'line-numbers' to the <pre>
+		if (!lineNumbersRegex.test(pre.className)) {
+			pre.className += ' line-numbers';
+		}
+
+		var match = env.code.match(NEW_LINE_EXP);
+		var linesNum = match ? match.length + 1 : 1;
+		var lineNumbersWrapper;
+
+		var lines = new Array(linesNum + 1).join('<span></span>');
+
+		lineNumbersWrapper = document.createElement('span');
+		lineNumbersWrapper.setAttribute('aria-hidden', 'true');
+		lineNumbersWrapper.className = 'line-numbers-rows';
+		lineNumbersWrapper.innerHTML = lines;
+
+		if (pre.hasAttribute('data-start')) {
+			pre.style.counterReset = 'linenumber ' + (parseInt(pre.getAttribute('data-start'), 10) - 1);
+		}
+
+		env.element.appendChild(lineNumbersWrapper);
+
+		_resizeElement(pre);
+
+		Prism.hooks.run('line-numbers', env);
+	});
+
+	Prism.hooks.add('line-numbers', function (env) {
+		env.plugins = env.plugins || {};
+		env.plugins.lineNumbers = true;
+	});
+
+	/**
+	 * Global exports
+	 */
+	Prism.plugins.lineNumbers = {
+		/**
+		 * Get node for provided line number
+		 * @param {Element} element pre element
+		 * @param {Number} number line number
+		 * @return {Element|undefined}
+		 */
+		getLine: function (element, number) {
+			if (element.tagName !== 'PRE' || !element.classList.contains(PLUGIN_NAME)) {
+				return;
+			}
+
+			var lineNumberRows = element.querySelector('.line-numbers-rows');
+			var lineNumberStart = parseInt(element.getAttribute('data-start'), 10) || 1;
+			var lineNumberEnd = lineNumberStart + (lineNumberRows.children.length - 1);
+
+			if (number < lineNumberStart) {
+				number = lineNumberStart;
+			}
+			if (number > lineNumberEnd) {
+				number = lineNumberEnd;
+			}
+
+			var lineIndex = number - lineNumberStart;
+
+			return lineNumberRows.children[lineIndex];
+		}
+	};
+
+
+	Prism.plugins.NormalizeWhitespace.setDefaults({
+		'remove-trailing': true,
+		'remove-indent': true,
+		'left-trim': true,
+		'right-trim': true,
+		'break-lines': 100000,
+		'tabs-to-spaces': 2
+	});
+      </script>
+    
+  </body>
+</html>

@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://blog.belier.cn</id>
+    <title>Belier Blog</title>
+    <updated>2022-06-25T15:38:17.016Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://blog.belier.cn"/>
+    <link rel="self" href="https://blog.belier.cn/atom.xml"/>
+    <logo>https://blog.belier.cn/images/avatar.png</logo>
+    <icon>https://blog.belier.cn/favicon.ico</icon>
+    <rights>All rights reserved 2022, Belier Blog</rights>
+    <entry>
+        <title type="html"><![CDATA[ESXI 版本升级]]></title>
+        <id>https://blog.belier.cn/post/73662765/</id>
+        <link href="https://blog.belier.cn/post/73662765/">
+        </link>
+        <updated>2022-06-25T11:39:49.000Z</updated>
+        <content type="html"><![CDATA[<ol>
+<li>
+<p>先下载升级包<br>
+<a href="https://customerconnect.vmware.com/patch" target="_blank">VMware Patch Download</a></p>
+</li>
+<li>
+<p>上传到 ESXI 服务器<br>
+获取上传后的文件路径</p>
+<pre><code class="language-bash">/vmfs/volumes/5fe9f7b9-b386c773-dd27-00e04c714214/ESXi670-202206001.zip
+</code></pre>
+</li>
+<li>
+<p>SSH 连接到 ESXI 服务器<br>
+需要先开启 SSH 服务</p>
+<pre><code class="language-bash">ssh root@192.168.3.1
+</code></pre>
+</li>
+<li>
+<p>获取 Image Profile Name</p>
+<pre><code class="language-bash">esxcli software sources profile list -d &quot;文件路径&quot;
+</code></pre>
+<p>输出内容中第一行第一列的 Name 就是 Image Profile Name</p>
+<pre><code class="language-bash">ESXi-6.7.0-20220604001-standard
+</code></pre>
+</li>
+<li>
+<p>执行升级命令</p>
+<pre><code class="language-bash">esxcli software profile update -d &quot;文件路径&quot; -p &quot;Image Profile Name&quot;
+</code></pre>
+</li>
+<li>
+<p>重启 ESXI 服务器</p>
+<pre><code class="language-bash">reboot
+</code></pre>
+</li>
+</ol>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[git bash 设置代理]]></title>
+        <id>https://blog.belier.cn/post/86127526/</id>
+        <link href="https://blog.belier.cn/post/86127526/">
+        </link>
+        <updated>2020-05-14T14:23:30.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="代理-https">代理 https</h2>
+<p>示例：git clone https://github.com/owner/git.git</p>
+<p>全局</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.proxy
+</code></pre>
+<p>针对某个域名</p>
+<pre><code class="language-bash"># http 协议
+git config --global http.https://github.com.proxy &quot;http://127.0.0.1:1087&quot;
+# socks5 协议
+git config --global http.https://github.com.proxy &quot;socks5://127.0.0.1:1080&quot;
+# 删除设置
+git config --global --unset http.https://github.com.proxy
+</code></pre>
+<h2 id="代理-ssh">代理 SSH</h2>
+<p>示例：git clone git@github.com/owner/git.git</p>
+<p>修改SSH配置文件，不存在则新建</p>
+<p>windows：<code>C:\Users\你的用户名\.ssh\config</code></p>
+<p>mac： <code>~/.ssh/config/config</code></p>
+<h3 id="windows">Windows</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+# socks5 协议
+ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand connect -H 127.0.0.1:1080 -a none %h %p
+  # socks5 协议
+  ProxyCommand connect -S 127.0.0.1:1080 -a none %h %p
+</code></pre>
+<h3 id="mac">Mac</h3>
+<p>全局</p>
+<pre><code># http 协议
+ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+# socks5 协议
+ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+</code></pre>
+<p>针对某个域名</p>
+<pre><code>Host github.com
+  # http 协议
+  ProxyCommand socat - PROXY:127.0.0.1:%h:%p,proxyport=1087
+  # socks5 协议
+  ProxyCommand nc -v -x 127.0.0.1:1080 %h %p
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Centos7 配置 JDK 环境]]></title>
+        <id>https://blog.belier.cn/post/69127523/</id>
+        <link href="https://blog.belier.cn/post/69127523/">
+        </link>
+        <updated>2020-05-13T07:57:44.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建存放的目录">创建存放的目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/java
+</code></pre>
+<h2 id="下载-jdk">下载 JDK</h2>
+<p>推荐下载地址：<a href="https://mirrors.huaweicloud.com/java/jdk/" target="_blank">华为 JDK 镜像</a></p>
+<p>进入安装目录</p>
+<pre><code class="language-bash">cd /usr/local/java
+</code></pre>
+<p>这里我下载 1.8 版本</p>
+<pre><code class="language-bash">curl -O https://mirrors.huaweicloud.com/java/jdk/8u202-b08/jdk-8u202-linux-x64.tar.gz
+</code></pre>
+<p>解压</p>
+<pre><code class="language-bash">tar -zxvf jdk-8u202-linux-x64.tar.gz
+</code></pre>
+<h2 id="配置环境变量">配置环境变量</h2>
+<p>编辑 /etc/profile 文件</p>
+<pre><code class="language-bash">vi /etc/profile
+</code></pre>
+<p>追加如下内容</p>
+<pre><code class="language-bash">JAVA_HOME=/usr/local/java/jdk1.8.0_202	
+CLASSPATH=.:$JAVA_HOME/lib.tools.jar
+PATH=$JAVA_HOME/bin:$PATH
+export JAVA_HOME CLASSPATH PATH
+</code></pre>
+<p>使环境变量生效</p>
+<pre><code class="language-bash">source /etc/profile
+</code></pre>
+<h2 id="测试">测试</h2>
+<pre><code class="language-bash">java -verison
+</code></pre>
+<p>输出如下内容代表配置成功</p>
+<pre><code>java version &quot;1.8.0_202&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_202-b08)
+Java HotSpot(TM) 64-Bit Server VM (build 25.202-b08, mixed mode)
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[七牛云批量将文件从一个 Bucket 复制到另一个 Bucket]]></title>
+        <id>https://blog.belier.cn/post/76851296/</id>
+        <link href="https://blog.belier.cn/post/76851296/">
+        </link>
+        <updated>2020-05-13T02:58:54.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="下载-qshell">下载 qshell</h2>
+<p>下载地址：<a href="https://github.com/qiniu/qshell#%E4%B8%8B%E8%BD%BD" target="_blank">https://github.com/qiniu/qshell</a><br>
+解压到目录并重新命名为 qshell.exe ，然后在该目录下执行操作，也可以配置环境变量即可全局使用</p>
+<p>当前使用版本：v2.4.1</p>
+<h2 id="添加七牛云账号">添加七牛云账号</h2>
+<pre><code class="language-bash">qshell account &lt;Your AccessKey&gt; &lt;Your SecretKey&gt; &lt;Your Name&gt;
+</code></pre>
+<h2 id="获取-bucket-下的所有文件信息">获取 Bucket 下的所有文件信息</h2>
+<pre><code># -o files.txt 将所有文件信息保存到 files.txt
+qshell listbucket &lt;Bucket&gt; -o files.txt
+</code></pre>
+<p>files.txt 格式如下</p>
+<pre><code>a.png   15716	FvCmbGBanK7_p__5DcbTGWVcAzZ5	15891820034656194	image/png	0
+b.png	25716	FvCmbGBanK7_p__5DcbTGWVcAzZ6	15891820034656195	image/png	0
+c.png	35716	FvCmbGBanK7_p__5DcbTGWVcAzZ7	15891820034656196	image/png	0
+</code></pre>
+<h2 id="处理-filestxt">处理 files.txt</h2>
+<p>在移动的时我们只需要文件名，所以只需要 files.txt 的第一列</p>
+<pre><code class="language-bash">cat files.txt | awk '{print $1}' &gt;copys.txt
+</code></pre>
+<h2 id="开始复制">开始复制</h2>
+<pre><code class="language-bash"># --success-list success.txt 将成功的记录保存到 success.txt
+# --failure-list failure.txt 将失败的记录保存到 failure.txt
+# -i copys.txt 指定要移动的文件名所在的文件
+# --force 不提示验证码
+qshell batchcopy --success-list success.txt --failure-list failure.txt --force -i copys.txt &lt;Bucket1&gt; &lt;Bucket2&gt;
+</code></pre>
+<h2 id="跨账号">跨账号</h2>
+<p>可在空间设置中进行空间授权，授权给另一个账号</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://github.com/qiniu/qshell#qshell%E4%BD%BF%E7%94%A8" target="_blank">github qshell</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Docker Compose 运行 Redis]]></title>
+        <id>https://blog.belier.cn/post/52712356/</id>
+        <link href="https://blog.belier.cn/post/52712356/">
+        </link>
+        <updated>2020-05-10T10:37:46.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/redis/data
+</code></pre>
+<h2 id="下载示例配置文件">下载示例配置文件</h2>
+<pre><code class="language-bash"># -o /usr/local/src/redis/redis.conf 将内容保存到 /usr/local/src/redis/redis.conf
+curl -o /usr/local/src/redis/redis.conf http://download.redis.io/redis-stable/redis.conf
+</code></pre>
+<h2 id="修改-redisconf">修改 redis.conf</h2>
+<p>开启远程访问：</p>
+<pre><code># 注释掉  bind 127.0.0.1
+# bind 127.0.0.1
+# 设置密码，由于默认开启了保护模式，必须设置密码才能远程访问，也建议这样做
+requirepass 123456
+</code></pre>
+<p>持久化到文件：</p>
+<pre><code>appendonly yes
+</code></pre>
+<p>更多配置参考默认配置文件，或者参考文章：<a href="https://juejin.im/post/5e046e0cf265da33d45209ce" target="_blank">Redis配置文件详解</a></p>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - $PWD/data:/data
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+</code></pre>
+<h2 id="测试是否启动成功">测试是否启动成功</h2>
+<pre><code class="language-bash"># 进入容器
+docker exec -it redis /bin/bash
+# 连接 redis
+redis-cli -h 127.0.0.1 -p 6379
+# 设置一个值
+set a 1
+# 获取刚设置的值
+get a
+# 删除 a
+del a
+# 退出容器
+exit
+</code></pre>
+<h2 id="测试远程连接">测试远程连接</h2>
+<p>建议使用的可视化客户端 <a href="https://github.com/qishibo/AnotherRedisDesktopManager" target="_blank">AnotherRedisDesktopManager</a></p>
+<h2 id="参考">参考</h2>
+<p><a href="https://hub.docker.com/_/redis/" target="_blank">Docker Hub Redis</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[将 Maven 项目发布到 Nexus 私有仓库]]></title>
+        <id>https://blog.belier.cn/post/86123957/</id>
+        <link href="https://blog.belier.cn/post/86123957/">
+        </link>
+        <updated>2020-05-10T06:12:02.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="安装-nexus-私有仓库">安装 Nexus 私有仓库</h2>
+<p>参考：<a href="/post/63571659/" target="_blank">Docker Compose 运行 nexus3</a></p>
+<h2 id="修改-maven-项目的-pomxml">修改 Maven 项目的 pom.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;distributionManagement&gt;
+        &lt;snapshotRepository&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;!-- 替换成你的地址 --&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-snapshots/&lt;/url&gt;
+        &lt;/snapshotRepository&gt;
+        &lt;repository&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;!-- 替换成你的地址 --&gt;
+            &lt;url&gt;http://192.168.56.10:8081/repository/maven-releases/&lt;/url&gt;
+        &lt;/repository&gt;
+    &lt;/distributionManagement&gt;
+&lt;/project&gt;
+</code></pre>
+<h2 id="修改-maven-配置文件-settingsxml">修改 Maven 配置文件 settings.xml</h2>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;settings xmlns=&quot;http://maven.apache.org/SETTINGS/1.0.0&quot;
+          xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+          xsi:schemaLocation=&quot;http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd&quot;&gt;
+
+    &lt;servers&gt;
+        &lt;server&gt;
+            &lt;id&gt;releases&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+        &lt;server&gt;
+            &lt;id&gt;snapshots&lt;/id&gt;
+            &lt;username&gt;admin&lt;/username&gt;
+            &lt;password&gt;{your_password}&lt;/password&gt;
+        &lt;/server&gt;
+    &lt;/servers&gt;
+&lt;/settings&gt;
+</code></pre>
+<h2 id="发布">发布</h2>
+<p>如果使用 IDEA，直接在 IDEA 右侧的 Maven 小窗口中执行 deploy</p>
+<p>命令方式：在项目根路径下执行如下命令</p>
+<pre><code class="language-bash"># --settings E:\maven\settings.xml 指定配置文件，以自己的路径为准
+# -Dmaven.test.skip=true 跳过测试，看自己需求
+mvn deploy --settings E:\maven\settings.xml -Dmaven.test.skip=true
+</code></pre>
+<h2 id="使用私有仓库">使用私有仓库</h2>
+<p>参考：<a href="/post/66712598/" target="_blank">Maven 同时配置阿里云仓库和私有仓库</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Docker Compose 运行 Nexus]]></title>
+        <id>https://blog.belier.cn/post/63571659/</id>
+        <link href="https://blog.belier.cn/post/63571659/">
+        </link>
+        <updated>2020-05-10T05:08:52.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建目录">创建目录</h2>
+<pre><code class="language-bash">mkdir -p /usr/local/src/nexus3/data
+</code></pre>
+<h2 id="赋予-data-目录权限">赋予 data 目录权限</h2>
+<pre><code class="language-bash">chown -R 200 /usr/local/src/nexus3/data
+</code></pre>
+<h2 id="创建-docker-composeyml-文件">创建 docker-compose.yml 文件</h2>
+<pre><code class="language-yml">version: '3'
+services:
+  nexus:
+    image: sonatype/nexus3
+    restart: always
+    container_name: nexus
+    ports:
+      - 8081:8081
+    volumes:
+      - $PWD/data:/nexus-data
+</code></pre>
+<h2 id="启动">启动</h2>
+<pre><code class="language-bash">docker-compse up -d
+</code></pre>
+<p>启动比较慢，大概2-5分钟</p>
+<h2 id="用户名和密码">用户名和密码</h2>
+<p>默认用户名：admin<br>
+密码：/usr/local/src/nexus3/data/admin.password 文件的内容就是密码</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://hub.docker.com/r/sonatype/nexus3" target="_blank">Docker Hub Nexus3</a></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot Swagger Pageable 处理]]></title>
+        <id>https://blog.belier.cn/post/52178956/</id>
+        <link href="https://blog.belier.cn/post/52178956/">
+        </link>
+        <updated>2020-03-01T09:04:28.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="将-pageable-当成-void-处理">将 Pageable 当成 Void 处理</h2>
+<pre><code class="language-java">@Bean
+public AlternateTypeRuleConvention pageableConvention(final TypeResolver resolver) {
+    return new AlternateTypeRuleConvention() {
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE;
+        }
+
+        @Override
+        public List&lt;AlternateTypeRule&gt; rules() {
+            // 将 Pageable 当成 Void 处理，配合 PageableParamPlugin 进行处理
+            return Lists.newArrayList(AlternateTypeRules.newRule(resolver.resolve(Pageable.class), resolver.resolve(Void.class)));
+        }
+    };
+}
+</code></pre>
+<h2 id="在参数中有-pageable-的接口中手动添加分页参数">在参数中有 Pageable 的接口中手动添加分页参数</h2>
+<pre><code class="language-java">@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+public class PageableParamPlugin implements OperationBuilderPlugin {
+
+    private ResolvedType pageableType;
+
+    private List&lt;Parameter&gt; parameters;
+
+    private final TypeResolver resolver;
+
+    private final SpringDataWebProperties springDataWebProperties;
+
+    public PageableParamPlugin(TypeResolver resolver, SpringDataWebProperties springDataWebProperties) {
+        this.resolver = resolver;
+        this.springDataWebProperties = springDataWebProperties;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (resolver == null || springDataWebProperties == null) {
+            return;
+        }
+        this.pageableType = resolver.resolve(Pageable.class);
+        ModelRef stringModel = new ModelRef(&quot;string&quot;);
+        ModelRef intModel = new ModelRef(&quot;int&quot;);
+        String parameterType = &quot;query&quot;;
+        parameters = Lists.newArrayListWithExpectedSize(3);
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getPageable().getPageParameter())
+                .modelRef(intModel)
+                .description(&quot;当前页&quot;)
+                .build());
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getPageable().getSizeParameter())
+                .modelRef(intModel)
+                .description(&quot;查询的记录数&quot;)
+                .build());
+        parameters.add(new ParameterBuilder()
+                .parameterType(parameterType)
+                .name(springDataWebProperties.getSort().getSortParameter())
+                .modelRef(stringModel)
+                .allowMultiple(true)
+                .description(&quot;排序参数&quot;)
+                .build());
+    }
+
+    @Override
+    public void apply(OperationContext context) {
+        if (CollectionUtils.isEmpty(parameters)) {
+            return;
+        }
+        boolean hasPageableParam = context.getParameters()
+                .stream().anyMatch(parameter -&gt; pageableType.equals(parameter.getParameterType()));
+        if (hasPageableParam) {
+            context.operationBuilder().parameters(parameters);
+        }
+    }
+
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+}
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot Swagger 枚举处理]]></title>
+        <id>https://blog.belier.cn/post/35678129/</id>
+        <link href="https://blog.belier.cn/post/35678129/">
+        </link>
+        <updated>2020-02-29T06:23:36.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="创建-swaggerenum-注解">创建 SwaggerEnum 注解</h2>
+<p>用于标识枚举类</p>
+<pre><code class="language-java">@Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+public @interface SwaggerEnum {
+
+    String VALUE = &quot;value&quot;;
+
+    String DESC = &quot;desc&quot;;
+
+    /**
+     * @return 枚举的含义
+     */
+    String value();
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    Class type() default Integer.class;
+
+    /**
+     * @return 数据库实际对应的类型
+     */
+    String modelRef() default &quot;int&quot;;
+
+    /**
+     * @return 枚举实际使用的字段
+     */
+    String valueName() default VALUE;
+
+    /**
+     * @return 枚举中用于描述的字段
+     */
+    String descName() default DESC;
+
+}
+
+</code></pre>
+<h2 id="创建处理枚举的工具类">创建处理枚举的工具类</h2>
+<pre><code class="language-java">@Component
+public class EnumCommon {
+
+    /**
+     * 获取 {@link SwaggerEnum}
+     *
+     * @param enumClass 枚举类
+     * @return {@link SwaggerEnum}
+     */
+    public SwaggerEnum getSwaggerEnum(Class enumClass) {
+        if (enumClass == null || !Enum.class.isAssignableFrom(enumClass)) {
+            return null;
+        }
+        return AnnotationUtils.findAnnotation(enumClass, SwaggerEnum.class);
+    }
+
+    /**
+     * 生成 desc
+     *
+     * @param enumClass   枚举类
+     * @param swaggerEnum {@link SwaggerEnum}
+     * @return desc
+     */
+    public String getDesc(Class enumClass, SwaggerEnum swaggerEnum) {
+        if (swaggerEnum == null) {
+            return null;
+        }
+        // 获取枚举对应的值
+        Object[] enumConstants = enumClass.getEnumConstants();
+        if (ArrayUtils.isEmpty(enumConstants)) {
+            return null;
+        }
+        // 将枚举的值转成字符串
+        return Arrays.stream(enumConstants)
+                .filter(Objects::nonNull)
+                .map(item -&gt; {
+                    try {
+                        Reflect enumReflect = Reflect.on(item);
+                        Object value = enumReflect.get(swaggerEnum.valueName());
+                        Object desc = enumReflect.get(swaggerEnum.descName());
+                        return StrUtil.format(&quot;{} : {}&quot;, value, desc);
+                    } catch (Exception e) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .collect(Collectors.joining(&quot;，&quot;, swaggerEnum.value() + &quot;  &quot;, &quot;&quot;));
+    }
+
+
+}
+</code></pre>
+<p>Reflect 使用的 <a href="https://github.com/jOOQ/jOOR" target="_blank">joor</a><br>
+StrUtil 使用的 <a href="https://hutool.cn/" target="_blank">hutool</a></p>
+<h2 id="创建-expandedparameterbuilderplugin">创建 ExpandedParameterBuilderPlugin</h2>
+<p>用于处理 query 传参中的枚举</p>
+<pre><code class="language-java">@Component
+public class EnumExpandedParameterBuilderPlugin implements ExpandedParameterBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    private final TypeResolver resolver;
+
+    public EnumExpandedParameterBuilderPlugin(EnumCommon enumCommon, TypeResolver resolver) {
+        this.enumCommon = enumCommon;
+        this.resolver = resolver;
+    }
+
+    @Override
+    public void apply(ParameterExpansionContext context) {
+        Class&lt;?&gt; erasedType = context.getFieldType().getErasedType();
+        SwaggerEnum swaggerEnum = enumCommon.getSwaggerEnum(erasedType);
+        String desc = enumCommon.getDesc(erasedType, swaggerEnum);
+        if (desc != null) {
+            Reflect parameterBuilderReflect = Reflect.on(context.getParameterBuilder());
+            // 将 allowableValues 设置成 null
+            // context.getParameterBuilder().allowableValues() 并不能设置 null，只能反射
+            parameterBuilderReflect.set(&quot;allowableValues&quot;, null);
+            context.getParameterBuilder()
+                    .allowMultiple(false)
+                    .modelRef(new ModelRef(swaggerEnum.modelRef()))
+                    .description(desc)
+                    .type(resolver.resolve(swaggerEnum.type()));
+        }
+
+    }
+
+    @Override
+    public boolean supports(DocumentationType delimiter) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="创建-modelpropertybuilderplugin">创建 ModelPropertyBuilderPlugin</h2>
+<p>用于处理 request body 对应的类以及接口的返回值的类</p>
+<pre><code class="language-java">@Component
+public class EnumModelPropertyBuilderPlugin implements ModelPropertyBuilderPlugin {
+
+    private final EnumCommon enumCommon;
+
+    public EnumModelPropertyBuilderPlugin(EnumCommon enumCommon) {
+        this.enumCommon = enumCommon;
+    }
+
+    @Override
+    public void apply(ModelPropertyContext context) {
+        if (context.getBeanPropertyDefinition().isPresent()) {
+            Class&lt;?&gt; rawPrimaryType = context.getBeanPropertyDefinition().get().getRawPrimaryType();
+            SwaggerEnum swaggerEnum = enumCommon.getSwaggerEnum(rawPrimaryType);
+            String desc = enumCommon.getDesc(rawPrimaryType, swaggerEnum);
+            if (desc != null) {
+                // 修改描述和类型
+                ResolvedType type = context.getResolver().resolve(swaggerEnum.type());
+                context.getBuilder().description(desc).type(type);
+            }
+        }
+    }
+
+    @Override
+    public boolean supports(DocumentationType documentationType) {
+        return true;
+    }
+
+}
+</code></pre>
+<h2 id="示例">示例</h2>
+<pre><code class="language-java">@SwaggerEnum(&quot;性别&quot;)
+public enum GenderEnum {
+
+    /**
+     * 枚举值
+     */
+    MAN(1, &quot;男&quot;),
+    WOMAN(2, &quot;女&quot;);
+
+    @Getter
+    private int value;
+
+    @Getter
+    private String desc;
+
+    GenderEnum(int value, String desc) {
+        this.value = value;
+        this.desc = desc;
+    }
+
+}
+</code></pre>
+<p>最后生成的 description ：<code>性别  1 : 男，2 : 女</code></p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Spring Boot 优雅的使用枚举类]]></title>
+        <id>https://blog.belier.cn/post/61782395/</id>
+        <link href="https://blog.belier.cn/post/61782395/">
+        </link>
+        <updated>2020-02-29T05:58:44.000Z</updated>
+        <content type="html"><![CDATA[<h2 id="枚举规范接口类">枚举规范接口类</h2>
+<p>所有的枚举类都实现该接口，统一规范</p>
+<pre><code class="language-java">public interface BaseEnum {
+
+    /**
+     * 获取实际的值
+     * Jackson 在反序列化的时候会根据 value 进行反序列化，所以不用自定义反序列化规则
+     *
+     * @return value
+     */
+    int getValue();
+
+    /**
+     * 获取对应的描述
+     *
+     * @return desc
+     */
+    String getDesc();
+}
+</code></pre>
+<h2 id="jackson-序列化">Jackson 序列化</h2>
+<p>创建序列化类</p>
+<pre><code class="language-java">public class BaseEnumSerializer extends JsonSerializer&lt;BaseEnum&gt; {
+
+    /**
+     * 缓存
+     */
+    private static final Map&lt;BaseEnum, Map&lt;String, Object&gt;&gt; CACHE = new HashMap&lt;&gt;();
+
+    @Override
+    public void serialize(BaseEnum baseEnum, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (baseEnum == null) {
+            gen.writeObject(MapUtils.EMPTY_SORTED_MAP);
+            return;
+        }
+        Map&lt;String, Object&gt; result = Optional.ofNullable(CACHE.get(baseEnum)).orElseGet(() -&gt; {
+            HashMap&lt;String, Object&gt; map = new HashMap&lt;&gt;(2);
+            map.put(&quot;value&quot;, baseEnum.getValue());
+            map.put(&quot;desc&quot;, baseEnum.getDesc());
+            CACHE.put(baseEnum, map);
+            return map;
+        });
+        gen.writeObject(result);
+    }
+
+    @Override
+    public Class&lt;BaseEnum&gt; handledType() {
+        return BaseEnum.class;
+    }
+}
+</code></pre>
+<p>Spring Boot Jackson 配置</p>
+<pre><code class="language-java">@Configuration
+public class JacksonConfig {
+
+    @Bean
+    public Jackson2ObjectMapperBuilderCustomizer objectMapperBuilderCustomizer() {
+        return objectMapperBuilder -&gt; objectMapperBuilder
+                .serializers(new BaseEnumSerializer());
+    }
+
+}
+</code></pre>
+<h2 id="jackson-反序列化">Jackson 反序列化</h2>
+<p>在枚举类中定义一个静态方法用于返回枚举值，并使用<code>JsonCreator</code>注解标识<br>
+示例：</p>
+<pre><code class="language-java">@JsonCreator
+public static BaseEnum getItem(String value){
+    // 根据 value 返回具体的枚举值
+    return null;
+}
+</code></pre>
+<h2 id="spring-mvc-使用枚举传参">Spring MVC 使用枚举传参</h2>
+<p>创建 ConverterFactory 和 Convert</p>
+<pre><code class="language-java">public class StringToEnumConverterFactory implements ConverterFactory&lt;String, BaseEnum&gt; {
+
+    @Override
+    public &lt;T extends BaseEnum&gt; Converter&lt;String, T&gt; getConverter(Class&lt;T&gt; targetType) {
+        return new StringToEnumConverter&lt;&gt;(targetType);
+    }
+
+
+    private static class StringToEnumConverter&lt;T extends BaseEnum&gt; implements Converter&lt;String, T&gt; {
+
+        private Map&lt;String, T&gt; enumMap = Maps.newHashMap();
+
+        public StringToEnumConverter(Class&lt;T&gt; enumType) {
+            T[] enums = enumType.getEnumConstants();
+            for (T e : enums) {
+                enumMap.put(e.getValue() + &quot;&quot;, e);
+            }
+        }
+
+        @Override
+        public T convert(String source) {
+            T t = enumMap.get(source);
+            if (ObjectUtil.isNull(t)) {
+                throw new IllegalArgumentException(&quot;无法匹配对应的枚举值&quot;);
+            }
+            return t;
+        }
+    }
+
+}
+</code></pre>
+<h2 id="mybatis-plus-使用枚举">Mybatis Plus 使用枚举</h2>
+<p><a href="https://mybatis.plus/guide/enum.html" target="_blank">https://mybatis.plus/guide/enum.html</a></p>
+<h2 id="通用-mapper-使用枚举">通用 Mapper 使用枚举</h2>
+<p><a href="https://github.com/abel533/Mapper/wiki/7.2.typehandler" target="_blank">https://github.com/abel533/Mapper/wiki/7.2.typehandler</a></p>
+]]></content>
+    </entry>
+</feed>

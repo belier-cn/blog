@@ -1,0 +1,604 @@
+<html>
+  <head>
+    
+      <link href="https://cdn.bootcss.com/prism/1.17.1/themes/prism-twilight.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+      <link href="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdn.bootcss.com/KaTeX/0.11.1/katex.min.js">
+    
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Belier Blog</title>
+<meta name="description" content="" />
+<link rel="shortcut icon" href="https://blog.belier.cn/favicon.ico?v=1656171452492">
+<link href="https://cdn.bootcss.com/tailwindcss/1.1.2/tailwind.min.css" rel="stylesheet">
+<link href="https://at.alicdn.com/t/font_1606372_ir2ioi1wgde.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.bootcss.com/animate.css/3.7.2/animate.min.css">
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+<link rel="stylesheet" href="https://blog.belier.cn/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Belier Blog - Atom Feed" href="https://blog.belier.cn/atom.xml">
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-147422351-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-147422351-1');
+</script>
+
+
+  </head>
+  <body>
+    <div id="app" class="main px-4 flex flex-col lg:flex-row">
+      <div id="sidebar" class="sidebar-wrapper lg:static lg:w-1/4">
+  <div class="lg:sticky top-0">
+    <div class="sidebar-content">
+      <div class="flex lg:block p-4 lg:px-0 items-center fixed lg:static lg:block top-0 right-0 left-0 bg-white z-50">
+        <i class="iconfont menu-2-line lg:mt-4 text-2xl cursor-pointer animated fadeIn" onclick="openMenu()"></i>
+        <a class="block mx-4 lg:mt-32 lg:mx-0 mt-0 w-12 lg:w-24 lg:h-24" href="https://blog.belier.cn">
+          <img class="animated fadeInLeft avatar rounded-lg " src="https://blog.belier.cn/images/avatar.png?v=1656171452492" alt="">
+        </a>
+        <h1 class="animated fadeInLeft lg:text-4xl font-extrabold lg:mt-8 mt-0 text-xl" style="animation-delay: 0.2s">Belier Blog</h1>
+
+      </div>
+      
+        <div class="animated fadeInLeft" style="animation-delay: 0.4s">
+        
+          <p class="my-4 text-gray-600 font-light hidden lg:block">
+            文章目录
+          </p>
+          <div class="toc-container hidden lg:block">
+            <ul class="markdownIt-TOC">
+<li>
+<ul>
+<li><a href="#%E4%BB%80%E4%B9%88%E6%98%AF-ssh">什么是 SSH</a></li>
+<li><a href="#ssh-%E6%9C%8D%E5%8A%A1%E7%AB%AF">SSH 服务端</a></li>
+<li><a href="#ssh-%E5%AE%A2%E6%88%B7%E7%AB%AF">SSH 客户端</a></li>
+<li><a href="#%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E7%AB%AF">连接服务端</a>
+<ul>
+<li><a href="#%E5%AF%86%E7%A0%81%E7%99%BB%E5%BD%95">密码登录</a></li>
+<li><a href="#%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95">免密登录</a></li>
+<li><a href="#%E5%BF%AB%E6%8D%B7%E7%99%BB%E5%BD%95">快捷登录</a></li>
+</ul>
+</li>
+<li><a href="#%E7%AB%AF%E5%8F%A3%E6%9B%B4%E6%94%B9">端口更改</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+<div class="menu-container">
+  <i class="remixicon-arrow-left-line text-2xl cursor-pointer animated fadeIn close-menu-btn" onclick="closeMenu()"></i>
+  <div>
+    
+      
+        <a href="/" class="menu" style="animation-delay: 0s">
+          首页
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu" style="animation-delay: 0.2s">
+          归档
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu" style="animation-delay: 0.4s">
+          标签
+        </a>
+      
+    
+  </div>
+  <div class="site-footer">
+    <div class="py-4 text-gray-700"></div>
+    <a class="rss" href="https://blog.belier.cn/atom.xml" target="_blank">RSS</a>
+  </div>
+</div>
+<div class="mask" onclick="closeMenu()">
+</div>
+      <div class="content-wrapper py-24 lg:p-8 lg:w-3/4 post-detail animated fadeIn line-numbers">
+        <h1 class="text-3xl font-bold lg:mt-16">Linux 学习之 SSH</h1>
+        <div class="text-sm text-gray-700 my-4 lg:my-8 leancloud_visitors" id="83335599">
+          <i class="iconfont calendar-line"></i> 2019-09-11 | <i class="iconfont time-line"></i> 5 min read | <i class="iconfont eye-line"></i> <span class="leancloud-visitors-count">loading...</span>
+        </div>
+        
+        <div class="post-content yue">
+          <h2 id="什么是-ssh">什么是 SSH</h2>
+<p>Secure Shell（安全外壳协议，简称SSH）是一种加密的网络传输协议，可在不安全的网络中为网络服务提供安全的传输环境。SSH通过在网络中创建安全隧道来实现SSH客户端与服务器之间的连接<br>
+来自维基百科 <a href="https://zh.wikipedia.org/wiki/Secure_Shell" target="_blank">Secure Shell (SSH)</a></p>
+<h2 id="ssh-服务端">SSH 服务端</h2>
+<p>SSH 服务端就是一个守护进程，后台运行，响应客户端的请求</p>
+<ul>
+<li>centos 安装：</li>
+</ul>
+<pre><code class="language-bash">yum install -y openssh-server
+</code></pre>
+<blockquote>
+<p>一般都会默认安装的，图形化的 linux 系统一般没有</p>
+</blockquote>
+<ul>
+<li>服务相关命令</li>
+</ul>
+<pre><code class="language-bash">systemctl start sshd      #启动
+systemctl stop sshd      #关闭
+systemctl restart sshd   #重启
+systemctl enable sshd   #开机自启
+systemctl disable sshd  #关闭开机自启
+systemctl status sshd    #查看状态
+</code></pre>
+<h2 id="ssh-客户端">SSH 客户端</h2>
+<ul>
+<li>centos 安装</li>
+</ul>
+<pre><code class="language-bash">yum install -y openssh-client
+</code></pre>
+<blockquote>
+<p>安装了服务端，默认就会安装客户端</p>
+</blockquote>
+<ul>
+<li>windows 下的 SSH 客户端</li>
+</ul>
+<p>securecrt xshell ... 应用程序，都是可视化操作，比较简单</p>
+<h2 id="连接服务端">连接服务端</h2>
+<h3 id="密码登录">密码登录</h3>
+<pre><code class="language-bash">ssh user@host -p port
+# 或者
+ssh -i ~/.ssh/id_rsa -p port -l user host
+</code></pre>
+<p>user ：用户名，例如：root<br>
+host : 主机地址，例如：192.168.0.100<br>
+-p : 端口，不指定默认 22<br>
+-i : 证书文件，默认 ~/.ssh/id_rsa ，如果用免密登录才需要<br>
+-l : 用户名</p>
+<h3 id="免密登录">免密登录</h3>
+<p>假设 A 要访问 B ,就得在 A 服务器上生成一对秘钥，将生成的公钥配置到 B 服务器</p>
+<ul>
+<li>生成秘钥（私钥+公钥）<br>
+window 可以使用软件生成，这里说说 linux 生成</li>
+</ul>
+<pre><code class="language-bash"># 在当前目录生成，这里在 ~/.ssh 目录
+ssh-keygen –t rsa -f belier -P &quot;&quot;
+</code></pre>
+<p>-t : 使用什么加密方式，默认 rsa，一般有 rsa dsa esdsa ...<br>
+-f : 设置文件名称，默认文件名：id_rsa，如果不指定会提示输入，不输入直接回车还是会使用默认文件名<br>
+-P : 秘钥的密码，&quot;&quot; 就是不设置密码</p>
+<ul>
+<li>配置公钥<br>
+将生 ~/.ssh/{name}.pub 拷贝到 B 服务器的 ~/.ssh/authorized_keys 文件中<br>
+输出公钥内容</li>
+</ul>
+<pre><code class="language-bash">cat ~/.ssh/{name}.pub
+</code></pre>
+<p>如果没有  ~/.ssh/authorized_keys 文件，使用如下命令创建</p>
+<pre><code class="language-bash">touch ~/.ssh/authorized_keys
+</code></pre>
+<p>配置多个公钥，可以换行进行分割</p>
+<blockquote>
+<p>~ 是当前用户的根目录，root 用户的根目录就是 /root ，如果想使用 root 用户免密登录，B 服务器就得切换到 root 用户</p>
+</blockquote>
+<ul>
+<li>使用免密登录</li>
+</ul>
+<pre><code class="language-bash"># 我的秘钥不是默认名称，需要指定私钥文件
+ssh root@192.168.10.100 -i ~/.ssh/belier
+</code></pre>
+<p>第一次免密登录有一个确认提示：</p>
+<pre><code class="language-bash">The authenticity of host '192.168.10.100 (192.168.10.100)' can't be established.
+ECDSA key fingerprint is SHA256:F1wrt2fjlZuDDTuUeNnuB10m4FifT6zQdA6moSIbQLQ.
+ECDSA key fingerprint is MD5:29:ed:82:6e:3b:7c:63:86:48:91:75:df:2e:91:90:c2.
+Are you sure you want to continue connecting (yes/no)?
+</code></pre>
+<p>主要是让你确认远程服务器信息，避免中间人劫持，发现问题就 no ,不连接</p>
+<p>如果出现问题：</p>
+<pre><code class="language-bash">Permission denied (publickey,gssapi-keyex,gssapi-with-mic).
+</code></pre>
+<p>方案：</p>
+<pre><code class="language-bash"># 编辑 /etc/ssh/sshd_config 文件
+RSAAuthentication yes
+PubkeyAuthentication yes
+# 设置 权限
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys 
+</code></pre>
+<h3 id="快捷登录">快捷登录</h3>
+<p>上面的登录方式要输一大串命令，我们可以通过配置文件的方式，记录登录信息，通过设置别名简化命令</p>
+<p>用户配置文件，放置在 ~/.ssh/config，只有当前用户能使用<br>
+系统配置文件，放置在 /etc/ssh/ssh_config，都能使用（区别于 /etc/ssh/sshd_config）</p>
+<p>这里我使用 ~/.ssh/config</p>
+<pre><code class="language-bash"># 设置的别名
+Host server-b
+  # 主机地址
+  HostName 192.168.10.100
+  # 用户名
+  User root
+  # 私钥地址
+  IdentityFile ~/.ssh/belier
+  # 端口 
+  Port 22 
+</code></pre>
+<p>使用：</p>
+<pre><code class="language-bash"># 现在就简洁多了
+ssh server-b
+</code></pre>
+<h2 id="端口更改">端口更改</h2>
+<p>为了更好的保证服务器的安全性，修改默认端口还是有必要的，其它的服务最好也修改掉默认端口</p>
+<p>编辑 /etc/ssh/sshd_config 文件</p>
+<pre><code class="language-bash">Port 22
+Port 2233
+</code></pre>
+<blockquote>
+<p>最好先把默认端口保留，避免新的端口没有配置好，导致后面连不上，等尝试能正常连接了，再将默认的端口删除</p>
+</blockquote>
+<p>重启服务：</p>
+<pre><code class="language-bash">systemctl restart sshd
+</code></pre>
+<p>端口放行：<br>
+这里以 firewall 防火墙为例</p>
+<pre><code class="language-bash"># 开放端口
+firewall-cmd --permanent --zone=public --add-port=2233/tcp 
+# 重启加载防火墙配置
+firewall-cmd --reload
+</code></pre>
+
+          <p>写的不好，仅供参考</p>
+        </div>
+        
+          <a class="animated fadeInUp p-2 items-center text-sm text-gray-700 border hover:bg-gray-300 leading-none rounded-full inline-flex m-4 " href="https://blog.belier.cn/tag/165857/">
+            <span class="flex-auto">Linux</span>
+          </a>
+        
+
+
+        <div class="flex justify-between py-8">
+          <div class="prev-post">
+            
+             
+                <a href="https://blog.belier.cn/post/75573037/">
+                  <h3 class="post-title">
+                    <i class="iconfont arrow-left-line"></i>
+                    Centos7 开启密码登录和 root 用户远程登录
+                  </h3>
+                </a>
+              
+            
+          </div>
+          
+            <div class="next-post">
+              <a href="https://blog.belier.cn/post/38562561/">
+                <h3 class="post-title">
+                  使用 acme.sh 和 Dokcer 快速生成通配符 ssl 证书
+                  <i class="iconfont arrow-right-line"></i>
+                </h3>
+              </a>
+            </div>
+          
+        </div>
+
+        
+
+         <div id="valine-comment" class="valine-comment"></div>
+<script src="https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js"></script>
+<script>
+ new Valine({
+        el:'#valine-comment',
+        appId: '3roqEQLD31EDP2oGuxX6vdhu-gzGzoHsz',
+        appKey: '2yWITldJI05zmWvNfeNF4Tfz',
+        placeholder: '欢迎留言讨论',
+        path: 83335599,
+        visitor: true,
+        highlight: false
+})
+</script>
+
+      </div>
+    </div>
+    <script>
+
+let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+window.addEventListener("scroll", event => {
+  let fromTop = window.scrollY;
+
+  mainNavLinks.forEach((link, index) => {
+    let section = document.getElementById(decodeURI(link.hash).substring(1));
+    let nextSection = null
+    if (mainNavLinks[index + 1]) {
+      nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+    }
+    if (section.offsetTop <= fromTop) {
+      if (nextSection) {
+        if (nextSection.offsetTop > fromTop) {
+          link.classList.add("current");
+        } else {
+          link.classList.remove("current");    
+        }
+      } else {
+        link.classList.add("current");
+      }
+    } else {
+      link.classList.remove("current");
+    }
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var lazyImages = [].slice.call(document.querySelectorAll(".post-feature-image.lazy"));
+
+  if ("IntersectionObserver" in window) {
+    let lazyImageObserver = new IntersectionObserver(function(entries, observer) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          let lazyImage = entry.target
+          lazyImage.style.backgroundImage = `url(${lazyImage.dataset.bg})`
+          lazyImage.classList.remove("lazy")
+          lazyImageObserver.unobserve(lazyImage)
+        }
+      });
+    });
+
+    lazyImages.forEach(function(lazyImage) {
+      lazyImageObserver.observe(lazyImage)
+    })
+  } else {
+    // Possibly fall back to a more compatible method here
+  }
+});
+
+const menuContainer = document.querySelector('.menu-container')
+const menus = document.querySelectorAll('.menu-container .menu')
+const mask = document.querySelector('.mask')
+const contentWrapper = document.querySelector('.content-wrapper')
+
+
+const openMenu = () => {
+  menuContainer.classList.add('open')
+  menus.forEach(menu => {
+    menu.classList.add('animated', 'fadeInLeft')
+  })
+  mask.classList.add('open')
+  contentWrapper.classList.add('is-second')
+}
+
+const closeMenu = () => {
+  menuContainer.classList.remove('open')
+  menus.forEach(menu => {
+    menu.classList.remove('animated', 'fadeInLeft')
+  })
+  mask.classList.remove('open')
+  contentWrapper.classList.remove('is-second')
+}
+
+</script>
+
+
+    
+      <script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/components/prism-core.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/toolbar/prism-toolbar.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/normalize-whitespace/prism-normalize-whitespace.min.js"></script>
+      <script src="https://cdn.bootcss.com/prism/1.17.1/plugins/autoloader/prism-autoloader.min.js"></script>
+      <script>
+        
+Prism.plugins.toolbar.registerButton('copy-to-clipboard', function (env) {
+		var linkCopy = document.createElement('button');
+		linkCopy.textContent = '复制';
+
+		if (!ClipboardJS) {
+			callbacks.push(registerClipboard);
+		} else {
+			registerClipboard();
+		}
+
+		return linkCopy;
+
+		function registerClipboard() {
+			var clip = new ClipboardJS(linkCopy, {
+				'text': function () {
+					return env.code;
+				}
+			});
+
+			clip.on('success', function() {
+				linkCopy.textContent = '已复制';
+				resetText();
+			});
+			clip.on('error', function () {
+				linkCopy.textContent = '复制失败，请手动复制';
+
+				resetText();
+			});
+		}
+
+		function resetText() {
+			setTimeout(function () {
+				linkCopy.textContent = '复制';
+			}, 5000);
+		}
+	});
+
+
+
+var PLUGIN_NAME = 'line-numbers';
+
+	/**
+	 * Regular expression used for determining line breaks
+	 * @type {RegExp}
+	 */
+	var NEW_LINE_EXP = /\n(?!$)/g;
+
+	/**
+	 * Resizes line numbers spans according to height of line of code
+	 * @param {Element} element <pre> element
+	 */
+	var _resizeElement = function (element) {
+		var codeStyles = getStyles(element);
+		var whiteSpace = codeStyles['white-space'];
+
+		if (whiteSpace === 'pre-wrap' || whiteSpace === 'pre-line') {
+			var codeElement = element.querySelector('code');
+			var lineNumbersWrapper = element.querySelector('.line-numbers-rows');
+			var lineNumberSizer = element.querySelector('.line-numbers-sizer');
+			var codeLines = codeElement.textContent.split(NEW_LINE_EXP);
+
+			if (!lineNumberSizer) {
+				lineNumberSizer = document.createElement('span');
+				lineNumberSizer.className = 'line-numbers-sizer';
+
+				codeElement.appendChild(lineNumberSizer);
+			}
+
+			lineNumberSizer.style.display = 'block';
+
+			codeLines.forEach(function (line, lineNumber) {
+				lineNumberSizer.textContent = line || '\n';
+				var lineSize = lineNumberSizer.getBoundingClientRect().height;
+				lineNumbersWrapper.children[lineNumber].style.height = lineSize + 'px';
+			});
+
+			lineNumberSizer.textContent = '';
+			lineNumberSizer.style.display = 'none';
+		}
+	};
+
+	/**
+	 * Returns style declarations for the element
+	 * @param {Element} element
+	 */
+	var getStyles = function (element) {
+		if (!element) {
+			return null;
+		}
+
+		return window.getComputedStyle ? getComputedStyle(element) : (element.currentStyle || null);
+	};
+
+	window.addEventListener('resize', function () {
+		Array.prototype.forEach.call(document.querySelectorAll('pre.' + PLUGIN_NAME), _resizeElement);
+	});
+
+	Prism.hooks.add('complete', function (env) {
+		if (!env.code) {
+			return;
+		}
+
+		var code = env.element;
+		var pre = code.parentNode;
+
+		// works only for <code> wrapped inside <pre> (not inline)
+		if (!pre || !/pre/i.test(pre.nodeName)) {
+			return;
+		}
+
+		// Abort if line numbers already exists
+		if (code.querySelector('.line-numbers-rows')) {
+			return;
+		}
+
+		var addLineNumbers = false;
+		var lineNumbersRegex = /(?:^|\s)line-numbers(?:\s|$)/;
+
+		for (var element = code; element; element = element.parentNode) {
+			if (lineNumbersRegex.test(element.className)) {
+				addLineNumbers = true;
+				break;
+			}
+		}
+
+		// only add line numbers if <code> or one of its ancestors has the `line-numbers` class
+		if (!addLineNumbers) {
+			return;
+		}
+
+		// Remove the class 'line-numbers' from the <code>
+		code.className = code.className.replace(lineNumbersRegex, ' ');
+		// Add the class 'line-numbers' to the <pre>
+		if (!lineNumbersRegex.test(pre.className)) {
+			pre.className += ' line-numbers';
+		}
+
+		var match = env.code.match(NEW_LINE_EXP);
+		var linesNum = match ? match.length + 1 : 1;
+		var lineNumbersWrapper;
+
+		var lines = new Array(linesNum + 1).join('<span></span>');
+
+		lineNumbersWrapper = document.createElement('span');
+		lineNumbersWrapper.setAttribute('aria-hidden', 'true');
+		lineNumbersWrapper.className = 'line-numbers-rows';
+		lineNumbersWrapper.innerHTML = lines;
+
+		if (pre.hasAttribute('data-start')) {
+			pre.style.counterReset = 'linenumber ' + (parseInt(pre.getAttribute('data-start'), 10) - 1);
+		}
+
+		env.element.appendChild(lineNumbersWrapper);
+
+		_resizeElement(pre);
+
+		Prism.hooks.run('line-numbers', env);
+	});
+
+	Prism.hooks.add('line-numbers', function (env) {
+		env.plugins = env.plugins || {};
+		env.plugins.lineNumbers = true;
+	});
+
+	/**
+	 * Global exports
+	 */
+	Prism.plugins.lineNumbers = {
+		/**
+		 * Get node for provided line number
+		 * @param {Element} element pre element
+		 * @param {Number} number line number
+		 * @return {Element|undefined}
+		 */
+		getLine: function (element, number) {
+			if (element.tagName !== 'PRE' || !element.classList.contains(PLUGIN_NAME)) {
+				return;
+			}
+
+			var lineNumberRows = element.querySelector('.line-numbers-rows');
+			var lineNumberStart = parseInt(element.getAttribute('data-start'), 10) || 1;
+			var lineNumberEnd = lineNumberStart + (lineNumberRows.children.length - 1);
+
+			if (number < lineNumberStart) {
+				number = lineNumberStart;
+			}
+			if (number > lineNumberEnd) {
+				number = lineNumberEnd;
+			}
+
+			var lineIndex = number - lineNumberStart;
+
+			return lineNumberRows.children[lineIndex];
+		}
+	};
+
+
+	Prism.plugins.NormalizeWhitespace.setDefaults({
+		'remove-trailing': true,
+		'remove-indent': true,
+		'left-trim': true,
+		'right-trim': true,
+		'break-lines': 100000,
+		'tabs-to-spaces': 2
+	});
+      </script>
+    
+  </body>
+</html>
